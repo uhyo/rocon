@@ -27,7 +27,7 @@ export class RoutesBuilder<Result, Defs extends RoutesDefinition<Result>> {
     defs: D
   ): RoutesBuilder<Result, Omit<Defs, keyof D> & D> {
     const result = new RoutesBuilder(this.options);
-    result.#routes = Object.assign(Object.create(null), this.#routes, defs);
+    Object.assign(result.#routes, this.#routes, defs);
     return result as RoutesBuilder<Result, Omit<Defs, keyof D> & D>;
   }
 

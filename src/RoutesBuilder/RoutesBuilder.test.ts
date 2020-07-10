@@ -39,6 +39,23 @@ describe("RoutesBuilder", () => {
     expect(routes.bar.action()).toEqual("bar?");
   });
 
+  it("RoutesBuilder is immutable", () => {
+    const b1 = RoutesBuilder.init<string>().routes({
+      foo: {
+        action: () => "foo!",
+      },
+    });
+    const b2 = b1.routes({
+      bar: {
+        action: () => "bar?",
+      },
+    });
+    const routes1 = b1.getRoutes();
+    expect(Object.keys(routes1)).toEqual(["foo"]);
+    const routes2 = b2.getRoutes();
+    expect(Object.keys(routes2)).toEqual(["foo", "bar"]);
+  });
+
   it("State handling", () => {
     const res = RoutesBuilder.init<string>().routes({
       foo: {
