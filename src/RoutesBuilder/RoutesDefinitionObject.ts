@@ -1,6 +1,14 @@
-export type RouteDefinition<State, Result> = {
-  readonly action: (state?: State) => Result;
+export type RouteDefinitionWithoutState<Result> = {
+  readonly action: () => Result;
 };
+
+export type RouteDefinitionWithState<State, Result> = {
+  readonly action: (state: State) => Result;
+};
+
+export type RouteDefinition<State, Result> =
+  | RouteDefinitionWithoutState<Result>
+  | RouteDefinitionWithState<State, Result>;
 
 export type RoutesDefinition<Result> = Record<
   string,

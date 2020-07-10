@@ -4,5 +4,5 @@
     "isolatedModules": false,
     "types": ["jest"]
   },
-  "include": ["../src/**/*.test.ts"]
+  "include": ["../src/**/*.test.ts", "../src/__mocks__/**/*.ts"]
 }

@@ -4,5 +4,5 @@
     "types": []
   },
   "include": ["../src/**/*.ts"],
-  "exclude": ["../**/*.test.ts"]
+  "exclude": ["../**/*.test.ts", "../src/__mocks__"]
 }

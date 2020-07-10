@@ -7,7 +7,8 @@
     "build:ts": "babel src --out-dir lib --extensions '.ts'",
     "build:typecheck": "tsc",
     "build:declaration": "tsc --declaration",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "keywords": [
     "router"
@@ -36,7 +37,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "lint-staged --shell",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
@@ -50,5 +51,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "history": "^5.0.0"
   }
 }
