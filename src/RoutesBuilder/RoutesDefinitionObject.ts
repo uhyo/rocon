@@ -1,8 +1,9 @@
 export type RouteDefinition<State, Result> = {
-  readonly action: (...args: [] | [state: State]) => Result;
+  readonly action: (state?: State) => Result;
 };
 
-export type RoutesDefinition<Result> = Readonly<Record<
+export type RoutesDefinition<Result> = Record<
   string,
-  RouteDefinition<never, Result>
->>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  RouteDefinition<any, Result>
+>;

@@ -38,4 +38,19 @@ describe("RoutesBuilder", () => {
     expect(routes.foo.action()).toEqual("foo!");
     expect(routes.bar.action()).toEqual("bar?");
   });
+
+  it("State handling", () => {
+    const res = RoutesBuilder.init<string>().routes({
+      foo: {
+        action: () => "foo!",
+      },
+      bar: {
+        action: (num: number) => `bar? ${num}`,
+      },
+    });
+    const routes = res.getRoutes();
+    expect(Object.keys(routes)).toEqual(["foo", "bar"]);
+    expect(routes.foo.action()).toEqual("foo!");
+    expect(routes.bar.action(123)).toEqual("bar? 123");
+  });
 });
