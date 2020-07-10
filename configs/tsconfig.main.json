@@ -1,7 +1,11 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": []
+    "types": [],
+    "rootDir": "../src",
+    "outDir": "../lib",
+    "declaration": true,
+    "tsBuildInfoFile": "../lib/tsconfig.main.tsbuildinfo"
   },
   "include": ["../src/**/*.ts"],
   "exclude": ["../**/*.test.ts", "../src/__mocks__"]

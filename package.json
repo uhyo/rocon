@@ -4,8 +4,9 @@
   "description": "A router library",
   "main": "index.js",
   "scripts": {
-    "build:ts": "babel src --out-dir lib --extensions '.ts'",
-    "build:typecheck": "tsc",
+    "build:ts_babel": "babel src --out-dir lib --extensions '.ts'",
+    "build:ts": "tsc --build",
+    "build:typecheck": "tsc --build",
     "build:declaration": "tsc --declaration",
     "test": "jest",
     "test:watch": "jest --watch"
