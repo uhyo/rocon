@@ -1,2 +1,1 @@
-console.log("Hello, world!");
-export {};
+export { RoutesBuilder } from "./RoutesBuilder";
