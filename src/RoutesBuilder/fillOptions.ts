@@ -1,3 +1,4 @@
+import { PathLocationComposer } from "../LocationComposer/PathLocationComposer";
 import { RoutesOptions } from "./RoutesOptions";
 
 /**
@@ -6,5 +7,7 @@ import { RoutesOptions } from "./RoutesOptions";
 export function fillOptions(
   obj: Partial<RoutesOptions>
 ): asserts obj is RoutesOptions {
-  /* TODO */
+  if (!obj.composer) {
+    obj.composer = new PathLocationComposer();
+  }
 }

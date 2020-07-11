@@ -1,8 +1,10 @@
+import type { Location } from "../LocationComposer/Location";
 import { fillOptions } from "./fillOptions";
 import type {
-  RouteDefinition,
-  RoutesDefinition,
-} from "./RoutesDefinitionObject";
+  RouteRecord,
+  RoutesDefinitionToRouteRecords,
+} from "./RouteRecord";
+import type { RoutesDefinition } from "./RoutesDefinitionObject";
 import type { RoutesOptions } from "./RoutesOptions";
 
 /**
@@ -20,23 +22,35 @@ export class RoutesBuilder<
   }
 
   readonly options: RoutesOptions;
-  #routes: Record<string, RouteDefinition<never, ActionResult>> = Object.create(
-    null
-  );
+  #rootLocation: Location;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  #routes: Record<string, RouteRecord<any, ActionResult>> = Object.create(null);
 
   private constructor(options: RoutesOptions) {
     this.options = options;
+    this.#rootLocation = options.composer.getRoot();
   }
 
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
   ): RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D> {
     const result = new RoutesBuilder(this.options);
-    Object.assign(result.#routes, this.#routes, defs);
+    const routes = result.#routes;
+    Object.assign(routes, this.#routes);
+    for (const key of Object.getOwnPropertyNames(defs) as (keyof D &
+      string)[]) {
+      routes[key] = {
+        ...defs[key],
+        location: this.options.composer.compose(this.#rootLocation, key),
+      };
+    }
     return result as RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D>;
   }
 
-  getRoutes(): Defs {
-    return this.#routes as Defs;
+  getRoutes(): RoutesDefinitionToRouteRecords<ActionResult, Defs> {
+    return (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
+      ActionResult,
+      Defs
+    >;
   }
 }

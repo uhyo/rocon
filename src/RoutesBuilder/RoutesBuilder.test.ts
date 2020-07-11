@@ -18,7 +18,15 @@ describe("RoutesBuilder", () => {
     const routes = res.getRoutes();
     expect(Object.keys(routes)).toEqual(["foo", "bar"]);
     expect(routes.foo.action()).toEqual("foo!");
+    expect(routes.foo.location).toEqual({
+      pathname: "/foo",
+      state: null,
+    });
     expect(routes.bar.action()).toEqual("bar?");
+    expect(routes.bar.location).toEqual({
+      pathname: "/bar",
+      state: null,
+    });
   });
 
   it("Reflects two routes() calls", () => {
@@ -36,7 +44,15 @@ describe("RoutesBuilder", () => {
     const routes = res.getRoutes();
     expect(Object.keys(routes)).toEqual(["foo", "bar"]);
     expect(routes.foo.action()).toEqual("foo!");
+    expect(routes.foo.location).toEqual({
+      pathname: "/foo",
+      state: null,
+    });
     expect(routes.bar.action()).toEqual("bar?");
+    expect(routes.bar.location).toEqual({
+      pathname: "/bar",
+      state: null,
+    });
   });
 
   it("RoutesBuilder is immutable", () => {
@@ -68,6 +84,14 @@ describe("RoutesBuilder", () => {
     const routes = res.getRoutes();
     expect(Object.keys(routes)).toEqual(["foo", "bar"]);
     expect(routes.foo.action()).toEqual("foo!");
+    expect(routes.foo.location).toEqual({
+      pathname: "/foo",
+      state: null,
+    });
     expect(routes.bar.action(123)).toEqual("bar? 123");
+    expect(routes.bar.location).toEqual({
+      pathname: "/bar",
+      state: null,
+    });
   });
 });
