@@ -21,7 +21,7 @@ export class RoutesBuilder<
     return new RoutesBuilder<ActionResult, {}>(options);
   }
 
-  readonly options: RoutesOptions;
+  readonly options: Readonly<RoutesOptions>;
   #rootLocation: Location;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   #routes: Record<string, RouteRecord<any, ActionResult>> = Object.create(null);
@@ -41,7 +41,8 @@ export class RoutesBuilder<
       string)[]) {
       routes[key] = {
         ...defs[key],
-        location: this.options.composer.compose(this.#rootLocation, key),
+        getLocation: () =>
+          this.options.composer.compose(this.#rootLocation, key),
       };
     }
     return result as RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D>;

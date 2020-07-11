@@ -12,7 +12,7 @@ export type RouteRecord<State, ActionResult> = RouteDefinitionByState<
   State,
   ActionResult
 > & {
-  location: Location<State>;
+  getLocation: () => Location<State>;
 };
 
 export type RoutesDefinitionToRouteRecords<
