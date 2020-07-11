@@ -1,5 +1,6 @@
-import { LocationComposer } from "../LocationComposer";
-import type { Location } from "../LocationComposer/Location";
+import { RoutesBuilder } from ".";
+import type { LocationComposer } from "../LocationComposer";
+import type { BaseState, Location } from "../LocationComposer/Location";
 import type {
   RouteDefinitionByState,
   RoutesDefinition,
@@ -9,11 +10,14 @@ import type {
 /**
  * Route object internally stored in RoutesBuilder.
  */
-export type RouteRecordType<State, ActionResult> = RouteDefinitionByState<
-  State,
+export type RouteRecordType<
+  State extends BaseState,
   ActionResult
-> & {
+> = RouteDefinitionByState<State, ActionResult> & {
   getLocation: () => Location<State>;
+  attach: <Defs extends RoutesDefinition<ActionResult>>(
+    builder: RoutesBuilder<ActionResult, Defs>
+  ) => RoutesBuilder<ActionResult, Defs>;
 };
 
 type ActionType<State, ActionResult> = State extends undefined
@@ -23,13 +27,20 @@ type ActionType<State, ActionResult> = State extends undefined
 export type RouteRecordConfig = {
   composer: LocationComposer<string>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  rootLocation: Location<any>;
+  getRootLocation: () => Location<any>;
+  changeRootLocation: (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    target: RoutesBuilder<any, any>,
+    newRoot: Location
+  ) => void;
 };
 
 /**
+ * Object for each route provided by RoutesBuilder.
+ * Should implement RouteRecordType.
  * @package
  */
-export class RouteRecord<State, ActionResult> {
+export class RouteRecord<State extends BaseState, ActionResult> {
   /**
    * Key of this route.
    */
@@ -52,9 +63,17 @@ export class RouteRecord<State, ActionResult> {
 
   getLocation(): Location<State> {
     return (this.#config.composer.compose(
-      this.#config.rootLocation,
+      this.#config.getRootLocation(),
       this.key
     ) as unknown) as Location<State>;
+  }
+
+  attach<Defs extends RoutesDefinition<ActionResult>>(
+    builder: RoutesBuilder<ActionResult, Defs>
+  ): RoutesBuilder<ActionResult, Defs> {
+    // TODO
+    this.#config.changeRootLocation(builder, this.getLocation());
+    return builder;
   }
 }
 

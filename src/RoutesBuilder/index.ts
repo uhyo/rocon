@@ -33,11 +33,13 @@ export class RoutesBuilder<
 
   private constructor(options: RoutesOptions) {
     this.options = options;
-    const rootLocation = options.root;
-    this.#rootLocation = rootLocation;
+    this.#rootLocation = options.root;
     this.#routeRecordConfig = {
       composer: options.composer,
-      rootLocation,
+      getRootLocation: () => this.#rootLocation,
+      changeRootLocation: (target, newRoot) => {
+        target.#rootLocation = newRoot;
+      },
     };
   }
 
