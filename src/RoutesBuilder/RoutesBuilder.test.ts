@@ -139,5 +139,30 @@ describe("RoutesBuilder", () => {
         state: null,
       });
     });
+    it("change location after attach", () => {
+      const sub = RoutesBuilder.init<string>().routes({
+        bom: {
+          action: () => "bom!",
+        },
+      });
+      const subRoutes = sub.getRoutes();
+      expect(subRoutes.bom.getLocation()).toEqual({
+        pathname: "/bom",
+        state: null,
+      });
+
+      const toplevel = RoutesBuilder.init<string>()
+        .routes({
+          foo: {
+            action: () => "foo!",
+          },
+        })
+        .getRoutes();
+      toplevel.foo.attach(sub);
+      expect(subRoutes.bom.getLocation()).toEqual({
+        pathname: "/foo/bom",
+        state: null,
+      });
+    });
   });
 });

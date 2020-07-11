@@ -71,7 +71,6 @@ export class RouteRecord<State extends BaseState, ActionResult> {
   attach<Defs extends RoutesDefinition<ActionResult>>(
     builder: RoutesBuilder<ActionResult, Defs>
   ): RoutesBuilder<ActionResult, Defs> {
-    // TODO
     this.#config.changeRootLocation(builder, this.getLocation());
     return builder;
   }

@@ -1,7 +1,8 @@
+import type { LocationComposer } from "../LocationComposer";
 import type { Location } from "../LocationComposer/Location";
 import { fillOptions } from "./fillOptions";
-import {
-  RouteRecord,
+import { RouteRecord } from "./RouteRecord";
+import type {
   RouteRecordConfig,
   RouteRecordType,
   RoutesDefinitionToRouteRecords,
@@ -23,7 +24,7 @@ export class RoutesBuilder<
     return new RoutesBuilder<ActionResult, {}>(options);
   }
 
-  readonly options: Readonly<RoutesOptions>;
+  #composer: LocationComposer<string>;
   #rootLocation: Location;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   #routes: Record<string, RouteRecordType<any, ActionResult>> = Object.create(
@@ -32,7 +33,7 @@ export class RoutesBuilder<
   #routeRecordConfig: RouteRecordConfig;
 
   private constructor(options: RoutesOptions) {
-    this.options = options;
+    this.#composer = options.composer;
     this.#rootLocation = options.root;
     this.#routeRecordConfig = {
       composer: options.composer,
@@ -46,15 +47,16 @@ export class RoutesBuilder<
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
   ): RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D> {
-    const result = new RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D>(
-      this.options
-    );
+    const result = new RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D>({
+      composer: this.#composer,
+      root: this.#rootLocation,
+    });
     const routes = result.#routes;
     Object.assign(routes, this.#routes);
     for (const key of Object.getOwnPropertyNames(defs) as (keyof D &
       string)[]) {
       routes[key] = new RouteRecord(
-        this.#routeRecordConfig,
+        result.#routeRecordConfig,
         key,
         defs[key].action
       );
@@ -62,7 +64,7 @@ export class RoutesBuilder<
     return result as RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D>;
   }
 
-  getRoutes(): RoutesDefinitionToRouteRecords<ActionResult, Defs> {
+  getRoutes(): Readonly<RoutesDefinitionToRouteRecords<ActionResult, Defs>> {
     return (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
       ActionResult,
       Defs
