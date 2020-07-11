@@ -1,9 +1,8 @@
 import { Location } from "./Location";
 
 /**
- * Interface of serializer.
+ * Interface of composer.
  */
 export interface LocationComposer<Segment> {
-  getRoot(): Location;
   compose(base: Location, segment: Segment): Location;
 }

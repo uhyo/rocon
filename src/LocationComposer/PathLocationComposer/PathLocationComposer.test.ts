@@ -1,20 +1,11 @@
 import { PathLocationComposer } from "./";
 
-let composer!: PathLocationComposer<null>;
+let composer!: PathLocationComposer;
 beforeEach(() => {
-  composer = new PathLocationComposer({
-    pathname: "/",
-    state: null,
-  });
+  composer = new PathLocationComposer();
 });
 
 describe("PathLocationComposer", () => {
-  it("root", () => {
-    expect(composer.getRoot()).toEqual({
-      pathname: "/",
-      state: null,
-    });
-  });
   it("compose pathname", () => {
     expect(
       composer.compose(

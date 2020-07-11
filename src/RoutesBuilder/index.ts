@@ -33,7 +33,7 @@ export class RoutesBuilder<
 
   private constructor(options: RoutesOptions) {
     this.options = options;
-    const rootLocation = options.composer.getRoot();
+    const rootLocation = options.root;
     this.#rootLocation = rootLocation;
     this.#routeRecordConfig = {
       composer: options.composer,
@@ -44,7 +44,9 @@ export class RoutesBuilder<
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
   ): RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D> {
-    const result = new RoutesBuilder(this.options);
+    const result = new RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D>(
+      this.options
+    );
     const routes = result.#routes;
     Object.assign(routes, this.#routes);
     for (const key of Object.getOwnPropertyNames(defs) as (keyof D &
