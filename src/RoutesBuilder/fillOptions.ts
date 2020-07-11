@@ -8,6 +8,9 @@ export function fillOptions(
   obj: Partial<RoutesOptions>
 ): asserts obj is RoutesOptions {
   if (!obj.composer) {
-    obj.composer = new PathLocationComposer();
+    obj.composer = new PathLocationComposer({
+      pathname: "/",
+      state: null,
+    });
   }
 }

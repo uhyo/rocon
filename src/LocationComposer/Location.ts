@@ -1,6 +1,8 @@
 import { State } from "history";
 
-export type Location<S = State> = {
+export type BaseState = State;
+
+export type Location<S = BaseState> = {
   pathname: string;
   search?: string;
   hash?: string;

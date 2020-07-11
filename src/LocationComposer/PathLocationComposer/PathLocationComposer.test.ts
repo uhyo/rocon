@@ -1,8 +1,11 @@
 import { PathLocationComposer } from "./";
 
-let composer!: PathLocationComposer;
+let composer!: PathLocationComposer<null>;
 beforeEach(() => {
-  composer = new PathLocationComposer();
+  composer = new PathLocationComposer({
+    pathname: "/",
+    state: null,
+  });
 });
 
 describe("PathLocationComposer", () => {
