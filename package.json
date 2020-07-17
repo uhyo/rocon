@@ -8,6 +8,7 @@
     "build:ts": "tsc --build",
     "build:typecheck": "tsc --build",
     "build:declaration": "tsc --declaration",
+    "commitizen": "git cz",
     "test": "jest",
     "test:watch": "jest --watch"
   },
