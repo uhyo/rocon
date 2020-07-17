@@ -14,8 +14,8 @@ export type RouteRecordType<
   State extends BaseState,
   ActionResult
 > = RouteDefinitionByState<State, ActionResult> & {
-  getLocation: () => Location<State>;
-  attach: <Defs extends RoutesDefinition<ActionResult>>(
+  readonly getLocation: () => Location<State>;
+  readonly attach: <Defs extends RoutesDefinition<ActionResult>>(
     builder: RoutesBuilder<ActionResult, Defs>
   ) => RoutesBuilder<ActionResult, Defs>;
 };
