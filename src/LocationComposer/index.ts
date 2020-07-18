@@ -5,4 +5,5 @@ import { Location } from "./Location";
  */
 export interface LocationComposer<Segment> {
   compose(base: Location, segment: Segment): Location;
+  decompose(location: Location): Array<[segment: Segment, next: Location]>;
 }
