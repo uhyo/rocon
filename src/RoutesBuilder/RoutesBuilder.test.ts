@@ -1,4 +1,5 @@
 import { RoutesBuilder } from "./";
+import { RouteRecord } from "./RouteRecord";
 
 describe("RoutesBuilder", () => {
   describe("routes", () => {
@@ -164,5 +165,32 @@ describe("RoutesBuilder", () => {
         state: null,
       });
     });
+  });
+
+  describe("getResolver", () => {
+    const resolver = RoutesBuilder.init<string>()
+      .routes({
+        foo: {
+          action: () => "foo!",
+        },
+        bar: {
+          action: () => "bar?",
+        },
+      })
+      .getResolver();
+    expect(
+      resolver.resolve({
+        pathname: "/foo",
+        state: null,
+      })
+    ).toEqual([
+      [
+        expect.any(RouteRecord),
+        {
+          pathname: "/",
+          state: null,
+        },
+      ],
+    ]);
   });
 });
