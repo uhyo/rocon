@@ -80,6 +80,22 @@ describe("PathLocationComposer", () => {
           ],
         ]);
       });
+      it("returns / for empty path", () => {
+        expect(
+          composer.decompose({
+            pathname: "/foo",
+            state: null,
+          })
+        ).toEqual([
+          [
+            "foo",
+            {
+              pathname: "/",
+              state: null,
+            },
+          ],
+        ]);
+      });
       it("inherit search, hash and state", () => {
         expect(
           composer.decompose({

@@ -27,7 +27,7 @@ export class PathLocationComposer implements LocationComposer<string> {
         segment,
         {
           ...location,
-          pathname: next,
+          pathname: next || "/",
         },
       ],
     ];
