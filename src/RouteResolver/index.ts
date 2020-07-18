@@ -33,9 +33,6 @@ export class RouteResolver<
     StateOfRouteRecordType<Routes[keyof Routes]>
   > {
     const decomposed = this.#composer.decompose(location);
-    if (decomposed === undefined) {
-      return [];
-    }
     return decomposed.flatMap(([seg, next]) => {
       const nextRoute = this.#routes[seg];
       if (nextRoute === undefined) {

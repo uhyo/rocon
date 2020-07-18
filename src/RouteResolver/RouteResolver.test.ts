@@ -88,11 +88,20 @@ describe("RouteResolver", () => {
       });
     });
   });
-  it("wrong location returns an empty array", () => {
-    const resolved = resolver.resolve({
-      pathname: "/nonexistent",
-      state: null,
+  describe("wrong location returns an empty array", () => {
+    it("nonexistent location", () => {
+      const resolved = resolver.resolve({
+        pathname: "/nonexistent",
+        state: null,
+      });
+      expect(resolved).toEqual([]);
     });
-    expect(resolved).toEqual([]);
+    it("illegal location", () => {
+      const resolved = resolver.resolve({
+        pathname: "foo/bar",
+        state: null,
+      });
+      expect(resolved).toEqual([]);
+    });
   });
 });
