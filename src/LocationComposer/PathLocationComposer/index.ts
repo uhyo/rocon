@@ -4,8 +4,11 @@ import { composePath } from "./composePath";
 import { decomposePath } from "./decomposePath";
 
 export class PathLocationComposer implements LocationComposer<string> {
+  isLeaf(location: Readonly<Location>): boolean {
+    return location.pathname === "/";
+  }
   compose<S extends BaseState>(
-    base: Location<S>,
+    base: Readonly<Location<S>>,
     segment: string
   ): Location<S> {
     return {
@@ -14,7 +17,7 @@ export class PathLocationComposer implements LocationComposer<string> {
     };
   }
   decompose<S extends BaseState>(
-    location: Location<S>
+    location: Readonly<Location<S>>
   ): Array<[string, Location<S>]> {
     const { pathname } = location;
     const s = decomposePath(pathname);

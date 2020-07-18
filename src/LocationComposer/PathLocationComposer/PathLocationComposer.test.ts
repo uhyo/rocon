@@ -6,6 +6,59 @@ beforeEach(() => {
 });
 
 describe("PathLocationComposer", () => {
+  describe("isLeaf", () => {
+    describe("returns true for the root path", () => {
+      it("1", () => {
+        expect(
+          composer.isLeaf({
+            pathname: "/",
+            state: null,
+          })
+        ).toBe(true);
+      });
+      it("2", () => {
+        expect(
+          composer.isLeaf({
+            pathname: "/",
+            search: "foo=bar",
+            state: null,
+          })
+        ).toBe(true);
+      });
+      it("3", () => {
+        expect(
+          composer.isLeaf({
+            pathname: "/",
+            hash: "idid",
+            state: {
+              sta: "te",
+            },
+          })
+        ).toBe(true);
+      });
+    });
+    describe("returns false for non-root paths", () => {
+      it("1", () => {
+        expect(
+          composer.isLeaf({
+            pathname: "/foo",
+            state: null,
+          })
+        );
+      });
+      it("2", () => {
+        expect(
+          composer.isLeaf({
+            pathname: "/foo",
+            search: "bar=quux",
+            state: {
+              sta: "te",
+            },
+          })
+        );
+      });
+    });
+  });
   describe("compose", () => {
     it("compose pathname", () => {
       expect(
