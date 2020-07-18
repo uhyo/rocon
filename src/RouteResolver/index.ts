@@ -1,6 +1,15 @@
 import { LocationComposer } from "../LocationComposer";
 import { BaseState, Location } from "../LocationComposer/Location";
-import { RouteRecordType } from "../RoutesBuilder/RouteRecord";
+import {
+  RouteRecordType,
+  StateOfRouteRecordType,
+} from "../RoutesBuilder/RouteRecord";
+
+type ResolvedRoutes<ActionResult, State extends BaseState> = Array<
+  State extends BaseState
+    ? readonly [RouteRecordType<State, ActionResult>, Location<State>]
+    : readonly [RouteRecordType<BaseState, ActionResult>, Location<BaseState>]
+>;
 
 /**
  * Object that resolves given URL to a Route.
@@ -17,8 +26,25 @@ export class RouteResolver<
     this.#composer = composer;
   }
 
-  resolve(location: Location<BaseState>): null {
-    // TODO: implement this
-    return null;
+  resolve(
+    location: Location<BaseState>
+  ): ResolvedRoutes<
+    ActionResult,
+    StateOfRouteRecordType<Routes[keyof Routes]>
+  > {
+    const decomposed = this.#composer.decompose(location);
+    if (decomposed === undefined) {
+      return [];
+    }
+    return decomposed.flatMap(([seg, next]) => {
+      const nextRoute = this.#routes[seg];
+      if (nextRoute === undefined) {
+        return [];
+      }
+      return [[nextRoute, next] as const];
+    }) as ResolvedRoutes<
+      ActionResult,
+      StateOfRouteRecordType<Routes[keyof Routes]>
+    >;
   }
 }

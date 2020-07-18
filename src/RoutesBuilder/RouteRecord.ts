@@ -20,6 +20,11 @@ export type RouteRecordType<
   ) => RoutesBuilder<ActionResult, Defs>;
 };
 
+export type StateOfRouteRecordType<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  RR extends RouteRecordType<any, any>
+> = ReturnType<RR["getLocation"]> extends Location<infer S> ? S : BaseState;
+
 type ActionType<State, ActionResult> = State extends undefined
   ? () => ActionResult
   : (state: State) => ActionResult;

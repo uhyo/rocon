@@ -15,10 +15,7 @@ export type RouteDefinition<State, ActionResult> =
  * Return correct RouteDefinition type.
  * undefined is treated as no state.
  */
-export type RouteDefinitionByState<
-  State,
-  ActionResult
-> = State extends undefined
+export type RouteDefinitionByState<State, ActionResult> = State extends null
   ? RouteDefinitionWithoutState<ActionResult>
   : RouteDefinitionWithState<State, ActionResult>;
 
@@ -29,10 +26,10 @@ export type RouteDefinitionByState<
 export type StateOfRouteDefinition<RD> = RD extends RouteDefinitionWithoutState<
   any
 >
-  ? undefined
+  ? null
   : RD extends RouteDefinitionWithState<infer S, any>
   ? S
-  : undefined;
+  : null;
 
 export type RoutesDefinition<ActionResult> = Record<
   string,
