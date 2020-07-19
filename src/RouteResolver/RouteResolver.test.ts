@@ -51,7 +51,7 @@ describe("RouteResolver", () => {
       expect(resolved.length).toBe(1);
       const [routeRecord, next] = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
-      expect(routeRecord.action()).toBe("foo!");
+      expect(routeRecord.action({})).toBe("foo!");
       expect(next).toEqual({
         pathname: "/",
         state: {
@@ -67,7 +67,7 @@ describe("RouteResolver", () => {
       expect(resolved.length).toBe(1);
       const [routeRecord, next] = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
-      expect(routeRecord.action()).toBe("bar");
+      expect(routeRecord.action({})).toBe("bar");
       expect(next).toEqual({
         pathname: "/",
         state: null,
@@ -81,7 +81,41 @@ describe("RouteResolver", () => {
       expect(resolved.length).toBe(1);
       const [routeRecord, next] = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
-      expect(routeRecord.action()).toBe("baz.");
+      expect(routeRecord.action({})).toBe("baz.");
+      expect(next).toEqual({
+        pathname: "/",
+        state: null,
+      });
+    });
+  });
+  describe("resolves deep location", () => {
+    it("1", () => {
+      const resolved = resolver.resolve({
+        pathname: "/foo/hoge",
+        state: {
+          sta: "te",
+        },
+      });
+      expect(resolved.length).toBe(1);
+      const [routeRecord, next] = resolved[0];
+      expect(routeRecord).toEqual(expect.any(RouteRecord));
+      expect(routeRecord.action({})).toBe("hoge");
+      expect(next).toEqual({
+        pathname: "/",
+        state: {
+          sta: "te",
+        },
+      });
+    });
+    it("2", () => {
+      const resolved = resolver.resolve({
+        pathname: "/bar/fuga",
+        state: null,
+      });
+      expect(resolved.length).toBe(1);
+      const [routeRecord, next] = resolved[0];
+      expect(routeRecord).toEqual(expect.any(RouteRecord));
+      expect(routeRecord.action({})).toBe("fuga");
       expect(next).toEqual({
         pathname: "/",
         state: null,
@@ -89,9 +123,16 @@ describe("RouteResolver", () => {
     });
   });
   describe("wrong location returns an empty array", () => {
-    it("nonexistent location", () => {
+    it("shallow nonexistent location", () => {
       const resolved = resolver.resolve({
         pathname: "/nonexistent",
+        state: null,
+      });
+      expect(resolved).toEqual([]);
+    });
+    it("deep nonexistent location", () => {
+      const resolved = resolver.resolve({
+        pathname: "/foo/nonexistent",
         state: null,
       });
       expect(resolved).toEqual([]);

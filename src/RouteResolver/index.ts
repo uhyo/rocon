@@ -1,14 +1,9 @@
 import { LocationComposer } from "../LocationComposer";
 import { BaseState, Location } from "../LocationComposer/Location";
-import {
-  RouteRecordType,
-  StateOfRouteRecordType,
-} from "../RoutesBuilder/RouteRecord";
+import { RouteRecordType } from "../RoutesBuilder/RouteRecord";
 
-type ResolvedRoutes<ActionResult, State extends BaseState> = Array<
-  State extends BaseState
-    ? readonly [RouteRecordType<State, ActionResult>, Location<State>]
-    : readonly [RouteRecordType<BaseState, ActionResult>, Location<BaseState>]
+type ResolvedRoutes<ActionResult> = Array<
+  readonly [RouteRecordType<BaseState, ActionResult>, Location<BaseState>]
 >;
 
 /**
@@ -26,22 +21,22 @@ export class RouteResolver<
     this.#composer = composer;
   }
 
-  resolve(
-    location: Location<BaseState>
-  ): ResolvedRoutes<
-    ActionResult,
-    StateOfRouteRecordType<Routes[keyof Routes]>
-  > {
-    const decomposed = this.#composer.decompose(location);
+  resolve(location: Location<BaseState>): ResolvedRoutes<ActionResult> {
+    const composer = this.#composer;
+    const decomposed = composer.decompose(location);
     return decomposed.flatMap(([seg, next]) => {
       const nextRoute = this.#routes[seg];
       if (nextRoute === undefined) {
         return [];
       }
-      return [[nextRoute, next] as const];
-    }) as ResolvedRoutes<
-      ActionResult,
-      StateOfRouteRecordType<Routes[keyof Routes]>
-    >;
+      if (composer.isLeaf(next)) {
+        return [[nextRoute, next]];
+      }
+      const childBuilder = nextRoute.getBuilder();
+      if (childBuilder === undefined) {
+        return [[nextRoute, next]];
+      }
+      return childBuilder.getResolver().resolve(next);
+    });
   }
 }
