@@ -1,8 +1,9 @@
-import { RoutesBuilder, routesBuilderSpecies } from "..";
+import { RoutesBuilder } from "..";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
 import { fillOptions } from "../fillOptions";
 import { RoutesBuilderOptions } from "../RoutesBuilderOptions";
 import { RoutesDefinition } from "../RoutesDefinitionObject";
+import { routesBuilderSpecies } from "../symbols";
 
 export type PathRoutesBuilderOptions = Omit<RoutesBuilderOptions, "composer">;
 

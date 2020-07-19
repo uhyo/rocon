@@ -10,8 +10,7 @@ import type {
 } from "./RouteRecord";
 import type { RoutesBuilderOptions } from "./RoutesBuilderOptions";
 import type { RoutesDefinition } from "./RoutesDefinitionObject";
-
-export const routesBuilderSpecies = Symbol("routesBuilderSpecies");
+import { routesBuilderSpecies } from "./symbols";
 
 export type RoutesBuilderConstructor = {
   new <ActionResult, Defs extends RoutesDefinition<ActionResult>>(
