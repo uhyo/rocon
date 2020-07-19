@@ -49,7 +49,7 @@ describe("RouteResolver", () => {
         },
       });
       expect(resolved.length).toBe(1);
-      const [routeRecord, next] = resolved[0];
+      const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
       expect(routeRecord.action({})).toBe("foo!");
       expect(next).toEqual({
@@ -65,7 +65,7 @@ describe("RouteResolver", () => {
         state: null,
       });
       expect(resolved.length).toBe(1);
-      const [routeRecord, next] = resolved[0];
+      const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
       expect(routeRecord.action({})).toBe("bar");
       expect(next).toEqual({
@@ -79,7 +79,7 @@ describe("RouteResolver", () => {
         state: null,
       });
       expect(resolved.length).toBe(1);
-      const [routeRecord, next] = resolved[0];
+      const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
       expect(routeRecord.action({})).toBe("baz.");
       expect(next).toEqual({
@@ -97,7 +97,7 @@ describe("RouteResolver", () => {
         },
       });
       expect(resolved.length).toBe(1);
-      const [routeRecord, next] = resolved[0];
+      const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
       expect(routeRecord.action({})).toBe("hoge");
       expect(next).toEqual({
@@ -113,7 +113,7 @@ describe("RouteResolver", () => {
         state: null,
       });
       expect(resolved.length).toBe(1);
-      const [routeRecord, next] = resolved[0];
+      const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
       expect(routeRecord.action({})).toBe("fuga");
       expect(next).toEqual({

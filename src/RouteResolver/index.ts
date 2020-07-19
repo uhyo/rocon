@@ -1,10 +1,7 @@
 import { LocationComposer } from "../LocationComposer";
 import { BaseState, Location } from "../LocationComposer/Location";
 import { RouteRecordType } from "../RoutesBuilder/RouteRecord";
-
-type ResolvedRoutes<ActionResult> = Array<
-  readonly [RouteRecordType<BaseState, ActionResult>, Location<BaseState>]
->;
+import { ResolvedRoute } from "./ResolvedRoute";
 
 /**
  * Object that resolves given URL to a Route.
@@ -21,7 +18,9 @@ export class RouteResolver<
     this.#composer = composer;
   }
 
-  resolve(location: Location<BaseState>): ResolvedRoutes<ActionResult> {
+  resolve(
+    location: Location<BaseState>
+  ): Array<ResolvedRoute<ActionResult, {}>> {
     const composer = this.#composer;
     const decomposed = composer.decompose(location);
     return decomposed.flatMap(([seg, next]) => {
@@ -30,11 +29,21 @@ export class RouteResolver<
         return [];
       }
       if (composer.isLeaf(next)) {
-        return [[nextRoute, next]];
+        return [
+          {
+            route: nextRoute,
+            location: next,
+          },
+        ];
       }
       const childBuilder = nextRoute.getBuilder();
       if (childBuilder === undefined) {
-        return [[nextRoute, next]];
+        return [
+          {
+            route: nextRoute,
+            location: next,
+          },
+        ];
       }
       return childBuilder.getResolver().resolve(next);
     });
