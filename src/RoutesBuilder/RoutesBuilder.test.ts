@@ -186,6 +186,7 @@ describe("RoutesBuilder", () => {
     ).toEqual([
       {
         route: expect.any(RouteRecord),
+        match: {},
         location: {
           pathname: "/",
           state: null,

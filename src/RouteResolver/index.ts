@@ -32,6 +32,7 @@ export class RouteResolver<
         return [
           {
             route: nextRoute,
+            match: {},
             location: next,
           },
         ];
@@ -41,6 +42,7 @@ export class RouteResolver<
         return [
           {
             route: nextRoute,
+            match: {},
             location: next,
           },
         ];
