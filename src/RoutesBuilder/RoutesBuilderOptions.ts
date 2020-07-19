@@ -1,7 +1,7 @@
 import { LocationComposer } from "../LocationComposer";
 import { Location } from "../LocationComposer/Location";
 
-export type RoutesOptions = {
+export type RoutesBuilderOptions = {
   /**
    * LocationComposer for composing children paths.
    */

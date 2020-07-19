@@ -1,12 +1,12 @@
 import { PathLocationComposer } from "../LocationComposer/PathLocationComposer";
-import { RoutesOptions } from "./RoutesOptions";
+import { RoutesBuilderOptions } from "./RoutesBuilderOptions";
 
 /**
  * Fill missing fields in RoutesOptions object.
  */
 export function fillOptions(
-  obj: Partial<RoutesOptions>
-): asserts obj is RoutesOptions {
+  obj: Partial<RoutesBuilderOptions>
+): asserts obj is RoutesBuilderOptions {
   if (!obj.composer) {
     obj.composer = new PathLocationComposer();
   }

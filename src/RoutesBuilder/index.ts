@@ -8,8 +8,16 @@ import type {
   RouteRecordType,
   RoutesDefinitionToRouteRecords,
 } from "./RouteRecord";
+import type { RoutesBuilderOptions } from "./RoutesBuilderOptions";
 import type { RoutesDefinition } from "./RoutesDefinitionObject";
-import type { RoutesOptions } from "./RoutesOptions";
+
+export const routesBuilderSpecies = Symbol("routesBuilderSpecies");
+
+export type RoutesBuilderConstructor = {
+  new <ActionResult, Defs extends RoutesDefinition<ActionResult>>(
+    options: RoutesBuilderOptions
+  ): RoutesBuilder<ActionResult, Defs>;
+};
 
 /**
  * Abstract Builder to define routes.
@@ -19,11 +27,13 @@ export class RoutesBuilder<
   Defs extends RoutesDefinition<ActionResult>
 > {
   static init<ActionResult>(
-    options: Partial<RoutesOptions> = {}
+    options: Partial<RoutesBuilderOptions> = {}
   ): RoutesBuilder<ActionResult, {}> {
     fillOptions(options);
     return new RoutesBuilder<ActionResult, {}>(options);
   }
+
+  readonly [routesBuilderSpecies]: RoutesBuilderConstructor = RoutesBuilder;
 
   #composer: LocationComposer<string>;
   #rootLocation: Location;
@@ -33,7 +43,7 @@ export class RoutesBuilder<
   );
   #routeRecordConfig: RouteRecordConfig;
 
-  private constructor(options: RoutesOptions) {
+  constructor(options: RoutesBuilderOptions) {
     this.#composer = options.composer;
     this.#rootLocation = options.root;
     this.#routeRecordConfig = {
@@ -48,7 +58,10 @@ export class RoutesBuilder<
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
   ): RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D> {
-    const result = new RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D>({
+    const result = new this[routesBuilderSpecies]<
+      ActionResult,
+      Omit<Defs, keyof D> & D
+    >({
       composer: this.#composer,
       root: this.#rootLocation,
     });
