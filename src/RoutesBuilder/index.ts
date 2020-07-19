@@ -10,7 +10,8 @@ import type {
 } from "./RouteRecord";
 import type { RoutesBuilderOptions } from "./RoutesBuilderOptions";
 import type { RoutesDefinition } from "./RoutesDefinitionObject";
-import { routesBuilderSpecies } from "./symbols";
+import { routesBuilderSpecies, wildcardRouteKey } from "./symbols";
+import type { WildcardRouteRecord } from "./WildcardRouteRecord";
 
 export type RoutesBuilderConstructor = {
   new <ActionResult, Defs extends RoutesDefinition<ActionResult>>(
@@ -40,6 +41,7 @@ export class RoutesBuilder<
   #routes: Record<string, RouteRecordType<any, ActionResult>> = Object.create(
     null
   );
+  #wildcardRoute: WildcardRouteRecord | undefined = undefined;
   #routeRecordConfig: RouteRecordConfig;
 
   constructor(options: RoutesBuilderOptions) {
@@ -77,11 +79,37 @@ export class RoutesBuilder<
     return result as RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D>;
   }
 
-  getRoutes(): Readonly<RoutesDefinitionToRouteRecords<ActionResult, Defs>> {
-    return (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
+  /**
+   * Add a wildcard route and return a new RoutesBuilder.
+   */
+  wildcard(key: string): RoutesBuilder<ActionResult, Defs> {
+    const result = new this[routesBuilderSpecies]<ActionResult, Defs>({
+      composer: this.#composer,
+      root: this.#rootLocation,
+    });
+    result.#wildcardRoute = {
+      key,
+    };
+    return result;
+  }
+
+  getRoutes(): Readonly<
+    RoutesDefinitionToRouteRecords<ActionResult, Defs> & {
+      readonly [wildcardRouteKey]?: WildcardRouteRecord;
+    }
+  > {
+    const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
       ActionResult,
       Defs
     >;
+    if (this.#wildcardRoute) {
+      return {
+        ...routes,
+        [wildcardRouteKey]: this.#wildcardRoute,
+      };
+    } else {
+      return routes as Readonly<typeof routes>;
+    }
   }
 
   getResolver(): RouteResolver<

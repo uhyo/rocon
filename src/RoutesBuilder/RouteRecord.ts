@@ -109,7 +109,7 @@ export type RoutesDefinitionToRouteRecords<
   ActionResult,
   Defs extends RoutesDefinition<ActionResult>
 > = {
-  [P in keyof Defs]: RouteRecordType<
+  [P in Extract<keyof Defs, string>]: RouteRecordType<
     StateOfRouteDefinition<Defs[P]>,
     ActionResult
   >;
