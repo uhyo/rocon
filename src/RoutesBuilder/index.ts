@@ -15,7 +15,10 @@ import type {
   RoutesDefinition,
 } from "./RoutesDefinitionObject";
 import { routesBuilderSpecies, wildcardRouteKey } from "./symbols";
-import type { WildcardRouteDefinition } from "./WildcardRouteRecord";
+import {
+  WildcardRouteRecord,
+  WildcardRouteRecordObject,
+} from "./WildcardRouteRecord";
 
 export type RoutesBuilderConstructor = {
   new <ActionResult, Defs extends RoutesDefinition<ActionResult>, Wildcard>(
@@ -50,7 +53,7 @@ export class RoutesBuilder<
   #rootLocation: Location;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
-    | WildcardRouteDefinition<Wildcard, ActionResult>
+    | WildcardRouteRecordObject<Wildcard, ActionResult>
     | undefined = undefined;
   #routeRecordConfig: RouteRecordConfig;
 
@@ -126,8 +129,8 @@ export class RoutesBuilder<
       root: this.#rootLocation,
     });
     result.#wildcardRoute = {
-      key,
-      definition: routeDefinition,
+      matchKey: key,
+      route: new WildcardRouteRecord(key, routeDefinition.action),
     };
     return result;
   }
@@ -138,7 +141,7 @@ export class RoutesBuilder<
 
   getRoutes(): Readonly<
     RoutesDefinitionToRouteRecords<ActionResult, Defs> & {
-      readonly [wildcardRouteKey]?: WildcardRouteDefinition<
+      readonly [wildcardRouteKey]?: WildcardRouteRecordObject<
         Wildcard,
         ActionResult
       >;

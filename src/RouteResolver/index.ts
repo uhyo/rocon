@@ -1,8 +1,9 @@
 import { LocationComposer } from "../LocationComposer";
 import { BaseState, Location } from "../LocationComposer/Location";
 import { RouteRecordsBase } from "../RoutesBuilder";
+import { RouteRecordType } from "../RoutesBuilder/RouteRecord";
 import { wildcardRouteKey } from "../RoutesBuilder/symbols";
-import { WildcardRouteDefinition } from "../RoutesBuilder/WildcardRouteRecord";
+import { WildcardRouteRecordObject } from "../RoutesBuilder/WildcardRouteRecord";
 import { ResolvedRoute } from "./ResolvedRoute";
 
 /**
@@ -12,7 +13,7 @@ export class RouteResolver<
   ActionResult,
   Routes extends RouteRecordsBase<ActionResult> & {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    readonly [wildcardRouteKey]?: WildcardRouteDefinition<any, ActionResult>;
+    readonly [wildcardRouteKey]?: WildcardRouteRecordObject<any, ActionResult>;
   }
 > {
   #routes: Routes;
@@ -28,7 +29,7 @@ export class RouteResolver<
     const composer = this.#composer;
     const decomposed = composer.decompose(location);
     return decomposed.flatMap(([seg, next]) => {
-      const nextRoute = this.#routes[seg];
+      const nextRoute = this.resolveSegment(seg);
       if (nextRoute === undefined) {
         return [];
       }
@@ -53,5 +54,19 @@ export class RouteResolver<
       }
       return childBuilder.getResolver().resolve(next);
     });
+  }
+
+  private resolveSegment(
+    segment: string
+  ): RouteRecordType<ActionResult, {}> | undefined {
+    const route = this.#routes[segment];
+    if (route !== undefined) {
+      return route;
+    }
+    const wildcardRoute = this.#routes[wildcardRouteKey];
+    if (wildcardRoute !== undefined) {
+      // return wildcardRoute.definition;
+    }
+    return route;
   }
 }

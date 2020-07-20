@@ -3,6 +3,7 @@ import type { LocationComposer } from "../LocationComposer";
 import type { Location } from "../LocationComposer/Location";
 import type { AttachableRoutesBuilder } from "./AttachableRoutesBuilder";
 import type {
+  ActionType,
   MatchOfRouteDefinition,
   RouteDefinition,
   RoutesDefinition,
@@ -30,11 +31,6 @@ export type RouteRecordType<ActionResult, Match> = RouteDefinition<
     builder: B
   ) => B;
 };
-
-type ActionType<Match, ActionResult> = RouteDefinition<
-  Match,
-  ActionResult
->["action"];
 
 export type RouteRecordConfig = {
   composer: LocationComposer<string>;
