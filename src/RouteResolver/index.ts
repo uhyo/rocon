@@ -1,9 +1,12 @@
 import { LocationComposer } from "../LocationComposer";
 import { BaseState, Location } from "../LocationComposer/Location";
+import type { RouteRecordType } from "../RouteRecord";
 import { RouteRecordsBase } from "../RoutesBuilder";
-import { RouteRecordType } from "../RoutesBuilder/RouteRecord";
 import { wildcardRouteKey } from "../RoutesBuilder/symbols";
-import { WildcardRouteRecordObject } from "../RoutesBuilder/WildcardRouteRecord";
+import {
+  WildcardRouteRecord,
+  WildcardRouteRecordObject,
+} from "../RoutesBuilder/WildcardRouteRecord";
 import { ResolvedRoute } from "./ResolvedRoute";
 
 /**
@@ -58,14 +61,17 @@ export class RouteResolver<
 
   private resolveSegment(
     segment: string
-  ): RouteRecordType<ActionResult, {}> | undefined {
+  ):
+    | RouteRecordType<ActionResult, {}>
+    | WildcardRouteRecord<ActionResult, {}>
+    | undefined {
     const route = this.#routes[segment];
     if (route !== undefined) {
       return route;
     }
     const wildcardRoute = this.#routes[wildcardRouteKey];
     if (wildcardRoute !== undefined) {
-      // return wildcardRoute.definition;
+      return wildcardRoute.route;
     }
     return route;
   }

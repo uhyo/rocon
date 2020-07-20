@@ -1,7 +1,7 @@
 import { RouteResolver } from ".";
 import { PathLocationComposer } from "../LocationComposer/PathLocationComposer";
+import { RouteRecord } from "../RouteRecord";
 import { RoutesBuilder } from "../RoutesBuilder";
-import { RouteRecord } from "../RoutesBuilder/RouteRecord";
 
 const composer = new PathLocationComposer();
 

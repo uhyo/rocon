@@ -1,14 +1,14 @@
 import type { LocationComposer } from "../LocationComposer";
 import type { Location } from "../LocationComposer/Location";
-import { RouteResolver } from "../RouteResolver";
-import { AttachableRoutesBuilder } from "./AttachableRoutesBuilder";
-import { fillOptions } from "./fillOptions";
-import { RouteRecord } from "./RouteRecord";
+import { RouteRecord } from "../RouteRecord";
 import type {
   RouteRecordConfig,
   RouteRecordType,
   RoutesDefinitionToRouteRecords,
-} from "./RouteRecord";
+} from "../RouteRecord";
+import { RouteResolver } from "../RouteResolver";
+import type { AttachableRoutesBuilder } from "./AttachableRoutesBuilder";
+import { fillOptions } from "./fillOptions";
 import type { RoutesBuilderOptions } from "./RoutesBuilderOptions";
 import type {
   RouteDefinition,
@@ -130,7 +130,12 @@ export class RoutesBuilder<
     });
     result.#wildcardRoute = {
       matchKey: key,
-      route: new WildcardRouteRecord(key, routeDefinition.action),
+      route: new WildcardRouteRecord(
+        result.#routeRecordConfig,
+        // TypeScript requires this `as` but this should be true because Key extends string.
+        key as Extract<Key, string>,
+        routeDefinition.action
+      ),
     };
     return result;
   }

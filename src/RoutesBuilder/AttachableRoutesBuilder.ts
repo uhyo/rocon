@@ -1,6 +1,6 @@
 import { RoutesBuilder } from ".";
+import { RoutesDefinitionToRouteRecords } from "../RouteRecord";
 import { RouteResolver } from "../RouteResolver";
-import { RoutesDefinitionToRouteRecords } from "./RouteRecord";
 import { RouteDefinition } from "./RoutesDefinitionObject";
 
 export interface AttachableRoutesBuilder<

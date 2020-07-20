@@ -1,11 +1,15 @@
-import { BaseState, Location } from "../LocationComposer/Location";
-import { RouteRecordType } from "../RoutesBuilder/RouteRecord";
+import type { Location } from "../LocationComposer/Location";
+import type { RouteRecordType } from "../RouteRecord";
+import type { WildcardRouteRecord } from "../RoutesBuilder/WildcardRouteRecord";
 
 /**
  * Object that represents one resolved route.
  */
 export type ResolvedRoute<ActionType, Match> = {
-  readonly route: RouteRecordType<ActionType, Match>;
+  // TODO: reconsider result type
+  readonly route:
+    | RouteRecordType<ActionType, Match>
+    | WildcardRouteRecord<ActionType, Match>;
   readonly match: Match;
-  readonly location: Location<BaseState>;
+  readonly location: Location;
 };
