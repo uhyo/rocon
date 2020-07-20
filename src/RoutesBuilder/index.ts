@@ -14,7 +14,7 @@ import type {
   RouteDefinition,
   RoutesDefinition,
 } from "./RoutesDefinitionObject";
-import { routesBuilderSpecies, wildcardRouteKey } from "./symbols";
+import { wildcardRouteKey } from "./symbols";
 import {
   WildcardRouteRecord,
   WildcardRouteRecordObject,
@@ -47,8 +47,6 @@ export class RoutesBuilder<
     return new RoutesBuilder<ActionResult, {}, {}>(options);
   }
 
-  readonly [routesBuilderSpecies]: RoutesBuilderConstructor = RoutesBuilder;
-
   #composer: LocationComposer<string>;
   #rootLocation: Location;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
@@ -72,7 +70,7 @@ export class RoutesBuilder<
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
   ): RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D, Wildcard> {
-    const result = new this[routesBuilderSpecies]<
+    const result = new RoutesBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
       Wildcard
@@ -117,7 +115,7 @@ export class RoutesBuilder<
         [K in Key]: ValueType;
       }
   > {
-    const result = new this[routesBuilderSpecies]<
+    const result = new RoutesBuilder<
       ActionResult,
       Defs,
       Wildcard &

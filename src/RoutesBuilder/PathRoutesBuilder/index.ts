@@ -3,7 +3,6 @@ import { PathLocationComposer } from "../../LocationComposer/PathLocationCompose
 import { fillOptions } from "../fillOptions";
 import { RoutesBuilderOptions } from "../RoutesBuilderOptions";
 import { RoutesDefinition } from "../RoutesDefinitionObject";
-import { routesBuilderSpecies } from "../symbols";
 
 export type PathRoutesBuilderOptions = Omit<RoutesBuilderOptions, "composer">;
 
@@ -25,6 +24,4 @@ export class PathRoutesBuilder<
     fillOptions(op);
     return new PathRoutesBuilder(op);
   }
-
-  readonly [routesBuilderSpecies] = PathRoutesBuilder;
 }
