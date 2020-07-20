@@ -1,5 +1,7 @@
 import { RouteRecord } from "../RouteRecord";
 import { RoutesBuilder } from "./";
+import { wildcardRouteKey } from "./symbols";
+import { WildcardRouteRecord } from "./WildcardRouteRecord";
 
 describe("RoutesBuilder", () => {
   describe("routes", () => {
@@ -72,6 +74,28 @@ describe("RoutesBuilder", () => {
       expect(Object.keys(routes1)).toEqual(["foo"]);
       const routes2 = b2.getRoutes();
       expect(Object.keys(routes2)).toEqual(["foo", "bar"]);
+    });
+  });
+
+  describe("wildcard", () => {
+    it("define wilecard route", () => {
+      const b = RoutesBuilder.init<string>().wildcard("k", {
+        action: ({ k }) => `k is ${k}`,
+      });
+
+      const routes = b.getRoutes();
+
+      expect(routes).toEqual({
+        [wildcardRouteKey]: {
+          matchKey: "k",
+          route: expect.any(WildcardRouteRecord),
+        },
+      });
+      expect(
+        routes[wildcardRouteKey]?.route.action({
+          k: "123",
+        })
+      ).toBe("k is 123");
     });
   });
 
