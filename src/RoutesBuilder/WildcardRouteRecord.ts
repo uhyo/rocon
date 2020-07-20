@@ -6,7 +6,7 @@ import type { ActionType } from "./RoutesDefinitionObject";
 /**
  * Special route definition for wildcard route.
  */
-export type WildcardRouteRecordObject<Match, ActionResult> = {
+export type WildcardRouteRecordObject<ActionResult, Match> = {
   matchKey: string;
   route: WildcardRouteRecord<ActionResult, Match>;
 };

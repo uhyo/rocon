@@ -51,7 +51,7 @@ export class RoutesBuilder<
   #rootLocation: Location;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
-    | WildcardRouteRecordObject<Wildcard, ActionResult>
+    | WildcardRouteRecordObject<ActionResult, Wildcard>
     | undefined = undefined;
   #routeRecordConfig: RouteRecordConfig;
 
@@ -101,11 +101,11 @@ export class RoutesBuilder<
   wildcard<Key extends string, ValueType>(
     key: Key,
     routeDefinition: RouteDefinition<
+      ActionResult,
       Wildcard &
         {
           [K in Key]: ValueType;
-        },
-      ActionResult
+        }
     >
   ): RoutesBuilder<
     ActionResult,
@@ -145,8 +145,8 @@ export class RoutesBuilder<
   getRoutes(): Readonly<
     RoutesDefinitionToRouteRecords<ActionResult, Defs> & {
       readonly [wildcardRouteKey]?: WildcardRouteRecordObject<
-        Wildcard,
-        ActionResult
+        ActionResult,
+        Wildcard
       >;
     }
   > {

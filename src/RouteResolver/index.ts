@@ -16,7 +16,7 @@ export class RouteResolver<
   ActionResult,
   Routes extends RouteRecordsBase<ActionResult> & {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    readonly [wildcardRouteKey]?: WildcardRouteRecordObject<any, ActionResult>;
+    readonly [wildcardRouteKey]?: WildcardRouteRecordObject<ActionResult, any>;
   }
 > {
   #routes: Routes;

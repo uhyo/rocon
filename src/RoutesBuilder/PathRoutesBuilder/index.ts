@@ -44,8 +44,8 @@ export class PathRoutesBuilder<
   getRoutes(): Readonly<
     RoutesDefinitionToRouteRecords<ActionResult, Defs> & {
       readonly [wildcardRouteKey]?: WildcardRouteRecordObject<
-        Wildcard,
-        ActionResult
+        ActionResult,
+        Wildcard
       >;
     }
   > {

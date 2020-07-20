@@ -5,7 +5,7 @@ import { RouteDefinition } from "./RoutesDefinitionObject";
 
 export interface AttachableRoutesBuilder<
   ActionResult,
-  Defs extends Record<string, RouteDefinition<Wildcard, ActionResult>>,
+  Defs extends Record<string, RouteDefinition<ActionResult, Wildcard>>,
   Wildcard
 > {
   getRawBuilder(): RoutesBuilder<ActionResult, Defs, Wildcard>;

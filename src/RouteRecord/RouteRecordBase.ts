@@ -17,7 +17,7 @@ export abstract class RouteRecordBase<ActionResult, Match> {
   readonly action: ActionType<ActionResult, Match>;
   #builder?: AttachableRoutesBuilder<
     ActionResult,
-    Record<string, RouteDefinition<Match, ActionResult>>,
+    Record<string, RouteDefinition<ActionResult, Match>>,
     Match
   > = undefined;
   #config: RouteRecordConfig;
@@ -38,7 +38,7 @@ export abstract class RouteRecordBase<ActionResult, Match> {
   getBuilder():
     | AttachableRoutesBuilder<
         ActionResult,
-        Record<string, RouteDefinition<Match, ActionResult>>,
+        Record<string, RouteDefinition<ActionResult, Match>>,
         Match
       >
     | undefined {

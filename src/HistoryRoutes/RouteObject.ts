@@ -10,7 +10,7 @@ export type RouteObject<Match> = {
 }
 
 export type DefinitionFromRouteObjects<Defs extends RoutesDefinition<Destination<unknown>>> = {
-  [P in keyof Defs]:  Defs[P] extends RouteDefinition<infer Match, any> 
+  [P in keyof Defs]:  Defs[P] extends RouteDefinition<any, infer Match> 
     ? RouteObject<Match>
     : undefined
 }

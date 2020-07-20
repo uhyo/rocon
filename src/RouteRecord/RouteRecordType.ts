@@ -6,14 +6,14 @@ import type { RouteDefinition } from "../RoutesBuilder/RoutesDefinitionObject";
  * Route object internally stored in RoutesBuilder.
  */
 export type RouteRecordType<ActionResult, Match> = RouteDefinition<
-  Match,
-  ActionResult
+  ActionResult,
+  Match
 > & {
   readonly getLocation: (match: Match) => Location;
   readonly getBuilder: () =>
     | AttachableRoutesBuilder<
         ActionResult,
-        Record<string, RouteDefinition<Match, ActionResult>>,
+        Record<string, RouteDefinition<ActionResult, Match>>,
         Match
       >
     | undefined;
