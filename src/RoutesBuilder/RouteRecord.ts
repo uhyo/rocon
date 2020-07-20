@@ -13,23 +13,25 @@ import type {
  */
 export type RouteRecordType<
   State extends BaseState,
-  ActionResult
+  ActionResult,
+  Match
 > = RouteDefinitionByState<State, ActionResult> & {
   readonly getLocation: () => Location<State>;
   readonly getBuilder: () =>
     | RoutesBuilder<
         ActionResult,
-        Record<string, RouteDefinition<BaseState, ActionResult>>
+        Record<string, RouteDefinition<BaseState, ActionResult>>,
+        Match
       >
     | undefined;
   readonly attach: <Defs extends RoutesDefinition<ActionResult>>(
-    builder: RoutesBuilder<ActionResult, Defs>
-  ) => RoutesBuilder<ActionResult, Defs>;
+    builder: RoutesBuilder<ActionResult, Defs, Match>
+  ) => RoutesBuilder<ActionResult, Defs, Match>;
 };
 
 export type StateOfRouteRecordType<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  RR extends RouteRecordType<any, any>
+  RR extends RouteRecordType<any, any, any>
 > = ReturnType<RR["getLocation"]> extends Location<infer S> ? S : BaseState;
 
 type ActionType<State, ActionResult> = State extends undefined
@@ -42,7 +44,7 @@ export type RouteRecordConfig = {
   getRootLocation: () => Location<any>;
   changeRootLocation: (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    target: RoutesBuilder<any, any>,
+    target: RoutesBuilder<any, any, any>,
     newRoot: Location
   ) => void;
 };
@@ -52,7 +54,7 @@ export type RouteRecordConfig = {
  * Should implement RouteRecordType.
  * @package
  */
-export class RouteRecord<State extends BaseState, ActionResult> {
+export class RouteRecord<State extends BaseState, ActionResult, Match> {
   /**
    * Key of this route.
    */
@@ -63,7 +65,8 @@ export class RouteRecord<State extends BaseState, ActionResult> {
   readonly action: ActionType<State, ActionResult>;
   #builder?: RoutesBuilder<
     ActionResult,
-    Record<string, RouteDefinition<BaseState, ActionResult>>
+    Record<string, RouteDefinition<BaseState, ActionResult>>,
+    Match
   > = undefined;
   #config: RouteRecordConfig;
 
@@ -90,15 +93,16 @@ export class RouteRecord<State extends BaseState, ActionResult> {
   getBuilder():
     | RoutesBuilder<
         ActionResult,
-        Record<string, RouteDefinition<BaseState, ActionResult>>
+        Record<string, RouteDefinition<BaseState, ActionResult>>,
+        Match
       >
     | undefined {
     return this.#builder;
   }
 
   attach<Defs extends RoutesDefinition<ActionResult>>(
-    builder: RoutesBuilder<ActionResult, Defs>
-  ): RoutesBuilder<ActionResult, Defs> {
+    builder: RoutesBuilder<ActionResult, Defs, Match>
+  ): RoutesBuilder<ActionResult, Defs, Match> {
     this.#builder = builder;
     this.#config.changeRootLocation(builder, this.getLocation());
     return builder;
@@ -107,10 +111,12 @@ export class RouteRecord<State extends BaseState, ActionResult> {
 
 export type RoutesDefinitionToRouteRecords<
   ActionResult,
-  Defs extends RoutesDefinition<ActionResult>
+  Defs extends RoutesDefinition<ActionResult>,
+  Match
 > = {
   [P in Extract<keyof Defs, string>]: RouteRecordType<
     StateOfRouteDefinition<Defs[P]>,
-    ActionResult
+    ActionResult,
+    Match
   >;
 };

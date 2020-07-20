@@ -12,11 +12,12 @@ export type PathRoutesBuilderOptions = Omit<RoutesBuilderOptions, "composer">;
  */
 export class PathRoutesBuilder<
   ActionResult,
-  Defs extends RoutesDefinition<ActionResult>
-> extends RoutesBuilder<ActionResult, Defs> {
+  Defs extends RoutesDefinition<ActionResult>,
+  Wildcard
+> extends RoutesBuilder<ActionResult, Defs, Wildcard> {
   static init<ActionResult>(
     options: Partial<PathRoutesBuilderOptions> = {}
-  ): PathRoutesBuilder<ActionResult, {}> {
+  ): PathRoutesBuilder<ActionResult, {}, {}> {
     const op = {
       ...options,
       composer: new PathLocationComposer(),

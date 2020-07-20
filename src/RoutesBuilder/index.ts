@@ -14,15 +14,15 @@ import { routesBuilderSpecies, wildcardRouteKey } from "./symbols";
 import type { WildcardRouteRecord } from "./WildcardRouteRecord";
 
 export type RoutesBuilderConstructor = {
-  new <ActionResult, Defs extends RoutesDefinition<ActionResult>>(
+  new <ActionResult, Defs extends RoutesDefinition<ActionResult>, Wildcard>(
     options: RoutesBuilderOptions
-  ): RoutesBuilder<ActionResult, Defs>;
+  ): RoutesBuilder<ActionResult, Defs, Wildcard>;
 };
 
 export type RouteRecordsBase<ActionResult> = Record<
   string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  RouteRecordType<any, ActionResult>
+  RouteRecordType<any, ActionResult, any>
 >;
 
 /**
@@ -30,13 +30,14 @@ export type RouteRecordsBase<ActionResult> = Record<
  */
 export class RoutesBuilder<
   ActionResult,
-  Defs extends RoutesDefinition<ActionResult>
+  Defs extends RoutesDefinition<ActionResult>,
+  Wildcard
 > {
   static init<ActionResult>(
     options: Partial<RoutesBuilderOptions> = {}
-  ): RoutesBuilder<ActionResult, {}> {
+  ): RoutesBuilder<ActionResult, {}, {}> {
     fillOptions(options);
-    return new RoutesBuilder<ActionResult, {}>(options);
+    return new RoutesBuilder<ActionResult, {}, {}>(options);
   }
 
   readonly [routesBuilderSpecies]: RoutesBuilderConstructor = RoutesBuilder;
@@ -61,10 +62,11 @@ export class RoutesBuilder<
 
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
-  ): RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D> {
+  ): RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D, Wildcard> {
     const result = new this[routesBuilderSpecies]<
       ActionResult,
-      Omit<Defs, keyof D> & D
+      Omit<Defs, keyof D> & D,
+      Wildcard
     >({
       composer: this.#composer,
       root: this.#rootLocation,
@@ -79,14 +81,34 @@ export class RoutesBuilder<
         defs[key].action
       );
     }
-    return result as RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D>;
+    return result as RoutesBuilder<
+      ActionResult,
+      Omit<Defs, keyof D> & D,
+      Wildcard
+    >;
   }
 
   /**
    * Add a wildcard route and return a new RoutesBuilder.
    */
-  wildcard(key: string): RoutesBuilder<ActionResult, Defs> {
-    const result = new this[routesBuilderSpecies]<ActionResult, Defs>({
+  wildcard<Key extends string, ValueType>(
+    key: Key
+  ): RoutesBuilder<
+    ActionResult,
+    Defs,
+    Wildcard &
+      {
+        [K in Key]: ValueType;
+      }
+  > {
+    const result = new this[routesBuilderSpecies]<
+      ActionResult,
+      Defs,
+      Wildcard &
+        {
+          [K in Key]: ValueType;
+        }
+    >({
       composer: this.#composer,
       root: this.#rootLocation,
     });
@@ -97,13 +119,14 @@ export class RoutesBuilder<
   }
 
   getRoutes(): Readonly<
-    RoutesDefinitionToRouteRecords<ActionResult, Defs> & {
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard> & {
       readonly [wildcardRouteKey]?: WildcardRouteRecord;
     }
   > {
     const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
       ActionResult,
-      Defs
+      Defs,
+      Wildcard
     >;
     if (this.#wildcardRoute) {
       return {
@@ -117,7 +140,7 @@ export class RoutesBuilder<
 
   getResolver(): RouteResolver<
     ActionResult,
-    RoutesDefinitionToRouteRecords<ActionResult, Defs>
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard>
   > {
     return new RouteResolver(this.getRoutes(), this.#composer);
   }
