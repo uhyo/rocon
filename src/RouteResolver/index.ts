@@ -2,7 +2,7 @@ import { LocationComposer } from "../LocationComposer";
 import { BaseState, Location } from "../LocationComposer/Location";
 import { RouteRecordsBase } from "../RoutesBuilder";
 import { wildcardRouteKey } from "../RoutesBuilder/symbols";
-import { WildcardRouteRecord } from "../RoutesBuilder/WildcardRouteRecord";
+import { WildcardRouteDefinition } from "../RoutesBuilder/WildcardRouteRecord";
 import { ResolvedRoute } from "./ResolvedRoute";
 
 /**
@@ -11,7 +11,8 @@ import { ResolvedRoute } from "./ResolvedRoute";
 export class RouteResolver<
   ActionResult,
   Routes extends RouteRecordsBase<ActionResult> & {
-    readonly [wildcardRouteKey]?: WildcardRouteRecord;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    readonly [wildcardRouteKey]?: WildcardRouteDefinition<any, ActionResult>;
   }
 > {
   #routes: Routes;

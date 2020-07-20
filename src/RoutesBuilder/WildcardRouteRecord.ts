@@ -1,6 +1,9 @@
+import { RouteDefinition } from "./RoutesDefinitionObject";
+
 /**
- * Special route record for wildcard route.
+ * Special route definition for wildcard route.
  */
-export type WildcardRouteRecord = {
+export type WildcardRouteDefinition<Match, ActionResult> = {
   key: string;
+  definition: RouteDefinition<Match, ActionResult>;
 };
