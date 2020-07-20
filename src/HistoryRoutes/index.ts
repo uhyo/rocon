@@ -24,6 +24,9 @@ export class HistoryRoutes<Defs extends RoutesDefinition<Destination<State>>> {
     const _t = (this as unknown) as Record<string, RouteObject<State>>;
     for (const key of Object.getOwnPropertyNames(routes)) {
       _t[key] = {
+        // code is old
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         go: (state) => {
           this.#go(key, state);
         },

@@ -22,7 +22,7 @@ export type RoutesBuilderConstructor = {
 export type RouteRecordsBase<ActionResult> = Record<
   string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  RouteRecordType<any, ActionResult, any>
+  RouteRecordType<ActionResult, any>
 >;
 
 /**
@@ -119,14 +119,13 @@ export class RoutesBuilder<
   }
 
   getRoutes(): Readonly<
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard> & {
+    RoutesDefinitionToRouteRecords<ActionResult, Defs> & {
       readonly [wildcardRouteKey]?: WildcardRouteRecord;
     }
   > {
     const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
       ActionResult,
-      Defs,
-      Wildcard
+      Defs
     >;
     if (this.#wildcardRoute) {
       return {
@@ -140,7 +139,7 @@ export class RoutesBuilder<
 
   getResolver(): RouteResolver<
     ActionResult,
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard>
+    RoutesDefinitionToRouteRecords<ActionResult, Defs>
   > {
     return new RouteResolver(this.getRoutes(), this.#composer);
   }

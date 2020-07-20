@@ -1,35 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type RouteDefinitionWithoutState<ActionResult> = {
-  readonly action: () => ActionResult;
+export type RouteDefinition<Match, ActionResult> = {
+  readonly action: (match: Match) => ActionResult;
 };
 
-export type RouteDefinitionWithState<State, ActionResult> = {
-  readonly action: (state: State) => ActionResult;
-};
-
-export type RouteDefinition<State, ActionResult> =
-  | RouteDefinitionWithoutState<ActionResult>
-  | RouteDefinitionWithState<State, ActionResult>;
-
 /**
- * Return correct RouteDefinition type.
- * undefined is treated as no state.
+ * Get Match type of given RouteDefinition.
  */
-export type RouteDefinitionByState<State, ActionResult> = State extends null
-  ? RouteDefinitionWithoutState<ActionResult>
-  : RouteDefinitionWithState<State, ActionResult>;
-
-/**
- * Get State of given RouteDefinition.
- * Returns undefined for no State.
- */
-export type StateOfRouteDefinition<RD> = RD extends RouteDefinitionWithoutState<
+export type MatchOfRouteDefinition<RD> = RD extends RouteDefinition<
+  infer Match,
   any
 >
-  ? null
-  : RD extends RouteDefinitionWithState<infer S, any>
-  ? S
-  : null;
+  ? unknown extends Match
+    ? {}
+    : Match
+  : {};
 
 export type RoutesDefinition<ActionResult> = Record<
   string,

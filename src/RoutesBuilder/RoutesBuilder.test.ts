@@ -19,12 +19,12 @@ describe("RoutesBuilder", () => {
       });
       const routes = res.getRoutes();
       expect(Object.keys(routes)).toEqual(["foo", "bar"]);
-      expect(routes.foo.action()).toEqual("foo!");
+      expect(routes.foo.action({})).toEqual("foo!");
       expect(routes.foo.getLocation()).toEqual({
         pathname: "/foo",
         state: null,
       });
-      expect(routes.bar.action()).toEqual("bar?");
+      expect(routes.bar.action({})).toEqual("bar?");
       expect(routes.bar.getLocation()).toEqual({
         pathname: "/bar",
         state: null,
@@ -45,12 +45,12 @@ describe("RoutesBuilder", () => {
         });
       const routes = res.getRoutes();
       expect(Object.keys(routes)).toEqual(["foo", "bar"]);
-      expect(routes.foo.action()).toEqual("foo!");
+      expect(routes.foo.action({})).toEqual("foo!");
       expect(routes.foo.getLocation()).toEqual({
         pathname: "/foo",
         state: null,
       });
-      expect(routes.bar.action()).toEqual("bar?");
+      expect(routes.bar.action({})).toEqual("bar?");
       expect(routes.bar.getLocation()).toEqual({
         pathname: "/bar",
         state: null,
@@ -85,7 +85,7 @@ describe("RoutesBuilder", () => {
       });
       const routes = res.getRoutes();
       expect(Object.keys(routes)).toEqual(["foo", "bar"]);
-      expect(routes.foo.action()).toEqual("foo!");
+      expect(routes.foo.action({})).toEqual("foo!");
       expect(routes.foo.getLocation()).toEqual({
         pathname: "/foo",
         state: null,
@@ -116,7 +116,7 @@ describe("RoutesBuilder", () => {
         })
         .getRoutes();
 
-      expect(sub.bar.action()).toBe("bar!");
+      expect(sub.bar.action({})).toBe("bar!");
     });
     it("composed location object", () => {
       const toplevel = RoutesBuilder.init<string>()
