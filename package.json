@@ -10,7 +10,8 @@
     "build:declaration": "tsc --declaration",
     "commitizen": "git cz",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "watch:typecheck": "tsc --build --watch"
   },
   "keywords": [
     "router"
