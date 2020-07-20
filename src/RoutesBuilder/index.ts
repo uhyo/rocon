@@ -19,6 +19,12 @@ export type RoutesBuilderConstructor = {
   ): RoutesBuilder<ActionResult, Defs>;
 };
 
+export type RouteRecordsBase<ActionResult> = Record<
+  string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  RouteRecordType<any, ActionResult>
+>;
+
 /**
  * Abstract Builder to define routes.
  */
@@ -37,10 +43,7 @@ export class RoutesBuilder<
 
   #composer: LocationComposer<string>;
   #rootLocation: Location;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #routes: Record<string, RouteRecordType<any, ActionResult>> = Object.create(
-    null
-  );
+  #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute: WildcardRouteRecord | undefined = undefined;
   #routeRecordConfig: RouteRecordConfig;
 
