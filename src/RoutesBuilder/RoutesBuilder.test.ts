@@ -108,7 +108,7 @@ describe("RoutesBuilder", () => {
         })
         .getRoutes();
       const sub = toplevel.foo
-        .attach(RoutesBuilder.init())
+        .attach(RoutesBuilder.init<string>())
         .routes({
           bar: {
             action: () => "bar!",
@@ -127,7 +127,7 @@ describe("RoutesBuilder", () => {
         })
         .getRoutes();
       const sub = toplevel.foo
-        .attach(RoutesBuilder.init())
+        .attach(RoutesBuilder.init<string>())
         .routes({
           bar: {
             action: () => "bar!",

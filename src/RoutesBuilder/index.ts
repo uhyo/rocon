@@ -1,6 +1,7 @@
 import type { LocationComposer } from "../LocationComposer";
 import type { Location } from "../LocationComposer/Location";
 import { RouteResolver } from "../RouteResolver";
+import { AttachableRoutesBuilder } from "./AttachableRoutesBuilder";
 import { fillOptions } from "./fillOptions";
 import { RouteRecord } from "./RouteRecord";
 import type {
@@ -32,7 +33,7 @@ export class RoutesBuilder<
   ActionResult,
   Defs extends RoutesDefinition<ActionResult>,
   Wildcard
-> {
+> implements AttachableRoutesBuilder<ActionResult, Defs, Wildcard> {
   static init<ActionResult>(
     options: Partial<RoutesBuilderOptions> = {}
   ): RoutesBuilder<ActionResult, {}, {}> {
@@ -116,6 +117,10 @@ export class RoutesBuilder<
       key,
     };
     return result;
+  }
+
+  getRawBuilder(): this {
+    return this;
   }
 
   getRoutes(): Readonly<

@@ -1,6 +1,7 @@
 import { RoutesBuilder } from ".";
 import type { LocationComposer } from "../LocationComposer";
-import type { BaseState, Location } from "../LocationComposer/Location";
+import type { Location } from "../LocationComposer/Location";
+import type { AttachableRoutesBuilder } from "./AttachableRoutesBuilder";
 import type {
   MatchOfRouteDefinition,
   RouteDefinition,
@@ -16,15 +17,18 @@ export type RouteRecordType<ActionResult, Match> = RouteDefinition<
 > & {
   readonly getLocation: () => Location;
   readonly getBuilder: () =>
-    | RoutesBuilder<
+    | AttachableRoutesBuilder<
         ActionResult,
-        Record<string, RouteDefinition<BaseState, ActionResult>>,
+        Record<string, RouteDefinition<Match, ActionResult>>,
         Match
       >
     | undefined;
-  readonly attach: <Defs extends RoutesDefinition<ActionResult>>(
-    builder: RoutesBuilder<ActionResult, Defs, Match>
-  ) => RoutesBuilder<ActionResult, Defs, Match>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly attach: <
+    B extends AttachableRoutesBuilder<ActionResult, any, Match>
+  >(
+    builder: B
+  ) => B;
 };
 
 type ActionType<Match, ActionResult> = RouteDefinition<
@@ -57,9 +61,9 @@ export class RouteRecord<ActionResult, Match> {
    * Action of this route.
    */
   readonly action: ActionType<Match, ActionResult>;
-  #builder?: RoutesBuilder<
+  #builder?: AttachableRoutesBuilder<
     ActionResult,
-    Record<string, RouteDefinition<BaseState, ActionResult>>,
+    Record<string, RouteDefinition<Match, ActionResult>>,
     Match
   > = undefined;
   #config: RouteRecordConfig;
@@ -85,20 +89,24 @@ export class RouteRecord<ActionResult, Match> {
    * Get the builder attached to this Route.
    */
   getBuilder():
-    | RoutesBuilder<
+    | AttachableRoutesBuilder<
         ActionResult,
-        Record<string, RouteDefinition<BaseState, ActionResult>>,
+        Record<string, RouteDefinition<Match, ActionResult>>,
         Match
       >
     | undefined {
     return this.#builder;
   }
 
-  attach<Defs extends RoutesDefinition<ActionResult>>(
-    builder: RoutesBuilder<ActionResult, Defs, Match>
-  ): RoutesBuilder<ActionResult, Defs, Match> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  attach<B extends AttachableRoutesBuilder<ActionResult, any, Match>>(
+    builder: B
+  ): B {
     this.#builder = builder;
-    this.#config.changeRootLocation(builder, this.getLocation());
+    this.#config.changeRootLocation(
+      builder.getRawBuilder(),
+      this.getLocation()
+    );
     return builder;
   }
 }
