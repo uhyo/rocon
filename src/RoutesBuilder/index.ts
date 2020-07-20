@@ -55,7 +55,7 @@ export class RoutesBuilder<
     | undefined = undefined;
   #routeRecordConfig: RouteRecordConfig;
 
-  constructor(options: RoutesBuilderOptions) {
+  private constructor(options: RoutesBuilderOptions) {
     this.#composer = options.composer;
     this.#rootLocation = options.root;
     this.#routeRecordConfig = {
