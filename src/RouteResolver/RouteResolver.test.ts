@@ -5,21 +5,26 @@ import { RoutesBuilder } from "../RoutesBuilder";
 
 const composer = new PathLocationComposer();
 
-const routes = RoutesBuilder.init<string>({
+const b1 = RoutesBuilder.init<string>({
   composer,
-})
-  .routes({
-    foo: {
-      action: () => "foo!",
-    },
-    bar: {
-      action: () => "bar",
-    },
-    baz: {
-      action: () => "baz.",
-    },
-  })
-  .getRoutes();
+}).routes({
+  foo: {
+    action: () => "foo!",
+  },
+  bar: {
+    action: () => "bar",
+  },
+  baz: {
+    action: () => "baz.",
+  },
+});
+
+const b2 = b1.wildcard("id", {
+  action: ({ id }) => `id is ${id}`,
+});
+
+const routes = b1.getRoutes();
+const wildcardRoutes = b2.getRoutes();
 
 routes.foo.attach(
   RoutesBuilder.init<string>({ composer }).routes({
@@ -38,6 +43,10 @@ routes.bar.attach(
 );
 
 const resolver = new RouteResolver<string, typeof routes>(routes, composer);
+const wildcardResolver = new RouteResolver<string, typeof wildcardRoutes>(
+  wildcardRoutes,
+  composer
+);
 
 describe("RouteResolver", () => {
   describe("resolves shallow location", () => {
@@ -87,6 +96,24 @@ describe("RouteResolver", () => {
         state: null,
       });
     });
+    it("4", () => {
+      const resolved = wildcardResolver.resolve({
+        pathname: "/foo",
+        state: {
+          sta: "te",
+        },
+      });
+      expect(resolved.length).toBe(1);
+      const { route: routeRecord, location: next } = resolved[0];
+      expect(routeRecord).toEqual(expect.any(RouteRecord));
+      expect(routeRecord.action({})).toBe("foo!");
+      expect(next).toEqual({
+        pathname: "/",
+        state: {
+          sta: "te",
+        },
+      });
+    });
   });
   describe("resolves deep location", () => {
     it("1", () => {
@@ -121,6 +148,20 @@ describe("RouteResolver", () => {
         state: null,
       });
     });
+    it("3", () => {
+      const resolved = wildcardResolver.resolve({
+        pathname: "/bar/fuga",
+        state: null,
+      });
+      expect(resolved.length).toBe(1);
+      const { route: routeRecord, location: next } = resolved[0];
+      expect(routeRecord).toEqual(expect.any(RouteRecord));
+      expect(routeRecord.action({})).toBe("fuga");
+      expect(next).toEqual({
+        pathname: "/",
+        state: null,
+      });
+    });
   });
   describe("wrong location returns an empty array", () => {
     it("shallow nonexistent location", () => {
@@ -143,6 +184,30 @@ describe("RouteResolver", () => {
         state: null,
       });
       expect(resolved).toEqual([]);
+    });
+  });
+
+  describe("resolves wildcard location", () => {
+    it("shallow", () => {
+      const resolved = wildcardResolver.resolve({
+        pathname: "/nonexistent",
+        state: null,
+      });
+      expect(resolved).toEqual([
+        {
+          location: {
+            pathname: "/",
+            state: null,
+          },
+          match: {
+            id: "nonexistent",
+          },
+          route: {
+            action: expect.any(Function),
+            matchKey: "id",
+          },
+        },
+      ]);
     });
   });
 });

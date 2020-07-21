@@ -9,6 +9,16 @@ import {
 } from "../RoutesBuilder/WildcardRouteRecord";
 import { ResolvedRoute } from "./ResolvedRoute";
 
+type ResolvedSegmentType<ActionResult> =
+  | {
+      type: "normal";
+      route: RouteRecordType<ActionResult, {}>;
+    }
+  | {
+      type: "wildcard";
+      route: WildcardRouteRecord<ActionResult, {}>;
+    };
+
 /**
  * Object that resolves given URL to a Route.
  */
@@ -36,43 +46,65 @@ export class RouteResolver<
       if (nextRoute === undefined) {
         return [];
       }
+      const match =
+        nextRoute.type === "normal"
+          ? {}
+          : {
+              [nextRoute.route.matchKey]: seg,
+            };
+
       if (composer.isLeaf(next)) {
         return [
           {
-            route: nextRoute,
-            match: {},
+            route: nextRoute.route,
+            match,
             location: next,
           },
         ];
       }
-      const childBuilder = nextRoute.getBuilder();
+      const childBuilder = nextRoute.route.getBuilder();
       if (childBuilder === undefined) {
         return [
           {
-            route: nextRoute,
-            match: {},
+            route: nextRoute.route,
+            match,
             location: next,
           },
         ];
       }
-      return childBuilder.getResolver().resolve(next);
+      const result = childBuilder.getResolver().resolve(next);
+      switch (nextRoute.type) {
+        case "normal": {
+          return result;
+        }
+        case "wildcard": {
+          return result.map((res) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (res.match as any)[nextRoute.route.matchKey] = seg;
+            return res;
+          });
+        }
+      }
     });
   }
 
   private resolveSegment(
     segment: string
-  ):
-    | RouteRecordType<ActionResult, {}>
-    | WildcardRouteRecord<ActionResult, {}>
-    | undefined {
+  ): ResolvedSegmentType<ActionResult> | undefined {
     const route = this.#routes[segment];
     if (route !== undefined) {
-      return route;
+      return {
+        type: "normal",
+        route,
+      };
     }
     const wildcardRoute = this.#routes[wildcardRouteKey];
     if (wildcardRoute !== undefined) {
-      return wildcardRoute.route;
+      return {
+        type: "wildcard",
+        route: wildcardRoute.route,
+      };
     }
-    return route;
+    return undefined;
   }
 }

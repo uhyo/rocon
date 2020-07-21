@@ -126,6 +126,7 @@ export class RoutesBuilder<
       composer: this.#composer,
       root: this.#rootLocation,
     });
+    result.#routes = this.#routes;
     result.#wildcardRoute = {
       matchKey: key,
       route: new WildcardRouteRecord(
