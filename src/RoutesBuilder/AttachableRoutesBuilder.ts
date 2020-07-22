@@ -1,15 +1,16 @@
 import { RoutesBuilder } from ".";
-import { RoutesDefinitionToRouteRecords } from "../RouteRecord";
+import type { RoutesDefinitionToRouteRecords } from "../RouteRecord";
 import { RouteResolver } from "../RouteResolver";
-import { RouteDefinition } from "./RoutesDefinitionObject";
+import type { RouteDefinition } from "./RoutesDefinitionObject";
+import type { WildcardFlagType } from "./WildcardFlagType";
 
 export interface AttachableRoutesBuilder<
   ActionResult,
   Defs extends Record<string, RouteDefinition<ActionResult, Wildcard>>,
-  HasWildcard extends boolean,
+  WildcardFlag extends WildcardFlagType,
   Wildcard
 > {
-  getRawBuilder(): RoutesBuilder<ActionResult, Defs, HasWildcard, Wildcard>;
+  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag, Wildcard>;
   getResolver(): RouteResolver<
     ActionResult,
     RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard>

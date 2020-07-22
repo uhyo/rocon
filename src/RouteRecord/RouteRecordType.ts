@@ -1,6 +1,7 @@
 import type { Location } from "../LocationComposer/Location";
 import type { AttachableRoutesBuilder } from "../RoutesBuilder/AttachableRoutesBuilder";
 import type { RouteDefinition } from "../RoutesBuilder/RoutesDefinitionObject";
+import { WildcardFlagType } from "../RoutesBuilder/WildcardFlagType";
 import { ActionTypeOfRouteRecord } from "./RouteRecordBase";
 
 /**
@@ -13,7 +14,7 @@ export type RouteRecordType<ActionResult, Match, HasAction extends boolean> = {
     | AttachableRoutesBuilder<
         ActionResult,
         Record<string, RouteDefinition<ActionResult, Match>>,
-        boolean,
+        WildcardFlagType,
         Match
       >
     | undefined;

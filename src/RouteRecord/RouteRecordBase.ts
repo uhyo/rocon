@@ -5,6 +5,7 @@ import type {
   ActionType,
   RouteDefinition,
 } from "../RoutesBuilder/RoutesDefinitionObject";
+import { WildcardFlagType } from "../RoutesBuilder/WildcardFlagType";
 
 export type ActionTypeOfRouteRecord<
   ActionResult,
@@ -28,7 +29,7 @@ export abstract class RouteRecordBase<
   #builder?: AttachableRoutesBuilder<
     ActionResult,
     Record<string, RouteDefinition<ActionResult, Match>>,
-    boolean,
+    WildcardFlagType,
     Match
   > = undefined;
   #config: RouteRecordConfig;
@@ -50,7 +51,7 @@ export abstract class RouteRecordBase<
     | AttachableRoutesBuilder<
         ActionResult,
         Record<string, RouteDefinition<ActionResult, Match>>,
-        boolean,
+        WildcardFlagType,
         Match
       >
     | undefined {

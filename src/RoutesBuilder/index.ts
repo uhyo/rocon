@@ -1,6 +1,6 @@
 import type { LocationComposer } from "../LocationComposer";
 import type { Location } from "../LocationComposer/Location";
-import { RouteRecord } from "../RouteRecord";
+import { RouteRecord, WildcardInRouteRecords } from "../RouteRecord";
 import type {
   RouteRecordConfig,
   RouteRecordType,
@@ -19,6 +19,7 @@ import type {
   RoutesDefinition,
 } from "./RoutesDefinitionObject";
 import { wildcardRouteKey } from "./symbols";
+import { WildcardFlagType } from "./WildcardFlagType";
 
 export type RouteRecordsBase<ActionResult> = Record<
   string,
@@ -34,17 +35,17 @@ declare const wildcardCovariance: unique symbol;
 export class RoutesBuilder<
   ActionResult,
   Defs extends RoutesDefinition<ActionResult>,
-  HasWildcard extends boolean,
+  WildcardFlag extends WildcardFlagType,
   Wildcard
 >
   implements
-    AttachableRoutesBuilder<ActionResult, Defs, HasWildcard, Wildcard> {
+    AttachableRoutesBuilder<ActionResult, Defs, WildcardFlag, Wildcard> {
   // RoutesBuilder is covariant upon Wildcard
   declare readonly [wildcardCovariance]: Wildcard;
 
   static init<ActionResult, Match = {}>(
     options: Partial<RoutesBuilderOptions> = {}
-  ): RoutesBuilder<ActionResult, {}, false, Match> {
+  ): RoutesBuilder<ActionResult, {}, "none", Match> {
     fillOptions(options);
     return new RoutesBuilder(options);
   }
@@ -80,13 +81,13 @@ export class RoutesBuilder<
   ): RoutesBuilder<
     ActionResult,
     Omit<Defs, keyof D> & D,
-    HasWildcard,
+    WildcardFlag,
     Wildcard
   > {
     const result = new RoutesBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
-      HasWildcard,
+      WildcardFlag,
       Wildcard
     >({
       composer: this.#composer,
@@ -107,7 +108,7 @@ export class RoutesBuilder<
     return result as RoutesBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
-      HasWildcard,
+      WildcardFlag,
       Wildcard
     >;
   }
@@ -115,19 +116,23 @@ export class RoutesBuilder<
   /**
    * Add a wildcard route and return a new RoutesBuilder.
    */
-  wildcard<Key extends string, ValueType>(
-    key: Key,
-    routeDefinition: RouteDefinition<
+  wildcard<
+    Key extends string,
+    ValueType,
+    RD extends RouteDefinition<
       ActionResult,
       Wildcard &
         {
           [K in Key]: ValueType;
         }
     >
+  >(
+    key: Key,
+    routeDefinition: RD
   ): RoutesBuilder<
     ActionResult,
     Defs,
-    true,
+    undefined extends RD["action"] ? "noaction" : "hasaction",
     Wildcard &
       {
         [K in Key]: ValueType;
@@ -136,7 +141,7 @@ export class RoutesBuilder<
     const result = new RoutesBuilder<
       ActionResult,
       Defs,
-      true,
+      undefined extends RD["action"] ? "noaction" : "hasaction",
       Wildcard &
         {
           [K in Key]: ValueType;
@@ -165,16 +170,7 @@ export class RoutesBuilder<
 
   getRoutes(): Readonly<
     RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard> &
-      (HasWildcard extends false
-        ? {}
-        : {
-            readonly [wildcardRouteKey]: WildcardRouteRecordObject<
-              ActionResult,
-              Wildcard,
-              // TODO: this one should be determined
-              boolean
-            >;
-          })
+      WildcardInRouteRecords<ActionResult, WildcardFlag, Wildcard>
   > {
     const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
       ActionResult,

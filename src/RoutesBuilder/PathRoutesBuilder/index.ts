@@ -1,12 +1,14 @@
 import { RoutesBuilder } from "..";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
-import { RoutesDefinitionToRouteRecords } from "../../RouteRecord";
-import { WildcardRouteRecordObject } from "../../RouteRecord/WildcardRouteRecord";
+import {
+  RoutesDefinitionToRouteRecords,
+  WildcardInRouteRecords,
+} from "../../RouteRecord";
 import { RouteResolver } from "../../RouteResolver";
 import { AttachableRoutesBuilder } from "../AttachableRoutesBuilder";
 import { RoutesBuilderOptions } from "../RoutesBuilderOptions";
 import { RoutesDefinition } from "../RoutesDefinitionObject";
-import { wildcardRouteKey } from "../symbols";
+import { WildcardFlagType } from "../WildcardFlagType";
 
 export type PathRoutesBuilderOptions = Omit<RoutesBuilderOptions, "composer">;
 
@@ -16,14 +18,14 @@ export type PathRoutesBuilderOptions = Omit<RoutesBuilderOptions, "composer">;
 export class PathRoutesBuilder<
   ActionResult,
   Defs extends RoutesDefinition<ActionResult>,
-  HasWildcard extends boolean,
+  WildcardFlag extends WildcardFlagType,
   Wildcard
 >
   implements
-    AttachableRoutesBuilder<ActionResult, Defs, HasWildcard, Wildcard> {
+    AttachableRoutesBuilder<ActionResult, Defs, WildcardFlag, Wildcard> {
   static init<ActionResult>(
     options: Partial<PathRoutesBuilderOptions> = {}
-  ): PathRoutesBuilder<ActionResult, {}, false, {}> {
+  ): PathRoutesBuilder<ActionResult, {}, "none", {}> {
     const op = {
       ...options,
       composer: new PathLocationComposer(),
@@ -32,10 +34,10 @@ export class PathRoutesBuilder<
     return new PathRoutesBuilder(rawBuilder);
   }
 
-  #rawBuilder: RoutesBuilder<ActionResult, Defs, HasWildcard, Wildcard>;
+  #rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Wildcard>;
 
   private constructor(
-    rawBuilder: RoutesBuilder<ActionResult, Defs, HasWildcard, Wildcard>
+    rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Wildcard>
   ) {
     this.#rawBuilder = rawBuilder;
   }
@@ -45,7 +47,7 @@ export class PathRoutesBuilder<
   ): PathRoutesBuilder<
     ActionResult,
     Omit<Defs, keyof D> & D,
-    HasWildcard,
+    WildcardFlag,
     Wildcard
   > {
     return new PathRoutesBuilder(this.#rawBuilder.routes(defs));
@@ -53,21 +55,12 @@ export class PathRoutesBuilder<
 
   getRoutes(): Readonly<
     RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard> &
-      (HasWildcard extends false
-        ? {}
-        : {
-            readonly [wildcardRouteKey]: WildcardRouteRecordObject<
-              ActionResult,
-              Wildcard,
-              // TODO: this one should be determined
-              boolean
-            >;
-          })
+      WildcardInRouteRecords<ActionResult, WildcardFlag, Wildcard>
   > {
     return this.#rawBuilder.getRoutes();
   }
 
-  getRawBuilder(): RoutesBuilder<ActionResult, Defs, HasWildcard, Wildcard> {
+  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag, Wildcard> {
     return this.#rawBuilder;
   }
 

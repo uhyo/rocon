@@ -2,8 +2,11 @@ import type { LocationComposer } from "../LocationComposer";
 import type { Location } from "../LocationComposer/Location";
 import { RoutesBuilder } from "../RoutesBuilder";
 import type { RoutesDefinition } from "../RoutesBuilder/RoutesDefinitionObject";
+import { wildcardRouteKey } from "../RoutesBuilder/symbols";
+import type { WildcardFlagType } from "../RoutesBuilder/WildcardFlagType";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
 import type { RouteRecordType } from "./RouteRecordType";
+import type { WildcardRouteRecordObject } from "./WildcardRouteRecord";
 
 export type { RouteRecordType };
 
@@ -62,3 +65,25 @@ export type RoutesDefinitionToRouteRecords<
     undefined extends Defs[P]["action"] ? false : true
   >;
 };
+
+export type WildcardInRouteRecords<
+  ActionResult,
+  WildcardFlag extends WildcardFlagType,
+  Wildcard
+> = {
+  none: {};
+  noaction: {
+    readonly [wildcardRouteKey]: WildcardRouteRecordObject<
+      ActionResult,
+      Wildcard,
+      false
+    >;
+  };
+  hasaction: {
+    readonly [wildcardRouteKey]: WildcardRouteRecordObject<
+      ActionResult,
+      Wildcard,
+      true
+    >;
+  };
+}[WildcardFlag];
