@@ -1,29 +1,32 @@
 import { RouteRecordConfig, RouteRecordType } from ".";
 import { Location } from "../LocationComposer/Location";
-import type { ActionType } from "../RoutesBuilder/RoutesDefinitionObject";
 import { assertString } from "../util/assert";
-import { RouteRecordBase } from "./RouteRecordBase";
+import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
 
 /**
  * Special route definition for wildcard route.
  */
-export type WildcardRouteRecordObject<ActionResult, Match> = {
+export type WildcardRouteRecordObject<
+  ActionResult,
+  Match,
+  HasAction extends boolean
+> = {
   matchKey: string;
-  route: WildcardRouteRecord<ActionResult, Match>;
+  route: WildcardRouteRecord<ActionResult, Match, HasAction>;
 };
 
 /**
  * Object for wildcard route in RoutesBuilder.
  */
-export class WildcardRouteRecord<ActionResult, Match>
-  extends RouteRecordBase<ActionResult, Match>
-  implements RouteRecordType<ActionResult, Match> {
+export class WildcardRouteRecord<ActionResult, Match, HasAction extends boolean>
+  extends RouteRecordBase<ActionResult, Match, HasAction>
+  implements RouteRecordType<ActionResult, Match, HasAction> {
   readonly matchKey: Extract<keyof Match, string>;
   #config: RouteRecordConfig;
   constructor(
     config: RouteRecordConfig,
     matchKey: Extract<keyof Match, string>,
-    action: ActionType<ActionResult, Match>
+    action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
     super(config, action);
     this.#config = config;

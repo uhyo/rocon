@@ -12,11 +12,11 @@ import { ResolvedRoute } from "./ResolvedRoute";
 type ResolvedSegmentType<ActionResult> =
   | {
       type: "normal";
-      route: RouteRecordType<ActionResult, {}>;
+      route: RouteRecordType<ActionResult, {}, boolean>;
     }
   | {
       type: "wildcard";
-      route: WildcardRouteRecord<ActionResult, {}>;
+      route: WildcardRouteRecord<ActionResult, {}, boolean>;
     };
 
 /**
@@ -25,8 +25,13 @@ type ResolvedSegmentType<ActionResult> =
 export class RouteResolver<
   ActionResult,
   Routes extends RouteRecordsBase<ActionResult> & {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    readonly [wildcardRouteKey]?: WildcardRouteRecordObject<ActionResult, any>;
+    readonly [wildcardRouteKey]?: WildcardRouteRecordObject<
+      ActionResult,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      any
+    >;
   }
 > {
   #routes: Routes;

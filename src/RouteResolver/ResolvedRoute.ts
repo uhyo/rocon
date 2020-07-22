@@ -7,9 +7,9 @@ import type { WildcardRouteRecord } from "../RouteRecord/WildcardRouteRecord";
  */
 export type ResolvedRoute<ActionType, Match> = {
   // TODO: reconsider result type
-  readonly route:
-    | RouteRecordType<ActionType, Match>
-    | WildcardRouteRecord<ActionType, Match>;
+  readonly route: // TODO: test: resolved should always have action
+  | RouteRecordType<ActionType, Match, true>
+    | WildcardRouteRecord<ActionType, Match, true>;
   readonly match: Match;
   readonly location: Location;
 };

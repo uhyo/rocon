@@ -35,8 +35,8 @@ export class HistoryRoutes<Defs extends RoutesDefinition<Destination<State>>> {
   }
 
   #go = (route: keyof Defs, ...state: [] | [State]): void => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const dest = this.#routes[route].action((state as any)[0]);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-explicit-any
+    const dest = this.#routes[route].action!((state as any)[0]);
     const { state: s, ...rest } = dest;
     this.#options.history.push(rest, s);
   };

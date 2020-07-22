@@ -52,12 +52,17 @@ export class PathRoutesBuilder<
   }
 
   getRoutes(): Readonly<
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard> & {
-      readonly [wildcardRouteKey]?: WildcardRouteRecordObject<
-        ActionResult,
-        Wildcard
-      >;
-    }
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard> &
+      (HasWildcard extends false
+        ? {}
+        : {
+            readonly [wildcardRouteKey]: WildcardRouteRecordObject<
+              ActionResult,
+              Wildcard,
+              // TODO: this one should be determined
+              boolean
+            >;
+          })
   > {
     return this.#rawBuilder.getRoutes();
   }

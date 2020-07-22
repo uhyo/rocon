@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type RouteDefinition<ActionResult, Match> = {
-  readonly action: (match: Match) => ActionResult;
+  readonly action?: (match: Match) => ActionResult;
 };
 
-export type ActionType<ActionResult, Match> = RouteDefinition<
-  ActionResult,
-  Match
->["action"];
+export type ActionType<ActionResult, Match> = NonNullable<
+  RouteDefinition<ActionResult, Match>["action"]
+>;
 
 /**
  * Get Match type of given RouteDefinition.

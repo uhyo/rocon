@@ -6,15 +6,25 @@ import type {
   RouteDefinition,
 } from "../RoutesBuilder/RoutesDefinitionObject";
 
+export type ActionTypeOfRouteRecord<
+  ActionResult,
+  Match,
+  HasAction extends boolean
+> = HasAction extends true ? ActionType<ActionResult, Match> : undefined;
+
 /**
  * Object for each route provided by RoutesBuilder.
  * Should implement RouteRecordType.
  */
-export abstract class RouteRecordBase<ActionResult, Match> {
+export abstract class RouteRecordBase<
+  ActionResult,
+  Match,
+  HasAction extends boolean
+> {
   /**
    * Action of this route.
    */
-  readonly action: ActionType<ActionResult, Match>;
+  readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
   #builder?: AttachableRoutesBuilder<
     ActionResult,
     Record<string, RouteDefinition<ActionResult, Match>>,
@@ -25,7 +35,7 @@ export abstract class RouteRecordBase<ActionResult, Match> {
 
   constructor(
     config: RouteRecordConfig,
-    action: ActionType<ActionResult, Match>
+    action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
     this.#config = config;
     this.action = action;

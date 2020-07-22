@@ -23,7 +23,7 @@ import { wildcardRouteKey } from "./symbols";
 export type RouteRecordsBase<ActionResult> = Record<
   string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  RouteRecordType<ActionResult, any>
+  RouteRecordType<ActionResult, any, any>
 >;
 
 declare const wildcardCovariance: unique symbol;
@@ -52,10 +52,10 @@ export class RoutesBuilder<
   #composer: LocationComposer<string>;
   #rootLocation: Location;
   #routeRecordConfig: RouteRecordConfig;
-  #parentRoute?: RouteRecordType<ActionResult, {}> = undefined;
+  #parentRoute?: RouteRecordType<ActionResult, {}, boolean> = undefined;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
-    | WildcardRouteRecordObject<ActionResult, Wildcard>
+    | WildcardRouteRecordObject<ActionResult, Wildcard, boolean>
     | undefined = undefined;
 
   private constructor(options: RoutesBuilderOptions) {
@@ -170,7 +170,9 @@ export class RoutesBuilder<
         : {
             readonly [wildcardRouteKey]: WildcardRouteRecordObject<
               ActionResult,
-              Wildcard
+              Wildcard,
+              // TODO: this one should be determined
+              boolean
             >;
           })
   > {
@@ -195,6 +197,7 @@ export class RoutesBuilder<
     ActionResult,
     RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard>
   > {
-    return new RouteResolver(this.getRoutes(), this.#composer);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return new RouteResolver(this.getRoutes() as any, this.#composer);
   }
 }
