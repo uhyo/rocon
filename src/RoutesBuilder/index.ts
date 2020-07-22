@@ -26,6 +26,8 @@ export type RouteRecordsBase<ActionResult> = Record<
   RouteRecordType<ActionResult, any>
 >;
 
+declare const wildcardCovariance: unique symbol;
+
 /**
  * Abstract Builder to define routes.
  */
@@ -37,29 +39,41 @@ export class RoutesBuilder<
 >
   implements
     AttachableRoutesBuilder<ActionResult, Defs, HasWildcard, Wildcard> {
-  static init<ActionResult>(
+  // RoutesBuilder is covariant upon Wildcard
+  declare readonly [wildcardCovariance]: Wildcard;
+
+  static init<ActionResult, Match = {}>(
     options: Partial<RoutesBuilderOptions> = {}
-  ): RoutesBuilder<ActionResult, {}, false, {}> {
+  ): RoutesBuilder<ActionResult, {}, false, Match> {
     fillOptions(options);
     return new RoutesBuilder(options);
   }
 
   #composer: LocationComposer<string>;
   #rootLocation: Location;
+  #routeRecordConfig: RouteRecordConfig;
+  #parentRoute?: RouteRecordType<ActionResult, {}> = undefined;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
     | WildcardRouteRecordObject<ActionResult, Wildcard>
     | undefined = undefined;
-  #routeRecordConfig: RouteRecordConfig;
 
   private constructor(options: RoutesBuilderOptions) {
     this.#composer = options.composer;
     this.#rootLocation = options.root;
     this.#routeRecordConfig = {
       composer: options.composer,
-      getRootLocation: () => this.#rootLocation,
+      getRootLocation: (match) => {
+        if (this.#parentRoute !== undefined) {
+          return this.#parentRoute.getLocation(match);
+        }
+        return this.#rootLocation;
+      },
       changeRootLocation: (target, newRoot) => {
         target.#rootLocation = newRoot;
+      },
+      attachBuilderToRoute: (builder, route) => {
+        builder.#parentRoute = route;
       },
     };
   }
@@ -91,6 +105,8 @@ export class RoutesBuilder<
         defs[key].action
       );
     }
+    result.#wildcardRoute = this.#wildcardRoute;
+    result.#parentRoute = this.#parentRoute;
     return result as RoutesBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
@@ -142,6 +158,7 @@ export class RoutesBuilder<
         routeDefinition.action
       ),
     };
+    result.#parentRoute = this.#parentRoute;
     return result;
   }
 
@@ -150,7 +167,7 @@ export class RoutesBuilder<
   }
 
   getRoutes(): Readonly<
-    RoutesDefinitionToRouteRecords<ActionResult, Defs> &
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard> &
       (HasWildcard extends false
         ? {}
         : {
@@ -162,7 +179,8 @@ export class RoutesBuilder<
   > {
     const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
       ActionResult,
-      Defs
+      Defs,
+      Wildcard
     >;
     if (this.#wildcardRoute) {
       return {
@@ -178,7 +196,7 @@ export class RoutesBuilder<
 
   getResolver(): RouteResolver<
     ActionResult,
-    RoutesDefinitionToRouteRecords<ActionResult, Defs>
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard>
   > {
     return new RouteResolver(this.getRoutes(), this.#composer);
   }

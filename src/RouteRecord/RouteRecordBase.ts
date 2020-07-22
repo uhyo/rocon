@@ -52,11 +52,7 @@ export abstract class RouteRecordBase<ActionResult, Match> {
     builder: B
   ): B {
     this.#builder = builder;
-    this.#config.changeRootLocation(
-      builder.getRawBuilder(),
-      // TODO: revisit this API
-      this.getLocation(({} as unknown) as Match)
-    );
+    this.#config.attachBuilderToRoute(builder.getRawBuilder(), this);
     return builder;
   }
 }

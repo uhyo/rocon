@@ -3,7 +3,6 @@ import type { Location } from "../LocationComposer/Location";
 import { RoutesBuilder } from "../RoutesBuilder";
 import type {
   ActionType,
-  MatchOfRouteDefinition,
   RoutesDefinition,
 } from "../RoutesBuilder/RoutesDefinitionObject";
 import { RouteRecordBase } from "./RouteRecordBase";
@@ -11,16 +10,23 @@ import type { RouteRecordType } from "./RouteRecordType";
 
 export type { RouteRecordType };
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type RouteRecordConfig = {
   composer: LocationComposer<string>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getRootLocation: () => Location<any>;
+  getRootLocation: (match: any) => Location<any>;
   changeRootLocation: (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     target: RoutesBuilder<any, any, any, any>,
     newRoot: Location
   ) => void;
+  /**
+   * Attach given builder to a route.
+   */
+  attachBuilderToRoute: (
+    builder: RoutesBuilder<any, any, any, any>,
+    route: RouteRecordType<any, any>
+  ) => void;
 };
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 /**
  * Object for each route provided by RoutesBuilder.
@@ -46,20 +52,16 @@ export class RouteRecord<ActionResult, Match>
     this.key = key;
   }
 
-  getLocation(): Location {
-    return this.#config.composer.compose(
-      this.#config.getRootLocation(),
-      this.key
-    );
+  getLocation(match: Match): Location {
+    const parentLocation = this.#config.getRootLocation(match);
+    return this.#config.composer.compose(parentLocation, this.key);
   }
 }
 
 export type RoutesDefinitionToRouteRecords<
   ActionResult,
-  Defs extends RoutesDefinition<ActionResult>
+  Defs extends RoutesDefinition<ActionResult>,
+  Match
 > = {
-  [P in Extract<keyof Defs, string>]: RouteRecordType<
-    ActionResult,
-    MatchOfRouteDefinition<Defs[P]>
-  >;
+  [P in Extract<keyof Defs, string>]: RouteRecordType<ActionResult, Match>;
 };

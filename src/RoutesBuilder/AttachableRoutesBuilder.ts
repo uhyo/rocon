@@ -12,6 +12,6 @@ export interface AttachableRoutesBuilder<
   getRawBuilder(): RoutesBuilder<ActionResult, Defs, HasWildcard, Wildcard>;
   getResolver(): RouteResolver<
     ActionResult,
-    RoutesDefinitionToRouteRecords<ActionResult, Defs>
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard>
   >;
 }

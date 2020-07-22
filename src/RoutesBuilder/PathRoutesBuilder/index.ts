@@ -52,7 +52,7 @@ export class PathRoutesBuilder<
   }
 
   getRoutes(): Readonly<
-    RoutesDefinitionToRouteRecords<ActionResult, Defs> & {
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard> & {
       readonly [wildcardRouteKey]?: WildcardRouteRecordObject<
         ActionResult,
         Wildcard
@@ -68,7 +68,7 @@ export class PathRoutesBuilder<
 
   getResolver(): RouteResolver<
     ActionResult,
-    RoutesDefinitionToRouteRecords<ActionResult, Defs>
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard>
   > {
     return this.#rawBuilder.getResolver();
   }

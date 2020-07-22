@@ -12,7 +12,12 @@ module.exports = (api) => {
           modules: isTest ? "auto" : false,
         },
       ],
-      "@babel/preset-typescript",
+      [
+        "@babel/preset-typescript",
+        {
+          allowDeclareFields: true,
+        },
+      ],
     ],
   };
 };

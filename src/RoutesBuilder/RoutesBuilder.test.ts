@@ -92,7 +92,7 @@ describe("RoutesBuilder", () => {
         },
       });
       expect(
-        routes[wildcardRouteKey]?.route.action({
+        routes[wildcardRouteKey].route.action({
           k: "123",
         })
       ).toBe("k is 123");
@@ -165,6 +165,31 @@ describe("RoutesBuilder", () => {
         pathname: "/foo/bom",
         state: null,
       });
+    });
+    it("attach to wildcard", () => {
+      const toplevel = RoutesBuilder.init<string>()
+        .wildcard("id", {
+          action: ({ id }) => `id is ${id}`,
+        })
+        .getRoutes();
+      const sub = toplevel[wildcardRouteKey].route
+        .attach(RoutesBuilder.init<string, { id: unknown }>())
+        .routes({
+          bar: {
+            action: ({ id }) => `bar! id is ${id}`,
+          },
+        })
+        .getRoutes();
+
+      expect(
+        sub.bar.getLocation({
+          id: "random",
+        })
+      ).toEqual({
+        pathname: "/random/bar",
+        state: null,
+      });
+      expect(sub.bar.action({ id: 123 })).toBe("bar! id is 123");
     });
   });
 

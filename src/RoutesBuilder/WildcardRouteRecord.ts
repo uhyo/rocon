@@ -1,6 +1,7 @@
 import { Location } from "../LocationComposer/Location";
 import { RouteRecordConfig, RouteRecordType } from "../RouteRecord";
 import { RouteRecordBase } from "../RouteRecord/RouteRecordBase";
+import { assertString } from "../util/assert";
 import type { ActionType } from "./RoutesDefinitionObject";
 
 /**
@@ -30,10 +31,12 @@ export class WildcardRouteRecord<ActionResult, Match>
   }
 
   getLocation(match: Match): Location {
+    const wildcardValue = match[this.matchKey];
+    assertString(wildcardValue);
+
     return this.#config.composer.compose(
-      this.#config.getRootLocation(),
-      // TODO: revisit here
-      (match[this.matchKey] as unknown) as string
+      this.#config.getRootLocation(match),
+      wildcardValue
     );
   }
 }
