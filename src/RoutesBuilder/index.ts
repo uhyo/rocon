@@ -69,9 +69,6 @@ export class RoutesBuilder<
         }
         return this.#rootLocation;
       },
-      changeRootLocation: (target, newRoot) => {
-        target.#rootLocation = newRoot;
-      },
       attachBuilderToRoute: (builder, route) => {
         builder.#parentRoute = route;
       },

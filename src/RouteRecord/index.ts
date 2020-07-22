@@ -14,10 +14,6 @@ export type { RouteRecordType };
 export type RouteRecordConfig = {
   composer: LocationComposer<string>;
   getRootLocation: (match: any) => Location<any>;
-  changeRootLocation: (
-    target: RoutesBuilder<any, any, any, any>,
-    newRoot: Location
-  ) => void;
   /**
    * Attach given builder to a route.
    */
