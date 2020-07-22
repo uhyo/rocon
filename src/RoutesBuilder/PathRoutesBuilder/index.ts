@@ -16,11 +16,14 @@ export type PathRoutesBuilderOptions = Omit<RoutesBuilderOptions, "composer">;
 export class PathRoutesBuilder<
   ActionResult,
   Defs extends RoutesDefinition<ActionResult>,
+  HasWildcard extends boolean,
   Wildcard
-> implements AttachableRoutesBuilder<ActionResult, Defs, Wildcard> {
+>
+  implements
+    AttachableRoutesBuilder<ActionResult, Defs, HasWildcard, Wildcard> {
   static init<ActionResult>(
     options: Partial<PathRoutesBuilderOptions> = {}
-  ): PathRoutesBuilder<ActionResult, {}, {}> {
+  ): PathRoutesBuilder<ActionResult, {}, false, {}> {
     const op = {
       ...options,
       composer: new PathLocationComposer(),
@@ -29,15 +32,22 @@ export class PathRoutesBuilder<
     return new PathRoutesBuilder(rawBuilder);
   }
 
-  #rawBuilder: RoutesBuilder<ActionResult, Defs, Wildcard>;
+  #rawBuilder: RoutesBuilder<ActionResult, Defs, HasWildcard, Wildcard>;
 
-  private constructor(rawBuilder: RoutesBuilder<ActionResult, Defs, Wildcard>) {
+  private constructor(
+    rawBuilder: RoutesBuilder<ActionResult, Defs, HasWildcard, Wildcard>
+  ) {
     this.#rawBuilder = rawBuilder;
   }
 
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
-  ): PathRoutesBuilder<ActionResult, Omit<Defs, keyof D> & D, Wildcard> {
+  ): PathRoutesBuilder<
+    ActionResult,
+    Omit<Defs, keyof D> & D,
+    HasWildcard,
+    Wildcard
+  > {
     return new PathRoutesBuilder(this.#rawBuilder.routes(defs));
   }
 
@@ -52,7 +62,7 @@ export class PathRoutesBuilder<
     return this.#rawBuilder.getRoutes();
   }
 
-  getRawBuilder(): RoutesBuilder<ActionResult, Defs, Wildcard> {
+  getRawBuilder(): RoutesBuilder<ActionResult, Defs, HasWildcard, Wildcard> {
     return this.#rawBuilder;
   }
 

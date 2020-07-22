@@ -17,7 +17,7 @@ export type RouteRecordConfig = {
   getRootLocation: () => Location<any>;
   changeRootLocation: (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    target: RoutesBuilder<any, any, any>,
+    target: RoutesBuilder<any, any, any, any>,
     newRoot: Location
   ) => void;
 };

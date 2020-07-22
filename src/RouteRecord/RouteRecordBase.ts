@@ -18,6 +18,7 @@ export abstract class RouteRecordBase<ActionResult, Match> {
   #builder?: AttachableRoutesBuilder<
     ActionResult,
     Record<string, RouteDefinition<ActionResult, Match>>,
+    boolean,
     Match
   > = undefined;
   #config: RouteRecordConfig;
@@ -39,6 +40,7 @@ export abstract class RouteRecordBase<ActionResult, Match> {
     | AttachableRoutesBuilder<
         ActionResult,
         Record<string, RouteDefinition<ActionResult, Match>>,
+        boolean,
         Match
       >
     | undefined {
@@ -46,7 +48,7 @@ export abstract class RouteRecordBase<ActionResult, Match> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  attach<B extends AttachableRoutesBuilder<ActionResult, any, Match>>(
+  attach<B extends AttachableRoutesBuilder<ActionResult, any, any, Match>>(
     builder: B
   ): B {
     this.#builder = builder;

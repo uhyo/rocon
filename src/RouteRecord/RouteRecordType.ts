@@ -14,12 +14,13 @@ export type RouteRecordType<ActionResult, Match> = RouteDefinition<
     | AttachableRoutesBuilder<
         ActionResult,
         Record<string, RouteDefinition<ActionResult, Match>>,
+        boolean,
         Match
       >
     | undefined;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly attach: <
-    B extends AttachableRoutesBuilder<ActionResult, any, Match>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    B extends AttachableRoutesBuilder<ActionResult, any, any, Match>
   >(
     builder: B
   ) => B;
