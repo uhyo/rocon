@@ -6,6 +6,10 @@ import type {
   RouteRecordType,
   RoutesDefinitionToRouteRecords,
 } from "../RouteRecord";
+import {
+  WildcardRouteRecord,
+  WildcardRouteRecordObject,
+} from "../RouteRecord/WildcardRouteRecord";
 import { RouteResolver } from "../RouteResolver";
 import type { AttachableRoutesBuilder } from "./AttachableRoutesBuilder";
 import { fillOptions } from "./fillOptions";
@@ -15,10 +19,6 @@ import type {
   RoutesDefinition,
 } from "./RoutesDefinitionObject";
 import { wildcardRouteKey } from "./symbols";
-import {
-  WildcardRouteRecord,
-  WildcardRouteRecordObject,
-} from "./WildcardRouteRecord";
 
 export type RouteRecordsBase<ActionResult> = Record<
   string,

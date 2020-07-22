@@ -1,7 +1,7 @@
 import { RouteRecord } from "../RouteRecord";
+import { WildcardRouteRecord } from "../RouteRecord/WildcardRouteRecord";
 import { RoutesBuilder } from "./";
 import { wildcardRouteKey } from "./symbols";
-import { WildcardRouteRecord } from "./WildcardRouteRecord";
 
 describe("RoutesBuilder", () => {
   describe("routes", () => {

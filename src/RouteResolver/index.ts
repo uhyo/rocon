@@ -1,12 +1,12 @@
 import { LocationComposer } from "../LocationComposer";
-import { BaseState, Location } from "../LocationComposer/Location";
+import type { BaseState, Location } from "../LocationComposer/Location";
 import type { RouteRecordType } from "../RouteRecord";
-import { RouteRecordsBase } from "../RoutesBuilder";
-import { wildcardRouteKey } from "../RoutesBuilder/symbols";
 import {
   WildcardRouteRecord,
   WildcardRouteRecordObject,
-} from "../RoutesBuilder/WildcardRouteRecord";
+} from "../RouteRecord/WildcardRouteRecord";
+import { RouteRecordsBase } from "../RoutesBuilder";
+import { wildcardRouteKey } from "../RoutesBuilder/symbols";
 import { ResolvedRoute } from "./ResolvedRoute";
 
 type ResolvedSegmentType<ActionResult> =

@@ -1,8 +1,8 @@
+import { RouteRecordConfig, RouteRecordType } from ".";
 import { Location } from "../LocationComposer/Location";
-import { RouteRecordConfig, RouteRecordType } from "../RouteRecord";
-import { RouteRecordBase } from "../RouteRecord/RouteRecordBase";
+import type { ActionType } from "../RoutesBuilder/RoutesDefinitionObject";
 import { assertString } from "../util/assert";
-import type { ActionType } from "./RoutesDefinitionObject";
+import { RouteRecordBase } from "./RouteRecordBase";
 
 /**
  * Special route definition for wildcard route.

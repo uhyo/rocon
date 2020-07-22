@@ -1,12 +1,12 @@
 import { RoutesBuilder } from "..";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
 import { RoutesDefinitionToRouteRecords } from "../../RouteRecord";
+import { WildcardRouteRecordObject } from "../../RouteRecord/WildcardRouteRecord";
 import { RouteResolver } from "../../RouteResolver";
 import { AttachableRoutesBuilder } from "../AttachableRoutesBuilder";
 import { RoutesBuilderOptions } from "../RoutesBuilderOptions";
 import { RoutesDefinition } from "../RoutesDefinitionObject";
 import { wildcardRouteKey } from "../symbols";
-import { WildcardRouteRecordObject } from "../WildcardRouteRecord";
 
 export type PathRoutesBuilderOptions = Omit<RoutesBuilderOptions, "composer">;
 
