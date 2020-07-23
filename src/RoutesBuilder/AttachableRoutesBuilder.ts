@@ -6,13 +6,13 @@ import type { WildcardFlagType } from "./WildcardFlagType";
 
 export interface AttachableRoutesBuilder<
   ActionResult,
-  Defs extends Record<string, RouteDefinition<ActionResult, Wildcard>>,
+  Defs extends Record<string, RouteDefinition<ActionResult, Match>>,
   WildcardFlag extends WildcardFlagType,
-  Wildcard
+  Match
 > {
-  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag, Wildcard>;
+  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag, Match>;
   getResolver(): RouteResolver<
     ActionResult,
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard>
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Match>
   >;
 }

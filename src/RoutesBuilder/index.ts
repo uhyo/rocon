@@ -36,12 +36,10 @@ export class RoutesBuilder<
   ActionResult,
   Defs extends RoutesDefinition<ActionResult>,
   WildcardFlag extends WildcardFlagType,
-  Wildcard
->
-  implements
-    AttachableRoutesBuilder<ActionResult, Defs, WildcardFlag, Wildcard> {
+  Match
+> implements AttachableRoutesBuilder<ActionResult, Defs, WildcardFlag, Match> {
   // RoutesBuilder is covariant upon Wildcard
-  declare readonly [wildcardCovariance]: Wildcard;
+  declare readonly [wildcardCovariance]: Match;
 
   static init<ActionResult, Match = {}>(
     options: Partial<RoutesBuilderOptions> = {}
@@ -56,7 +54,7 @@ export class RoutesBuilder<
   #parentRoute?: RouteRecordType<ActionResult, {}, boolean> = undefined;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
-    | WildcardRouteRecordObject<ActionResult, Wildcard, boolean>
+    | WildcardRouteRecordObject<ActionResult, Match, boolean>
     | undefined = undefined;
 
   private constructor(options: RoutesBuilderOptions) {
@@ -78,17 +76,12 @@ export class RoutesBuilder<
 
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
-  ): RoutesBuilder<
-    ActionResult,
-    Omit<Defs, keyof D> & D,
-    WildcardFlag,
-    Wildcard
-  > {
+  ): RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D, WildcardFlag, Match> {
     const result = new RoutesBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
       WildcardFlag,
-      Wildcard
+      Match
     >({
       composer: this.#composer,
       root: this.#rootLocation,
@@ -109,7 +102,7 @@ export class RoutesBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
       WildcardFlag,
-      Wildcard
+      Match
     >;
   }
 
@@ -121,7 +114,7 @@ export class RoutesBuilder<
     ValueType,
     RD extends RouteDefinition<
       ActionResult,
-      Wildcard &
+      Match &
         {
           [K in Key]: ValueType;
         }
@@ -133,7 +126,7 @@ export class RoutesBuilder<
     ActionResult,
     Defs,
     undefined extends RD["action"] ? "noaction" : "hasaction",
-    Wildcard &
+    Match &
       {
         [K in Key]: ValueType;
       }
@@ -142,7 +135,7 @@ export class RoutesBuilder<
       ActionResult,
       Defs,
       undefined extends RD["action"] ? "noaction" : "hasaction",
-      Wildcard &
+      Match &
         {
           [K in Key]: ValueType;
         }
@@ -169,13 +162,13 @@ export class RoutesBuilder<
   }
 
   getRoutes(): Readonly<
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard> &
-      WildcardInRouteRecords<ActionResult, WildcardFlag, Wildcard>
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Match> &
+      WildcardInRouteRecords<ActionResult, WildcardFlag, Match>
   > {
     const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
       ActionResult,
       Defs,
-      Wildcard
+      Match
     >;
     if (this.#wildcardRoute) {
       return {
@@ -191,7 +184,7 @@ export class RoutesBuilder<
 
   getResolver(): RouteResolver<
     ActionResult,
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard>
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Match>
   > {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return new RouteResolver(this.getRoutes() as any, this.#composer);

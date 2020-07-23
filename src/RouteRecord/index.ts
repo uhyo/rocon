@@ -69,20 +69,20 @@ export type RoutesDefinitionToRouteRecords<
 export type WildcardInRouteRecords<
   ActionResult,
   WildcardFlag extends WildcardFlagType,
-  Wildcard
+  Match
 > = {
   none: {};
   noaction: {
     readonly [wildcardRouteKey]: WildcardRouteRecordObject<
       ActionResult,
-      Wildcard,
+      Match,
       false
     >;
   };
   hasaction: {
     readonly [wildcardRouteKey]: WildcardRouteRecordObject<
       ActionResult,
-      Wildcard,
+      Match,
       true
     >;
   };

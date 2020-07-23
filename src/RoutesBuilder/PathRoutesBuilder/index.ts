@@ -1,14 +1,14 @@
 import { RoutesBuilder } from "..";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
-import {
+import type {
   RoutesDefinitionToRouteRecords,
   WildcardInRouteRecords,
 } from "../../RouteRecord";
 import { RouteResolver } from "../../RouteResolver";
-import { AttachableRoutesBuilder } from "../AttachableRoutesBuilder";
-import { RoutesBuilderOptions } from "../RoutesBuilderOptions";
-import { RoutesDefinition } from "../RoutesDefinitionObject";
-import { WildcardFlagType } from "../WildcardFlagType";
+import type { AttachableRoutesBuilder } from "../AttachableRoutesBuilder";
+import type { RoutesBuilderOptions } from "../RoutesBuilderOptions";
+import type { RoutesDefinition } from "../RoutesDefinitionObject";
+import type { WildcardFlagType } from "../WildcardFlagType";
 
 export type PathRoutesBuilderOptions = Omit<RoutesBuilderOptions, "composer">;
 
@@ -19,10 +19,8 @@ export class PathRoutesBuilder<
   ActionResult,
   Defs extends RoutesDefinition<ActionResult>,
   WildcardFlag extends WildcardFlagType,
-  Wildcard
->
-  implements
-    AttachableRoutesBuilder<ActionResult, Defs, WildcardFlag, Wildcard> {
+  Match
+> implements AttachableRoutesBuilder<ActionResult, Defs, WildcardFlag, Match> {
   static init<ActionResult>(
     options: Partial<PathRoutesBuilderOptions> = {}
   ): PathRoutesBuilder<ActionResult, {}, "none", {}> {
@@ -34,10 +32,10 @@ export class PathRoutesBuilder<
     return new PathRoutesBuilder(rawBuilder);
   }
 
-  #rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Wildcard>;
+  #rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Match>;
 
   private constructor(
-    rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Wildcard>
+    rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Match>
   ) {
     this.#rawBuilder = rawBuilder;
   }
@@ -48,25 +46,25 @@ export class PathRoutesBuilder<
     ActionResult,
     Omit<Defs, keyof D> & D,
     WildcardFlag,
-    Wildcard
+    Match
   > {
     return new PathRoutesBuilder(this.#rawBuilder.routes(defs));
   }
 
   getRoutes(): Readonly<
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard> &
-      WildcardInRouteRecords<ActionResult, WildcardFlag, Wildcard>
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Match> &
+      WildcardInRouteRecords<ActionResult, WildcardFlag, Match>
   > {
     return this.#rawBuilder.getRoutes();
   }
 
-  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag, Wildcard> {
+  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag, Match> {
     return this.#rawBuilder;
   }
 
   getResolver(): RouteResolver<
     ActionResult,
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Wildcard>
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Match>
   > {
     return this.#rawBuilder.getResolver();
   }
