@@ -5,27 +5,38 @@ import type {
   ActionType,
   RouteDefinition,
 } from "../RoutesBuilder/RoutesDefinitionObject";
+import { WildcardFlagType } from "../RoutesBuilder/WildcardFlagType";
+
+export type ActionTypeOfRouteRecord<
+  ActionResult,
+  Match,
+  HasAction extends boolean
+> = HasAction extends true ? ActionType<ActionResult, Match> : undefined;
 
 /**
  * Object for each route provided by RoutesBuilder.
  * Should implement RouteRecordType.
  */
-export abstract class RouteRecordBase<ActionResult, Match> {
+export abstract class RouteRecordBase<
+  ActionResult,
+  Match,
+  HasAction extends boolean
+> {
   /**
    * Action of this route.
    */
-  readonly action: ActionType<ActionResult, Match>;
+  readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
   #builder?: AttachableRoutesBuilder<
     ActionResult,
     Record<string, RouteDefinition<ActionResult, Match>>,
-    boolean,
+    WildcardFlagType,
     Match
   > = undefined;
   #config: RouteRecordConfig;
 
   constructor(
     config: RouteRecordConfig,
-    action: ActionType<ActionResult, Match>
+    action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
     this.#config = config;
     this.action = action;
@@ -40,7 +51,7 @@ export abstract class RouteRecordBase<ActionResult, Match> {
     | AttachableRoutesBuilder<
         ActionResult,
         Record<string, RouteDefinition<ActionResult, Match>>,
-        boolean,
+        WildcardFlagType,
         Match
       >
     | undefined {

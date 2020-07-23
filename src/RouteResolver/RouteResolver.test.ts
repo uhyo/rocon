@@ -17,6 +17,7 @@ const b1 = RoutesBuilder.init<string>({
   baz: {
     action: () => "baz.",
   },
+  noaction: {},
 });
 
 const b2 = b1.wildcard("id", {
@@ -38,6 +39,14 @@ routes.bar.attach(
   RoutesBuilder.init<string>({ composer }).routes({
     fuga: {
       action: () => "fuga",
+    },
+  })
+);
+
+routes.noaction.attach(
+  RoutesBuilder.init<string>({ composer }).routes({
+    wow: {
+      action: () => "wow",
     },
   })
 );
@@ -162,6 +171,20 @@ describe("RouteResolver", () => {
         state: null,
       });
     });
+    it("4", () => {
+      const resolved = resolver.resolve({
+        pathname: "/noaction/wow",
+        state: null,
+      });
+      expect(resolved.length).toBe(1);
+      const { route: routeRecord, location: next } = resolved[0];
+      expect(routeRecord).toEqual(expect.any(RouteRecord));
+      expect(routeRecord.action({})).toBe("wow");
+      expect(next).toEqual({
+        pathname: "/",
+        state: null,
+      });
+    });
   });
   describe("wrong location returns an empty array", () => {
     it("shallow nonexistent location", () => {
@@ -208,6 +231,16 @@ describe("RouteResolver", () => {
           },
         },
       ]);
+    });
+  });
+
+  describe("no-action route does not resolve", () => {
+    it("no-action route", () => {
+      const resolved = resolver.resolve({
+        pathname: "/noaction",
+        state: null,
+      });
+      expect(resolved).toEqual([]);
     });
   });
 });

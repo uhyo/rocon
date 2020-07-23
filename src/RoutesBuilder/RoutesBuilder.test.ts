@@ -75,6 +75,27 @@ describe("RoutesBuilder", () => {
       const routes2 = b2.getRoutes();
       expect(Object.keys(routes2)).toEqual(["foo", "bar"]);
     });
+
+    it("no action route", () => {
+      const res = RoutesBuilder.init<string>().routes({
+        foo: {},
+        bar: {
+          action: () => "bar?",
+        },
+      });
+      const routes = res.getRoutes();
+      expect(Object.keys(routes)).toEqual(["foo", "bar"]);
+      expect(routes.foo.action).toBeUndefined();
+      expect(routes.foo.getLocation({})).toEqual({
+        pathname: "/foo",
+        state: null,
+      });
+      expect(routes.bar.action({})).toEqual("bar?");
+      expect(routes.bar.getLocation({})).toEqual({
+        pathname: "/bar",
+        state: null,
+      });
+    });
   });
 
   describe("wildcard", () => {
@@ -190,6 +211,23 @@ describe("RoutesBuilder", () => {
         state: null,
       });
       expect(sub.bar.action({ id: 123 })).toBe("bar! id is 123");
+    });
+    it("attach to no-action route", () => {
+      const toplevel = RoutesBuilder.init<string>()
+        .routes({
+          foo: {},
+        })
+        .getRoutes();
+      const sub = toplevel.foo
+        .attach(RoutesBuilder.init<string>())
+        .routes({
+          wow: {
+            action: () => "wow",
+          },
+        })
+        .getRoutes();
+
+      expect(sub.wow.action({})).toBe("wow");
     });
   });
 
