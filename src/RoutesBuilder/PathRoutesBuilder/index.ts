@@ -7,7 +7,10 @@ import type {
 import { RouteResolver } from "../../RouteResolver";
 import type { AttachableRoutesBuilder } from "../AttachableRoutesBuilder";
 import type { RoutesBuilderOptions } from "../RoutesBuilderOptions";
-import type { RoutesDefinition } from "../RoutesDefinitionObject";
+import type {
+  RouteDefinition,
+  RoutesDefinition,
+} from "../RoutesDefinitionObject";
 import type { WildcardFlagType } from "../WildcardFlagType";
 
 export type PathRoutesBuilderOptions = Omit<RoutesBuilderOptions, "composer">;
@@ -21,14 +24,14 @@ export class PathRoutesBuilder<
   WildcardFlag extends WildcardFlagType,
   Match
 > implements AttachableRoutesBuilder<ActionResult, Defs, WildcardFlag, Match> {
-  static init<ActionResult>(
+  static init<ActionResult, Match = {}>(
     options: Partial<PathRoutesBuilderOptions> = {}
-  ): PathRoutesBuilder<ActionResult, {}, "none", {}> {
+  ): PathRoutesBuilder<ActionResult, {}, "none", Match> {
     const op = {
       ...options,
       composer: new PathLocationComposer(),
     };
-    const rawBuilder = RoutesBuilder.init<ActionResult>(op);
+    const rawBuilder = RoutesBuilder.init<ActionResult, Match>(op);
     return new PathRoutesBuilder(rawBuilder);
   }
 
@@ -49,6 +52,32 @@ export class PathRoutesBuilder<
     Match
   > {
     return new PathRoutesBuilder(this.#rawBuilder.routes(defs));
+  }
+
+  any<
+    Key extends string,
+    RD extends RouteDefinition<
+      ActionResult,
+      Match &
+        {
+          [K in Key]: string;
+        }
+    >
+  >(
+    key: Key,
+    routeDefinition: RD
+  ): PathRoutesBuilder<
+    ActionResult,
+    Defs,
+    undefined extends RD["action"] ? "noaction" : "hasaction",
+    Match &
+      {
+        [K in Key]: string;
+      }
+  > {
+    return new PathRoutesBuilder(
+      this.#rawBuilder.wildcard(key, routeDefinition)
+    );
   }
 
   getRoutes(): Readonly<

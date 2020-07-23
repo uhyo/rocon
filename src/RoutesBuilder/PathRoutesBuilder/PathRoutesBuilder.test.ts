@@ -1,4 +1,5 @@
 import { PathRoutesBuilder } from ".";
+import { wildcardRouteKey } from "../symbols";
 
 describe("PathRoutesBuilder", () => {
   describe("routes", () => {
@@ -138,6 +139,36 @@ describe("PathRoutesBuilder", () => {
       toplevel.foo.attach(sub);
       expect(subRoutes.bom.getLocation({})).toEqual({
         pathname: "/foo/bom",
+        state: null,
+      });
+    });
+  });
+
+  describe("any route", () => {
+    it("any works like wildcard", () => {
+      const res = PathRoutesBuilder.init<string>().any("id", {
+        action: ({ id }) => `id is ${id.slice(0, 8)}`,
+      });
+      const routes = res.getRoutes();
+      expect(routes[wildcardRouteKey].route.action({ id: "wow" })).toEqual(
+        "id is wow"
+      );
+    });
+    it("sub route of any", () => {
+      const res = PathRoutesBuilder.init<string>().any("id", {
+        action: ({ id }) => `id is ${id.slice(0, 8)}`,
+      });
+      const routes = res.getRoutes();
+      const subRoutes = routes[wildcardRouteKey].route
+        .attach(PathRoutesBuilder.init<string, { id: string }>())
+        .routes({
+          hoge: {
+            action: () => "sub",
+          },
+        })
+        .getRoutes();
+      expect(subRoutes.hoge.getLocation({ id: "wow" })).toEqual({
+        pathname: "/wow/hoge",
         state: null,
       });
     });
