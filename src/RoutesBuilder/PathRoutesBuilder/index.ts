@@ -12,7 +12,10 @@ import type {
   RouteDefinition,
   RoutesDefinition,
 } from "../RoutesDefinitionObject";
-import type { WildcardFlagType } from "../WildcardFlagType";
+import type {
+  ActionTypeToWildcardFlag,
+  WildcardFlagType,
+} from "../WildcardFlagType";
 
 export type PathRoutesBuilderOptions = Omit<RoutesBuilderOptions, "composer">;
 
@@ -79,7 +82,7 @@ export class PathRoutesBuilder<
   ): PathRoutesBuilder<
     ActionResult,
     Defs,
-    undefined extends RD["action"] ? "noaction" : "hasaction",
+    ActionTypeToWildcardFlag<RD["action"]>,
     Match &
       {
         [K in Key]: string;
