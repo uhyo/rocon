@@ -1,6 +1,7 @@
 import { RoutesBuilder } from "..";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
 import type {
+  RouteRecordType,
   RoutesDefinitionToRouteRecords,
   WildcardInRouteRecords,
 } from "../../RouteRecord";
@@ -33,6 +34,15 @@ export class PathRoutesBuilder<
     };
     const rawBuilder = RoutesBuilder.init<ActionResult, Match>(op);
     return new PathRoutesBuilder(rawBuilder);
+  }
+
+  /**
+   * Attach a newly created PathRouteBuilder to given route.
+   */
+  static attachTo<ActionResult, Match, HasAction extends boolean>(
+    route: RouteRecordType<ActionResult, Match, HasAction>
+  ): PathRoutesBuilder<ActionResult, {}, "none", Match> {
+    return route.attach(PathRoutesBuilder.init());
   }
 
   #rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Match>;

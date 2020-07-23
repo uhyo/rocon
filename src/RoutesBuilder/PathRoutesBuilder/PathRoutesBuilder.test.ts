@@ -159,14 +159,16 @@ describe("PathRoutesBuilder", () => {
         action: ({ id }) => `id is ${id.slice(0, 8)}`,
       });
       const routes = res.getRoutes();
-      const subRoutes = routes[wildcardRouteKey].route
-        .attach(PathRoutesBuilder.init<string, { id: string }>())
+      const subRoutes = PathRoutesBuilder.attachTo(
+        routes[wildcardRouteKey].route
+      )
         .routes({
           hoge: {
             action: () => "sub",
           },
         })
         .getRoutes();
+
       expect(subRoutes.hoge.getLocation({ id: "wow" })).toEqual({
         pathname: "/wow/hoge",
         state: null,
