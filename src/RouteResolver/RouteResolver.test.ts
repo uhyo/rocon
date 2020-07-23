@@ -35,13 +35,15 @@ routes.foo.attach(
   })
 );
 
-routes.bar.attach(
-  RoutesBuilder.init<string>({ composer }).routes({
+routes.bar
+  .attach(
+    RoutesBuilder.init<string>({ composer })
+  )
+  .routes({
     fuga: {
       action: () => "fuga",
     },
-  })
-);
+  });
 
 routes.noaction.attach(
   RoutesBuilder.init<string>({ composer }).routes({

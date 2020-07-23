@@ -11,6 +11,7 @@ import {
   WildcardRouteRecordObject,
 } from "../RouteRecord/WildcardRouteRecord";
 import { RouteResolver } from "../RouteResolver";
+import { assertNever } from "../util/assert";
 import type { AttachableRoutesBuilder } from "./AttachableRoutesBuilder";
 import { fillOptions } from "./fillOptions";
 import type { RoutesBuilderOptions } from "./RoutesBuilderOptions";
@@ -93,6 +94,33 @@ export class RoutesBuilder<
     }
   }
 
+  /**
+   * Inherit internal information to a builder generated from this.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private inheritTo(target: RoutesBuilder<ActionResult, any, any, any>): void {
+    target.#parentRoute = this.#parentRoute;
+    switch (this.#state) {
+      case "unattached": {
+        break;
+      }
+      case "attached": {
+        // inherit attachedness to child
+        this.#state = "invalidated";
+        // this.#parentRoute should always exist here but we use ?. here for ease
+        this.#parentRoute?.attach(target);
+        break;
+      }
+      case "invalidated": {
+        this.checkInvalidation();
+        break;
+      }
+      default: {
+        assertNever(this.#state);
+      }
+    }
+  }
+
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
   ): RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D, WildcardFlag, Match> {
@@ -118,7 +146,7 @@ export class RoutesBuilder<
       );
     }
     result.#wildcardRoute = this.#wildcardRoute;
-    result.#parentRoute = this.#parentRoute;
+    this.inheritTo(result);
     return result as RoutesBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
@@ -175,7 +203,7 @@ export class RoutesBuilder<
         routeDefinition.action
       ),
     };
-    result.#parentRoute = this.#parentRoute;
+    this.inheritTo(result);
     return result;
   }
 
