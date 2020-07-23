@@ -44,6 +44,12 @@ export class RouteResolver<
   resolve(
     location: Location<BaseState>
   ): Array<ResolvedRoute<ActionResult, {}>> {
+    return this.resolveAlsoNoAction(location).filter((res) => res.route.action);
+  }
+
+  resolveAlsoNoAction(
+    location: Location<BaseState>
+  ): Array<ResolvedRoute<ActionResult, {}>> {
     const composer = this.#composer;
     const decomposed = composer.decompose(location);
     return decomposed.flatMap(([seg, next]) => {
