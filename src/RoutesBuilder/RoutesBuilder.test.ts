@@ -229,6 +229,17 @@ describe("RoutesBuilder", () => {
 
       expect(sub.wow.action({})).toBe("wow");
     });
+    it("no attaching twice", () => {
+      const { foo } = RoutesBuilder.init<string>()
+        .routes({
+          foo: {},
+        })
+        .getRoutes();
+
+      const sub = RoutesBuilder.init<string>();
+      foo.attach(sub);
+      expect(() => foo.attach(sub)).toThrow();
+    });
   });
 
   describe("getResolver", () => {

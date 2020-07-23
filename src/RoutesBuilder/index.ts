@@ -30,6 +30,14 @@ export type RouteRecordsBase<ActionResult> = Record<
 declare const wildcardCovariance: unique symbol;
 
 /**
+ * State of RoutesBuilder.
+ * - unattached: this builder is not attached to a parent.
+ * - attached: this builder is attached to a parent.
+ * - invalidated: this builder is invalidated.
+ */
+type RoutesBuilderState = "unattached" | "attached" | "invalidated";
+
+/**
  * Abstract Builder to define routes.
  */
 export class RoutesBuilder<
@@ -48,6 +56,7 @@ export class RoutesBuilder<
     return new RoutesBuilder(options);
   }
 
+  #state: RoutesBuilderState = "unattached";
   #composer: LocationComposer<string>;
   #rootLocation: Location;
   #routeRecordConfig: RouteRecordConfig;
@@ -69,14 +78,26 @@ export class RoutesBuilder<
         return this.#rootLocation;
       },
       attachBuilderToRoute: (builder, route) => {
+        if (builder.#state !== "unattached") {
+          throw new Error("A builder cannot be attached more than once.");
+        }
         builder.#parentRoute = route;
+        builder.#state = "attached";
       },
     };
+  }
+
+  private checkInvalidation() {
+    if (this.#state === "invalidated") {
+      throw new Error("This RoutesBuilder is already invalidated.");
+    }
   }
 
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
   ): RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D, WildcardFlag, Match> {
+    this.checkInvalidation();
+
     const result = new RoutesBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
@@ -131,6 +152,7 @@ export class RoutesBuilder<
         [K in Key]: ValueType;
       }
   > {
+    this.checkInvalidation();
     const result = new RoutesBuilder<
       ActionResult,
       Defs,
@@ -165,6 +187,7 @@ export class RoutesBuilder<
     RoutesDefinitionToRouteRecords<ActionResult, Defs, Match> &
       WildcardInRouteRecords<ActionResult, WildcardFlag, Match>
   > {
+    this.checkInvalidation();
     const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
       ActionResult,
       Defs,
@@ -186,6 +209,7 @@ export class RoutesBuilder<
     ActionResult,
     RoutesDefinitionToRouteRecords<ActionResult, Defs, Match>
   > {
+    this.checkInvalidation();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return new RouteResolver(this.getRoutes() as any, this.#composer);
   }
