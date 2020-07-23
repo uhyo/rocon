@@ -1,4 +1,5 @@
 import { PathRoutesBuilder } from "../RoutesBuilder/PathRoutesBuilder";
+import { SearchRoutesBuilder } from "../RoutesBuilder/SearchRoutesBuilder";
 
 describe("Composed Location resolving", () => {
   describe("path-path", () => {
@@ -11,21 +12,17 @@ describe("Composed Location resolving", () => {
       });
       const toplevel = builder.getRoutes();
 
-      const sub1 = PathRoutesBuilder.attachTo(toplevel.foo)
-        .routes({
-          hoge: {
-            action: () => "hoge.",
-          },
-        })
-        .getRoutes();
+      PathRoutesBuilder.attachTo(toplevel.foo).routes({
+        hoge: {
+          action: () => "hoge.",
+        },
+      });
 
-      const sub2 = PathRoutesBuilder.attachTo(toplevel.bar)
-        .routes({
-          fuga: {
-            action: () => "fuga!",
-          },
-        })
-        .getRoutes();
+      PathRoutesBuilder.attachTo(toplevel.bar).routes({
+        fuga: {
+          action: () => "fuga!",
+        },
+      });
 
       const resolver = builder.getResolver();
       const hogeResults = resolver.resolve({
@@ -35,6 +32,36 @@ describe("Composed Location resolving", () => {
       expect(hogeResults.length).toBe(1);
       const [hogeRoute] = hogeResults;
       expect(hogeRoute.route.action(hogeRoute.match)).toBe("hoge.");
+
+      const fugaResults = resolver.resolve({
+        pathname: "/bar/fuga",
+        state: null,
+      });
+      expect(fugaResults.length).toBe(1);
+      const [fugaRoute] = fugaResults;
+      expect(fugaRoute.route.action(fugaRoute.match)).toBe("fuga!");
+    });
+  });
+  describe("path-search", () => {
+    it("1", () => {
+      const builder = PathRoutesBuilder.init<string>().routes({
+        foo: {},
+      });
+      const resolver = builder.getResolver();
+
+      SearchRoutesBuilder.attachTo(builder.getRoutes().foo, "key", {
+        action: ({ key }) => `key is ${key}`,
+      }).getRoute();
+
+      const result = resolver.resolve({
+        pathname: "/foo",
+        search: "key=value",
+        state: null,
+      });
+      expect(result.length).toBe(1);
+      const res = result[0];
+      expect(res.match).toEqual({ key: "value" });
+      expect(res.route.action(res.match)).toBe("key is value");
     });
   });
 });

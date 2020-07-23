@@ -50,8 +50,7 @@ export class RouteResolver<
   resolveAlsoNoAction(
     location: Location<BaseState>
   ): Array<ResolvedRoute<ActionResult, {}>> {
-    const composer = this.#composer;
-    const decomposed = composer.decompose(location);
+    const decomposed = this.#composer.decompose(location);
     return decomposed.flatMap(([seg, next]) => {
       const nextRoute = this.resolveSegment(seg);
       if (nextRoute === undefined) {
@@ -64,7 +63,8 @@ export class RouteResolver<
               [nextRoute.route.matchKey]: seg,
             };
 
-      if (composer.isLeaf(next)) {
+      const childResolver = nextRoute.route.getBuilder()?.getResolver();
+      if (childResolver === undefined || childResolver.#composer.isLeaf(next)) {
         return [
           {
             route: nextRoute.route,
@@ -73,17 +73,7 @@ export class RouteResolver<
           },
         ];
       }
-      const childBuilder = nextRoute.route.getBuilder();
-      if (childBuilder === undefined) {
-        return [
-          {
-            route: nextRoute.route,
-            match,
-            location: next,
-          },
-        ];
-      }
-      const result = childBuilder.getResolver().resolve(next);
+      const result = childResolver.resolve(next);
       switch (nextRoute.type) {
         case "normal": {
           return result;
