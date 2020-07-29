@@ -2,7 +2,6 @@ import type { LocationComposer } from "../LocationComposer";
 import type { Location } from "../LocationComposer/Location";
 import type { RouteRecordType } from "../RouteRecord";
 import { RouteResolver, SegmentResolver } from "../RouteResolver";
-import { assertNever } from "../util/assert";
 import { PartiallyPartial } from "../util/types/PartiallyPartial";
 import { AttachableRoutesBuilder } from "./AttachableRoutesBuilder";
 import type { BuilderLinkOptions } from "./BuilderLinkOptions";
@@ -143,37 +142,6 @@ export class BuilderLink<ActionResult, Segment>
       }
       case "inherited": {
         throw new Error("Cannot inherit already invalidated link");
-      }
-    }
-  }
-
-  /**
-   * Inherit internal information to a builder generated from this.
-   * TODO: deprecate in favor of `inherit`
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  inheritTo(target: BuilderLink<ActionResult, any>): void {
-    switch (this.#state.state) {
-      case "unattached": {
-        break;
-      }
-      case "attached": {
-        // inherit attachedness to child
-        if (target.#childBuilder !== undefined) {
-          // this.#parentRoute should always exist here but we use ?. here for ease
-          this.#state.parentRoute.attach(target.#childBuilder);
-        }
-        this.#state = {
-          state: "invalidated",
-        };
-        break;
-      }
-      case "invalidated": {
-        this.checkInvalidation();
-        break;
-      }
-      default: {
-        assertNever(this.#state);
       }
     }
   }
