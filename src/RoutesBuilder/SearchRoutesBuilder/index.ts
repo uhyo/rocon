@@ -117,6 +117,7 @@ export class SearchRoutesBuilder<
       matchKey: key,
       route: new WildcardRouteRecord(this, key, action),
     };
+    rawBuilder.register(this);
   }
 
   getRoute(): WildcardRouteRecord<

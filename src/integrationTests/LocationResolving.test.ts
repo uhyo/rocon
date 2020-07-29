@@ -43,7 +43,7 @@ describe("Composed Location resolving", () => {
     });
   });
   describe("path-search", () => {
-    it("1", () => {
+    it.only("1", () => {
       const builder = PathRoutesBuilder.init<string>().routes({
         foo: {},
       });
