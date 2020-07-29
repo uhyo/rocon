@@ -1,4 +1,4 @@
-import type { RouteDefinition, RoutesDefinition } from "../RoutesBuilder/RoutesDefinitionObject"
+import type { RouteDefinition, RoutesDefinition } from "../BuilderLink/RoutesDefinitionObject"
 import type { Destination } from "./Destination"
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

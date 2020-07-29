@@ -1,1 +1,1 @@
-export { BuilderLink as RoutesBuilder } from "./RoutesBuilder";
+export { BuilderLink as RoutesBuilder } from "./BuilderLink";
