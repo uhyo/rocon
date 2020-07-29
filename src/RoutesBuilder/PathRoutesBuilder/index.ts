@@ -11,17 +11,17 @@ import type {
   WildcardFlagType,
 } from "../../BuilderLink/WildcardFlagType";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
+import { RouteResolver } from "../../RouteResolver";
 import {
   RouteRecord,
   RouteRecordType,
   RoutesDefinitionToRouteRecords,
   WildcardInRouteRecords,
-} from "../../RouteRecord";
+} from "../RouteRecord";
 import {
   WildcardRouteRecord,
   WildcardRouteRecordObject,
-} from "../../RouteRecord/WildcardRouteRecord";
-import { RouteResolver } from "../../RouteResolver";
+} from "../RouteRecord/WildcardRouteRecord";
 
 export type PathRoutesBuilderOptions<ActionResult> = Omit<
   BuilderLinkOptions<ActionResult, string>,

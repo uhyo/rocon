@@ -11,12 +11,12 @@ import type {
   WildcardFlagToHasAction,
 } from "../../BuilderLink/WildcardFlagType";
 import { SearchLocationComposer } from "../../LocationComposer/SearchLocationComposer";
-import type { RouteRecordType } from "../../RouteRecord";
+import type { RouteResolver } from "../../RouteResolver";
+import type { RouteRecordType } from "../RouteRecord";
 import {
   WildcardRouteRecord,
   WildcardRouteRecordObject,
-} from "../../RouteRecord/WildcardRouteRecord";
-import type { RouteResolver } from "../../RouteResolver";
+} from "../RouteRecord/WildcardRouteRecord";
 
 export type SearchRoutesBuilderOptions<ActionResult> = Omit<
   BuilderLinkOptions<ActionResult, string>,

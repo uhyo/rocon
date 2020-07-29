@@ -1,8 +1,8 @@
-import { HasBuilderLink } from "../BuilderLink/AttachableRoutesBuilder";
-import type { RoutesDefinition } from "../BuilderLink/RoutesDefinitionObject";
-import { wildcardRouteKey } from "../BuilderLink/symbols";
-import type { WildcardFlagType } from "../BuilderLink/WildcardFlagType";
-import type { Location } from "../LocationComposer/Location";
+import { HasBuilderLink } from "../../BuilderLink/AttachableRoutesBuilder";
+import type { RoutesDefinition } from "../../BuilderLink/RoutesDefinitionObject";
+import { wildcardRouteKey } from "../../BuilderLink/symbols";
+import type { WildcardFlagType } from "../../BuilderLink/WildcardFlagType";
+import type { Location } from "../../LocationComposer/Location";
 import { resolveLinkLocation } from "./resolveLinkLocation";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
 import type { RouteRecordType } from "./RouteRecordType";

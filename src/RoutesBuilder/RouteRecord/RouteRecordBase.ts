@@ -1,6 +1,6 @@
-import type { HasBuilderLink } from "../BuilderLink/AttachableRoutesBuilder";
-import type { ActionType } from "../BuilderLink/RoutesDefinitionObject";
-import { Location } from "../LocationComposer/Location";
+import type { HasBuilderLink } from "../../BuilderLink/AttachableRoutesBuilder";
+import type { ActionType } from "../../BuilderLink/RoutesDefinitionObject";
+import { Location } from "../../LocationComposer/Location";
 
 export type ActionTypeOfRouteRecord<
   ActionResult,

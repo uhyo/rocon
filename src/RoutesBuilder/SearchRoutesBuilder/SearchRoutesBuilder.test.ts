@@ -1,5 +1,5 @@
 import { SearchRoutesBuilder } from ".";
-import { WildcardRouteRecord } from "../../RouteRecord/WildcardRouteRecord";
+import { WildcardRouteRecord } from "../RouteRecord/WildcardRouteRecord";
 
 describe("SearchRoutesBuilder", () => {
   describe("init", () => {

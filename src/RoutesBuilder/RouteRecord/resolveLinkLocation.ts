@@ -1,5 +1,5 @@
-import { BuilderLink } from "../BuilderLink";
-import { Location } from "../LocationComposer/Location";
+import { BuilderLink } from "../../BuilderLink";
+import { Location } from "../../LocationComposer/Location";
 
 export function resolveLinkLocation(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

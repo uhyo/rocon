@@ -1,7 +1,7 @@
 import type { LocationComposer } from "../LocationComposer";
 import type { Location } from "../LocationComposer/Location";
-import type { RouteRecordType } from "../RouteRecord";
 import { RouteResolver, SegmentResolver } from "../RouteResolver";
+import type { RouteRecordType } from "../RoutesBuilder/RouteRecord";
 import { PartiallyPartial } from "../util/types/PartiallyPartial";
 import {
   AttachableRoutesBuilder,
