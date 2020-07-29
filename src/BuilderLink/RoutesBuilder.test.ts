@@ -1,5 +1,5 @@
 import { BuilderLink } from ".";
-import { RouteRecord } from "../RoutesBuilder/RouteRecord";
+import { PathRouteRecord } from "../RoutesBuilder/RouteRecord";
 import { WildcardRouteRecord } from "../RoutesBuilder/RouteRecord/WildcardRouteRecord";
 import { wildcardRouteKey } from "./symbols";
 
@@ -260,7 +260,7 @@ describe.skip("RoutesBuilder", () => {
       })
     ).toEqual([
       {
-        route: expect.any(RouteRecord),
+        route: expect.any(PathRouteRecord),
         match: {},
         location: {
           pathname: "/",

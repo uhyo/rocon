@@ -13,7 +13,7 @@ import type {
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
 import { RouteResolver } from "../../RouteResolver";
 import {
-  RouteRecord,
+  PathRouteRecord,
   RouteRecordType,
   RoutesDefinitionToRouteRecords,
   WildcardInRouteRecords,
@@ -88,7 +88,7 @@ export class PathRoutesBuilder<
     Object.assign(routes, this.#routes);
     for (const key of Object.getOwnPropertyNames(defs) as (keyof D &
       string)[]) {
-      routes[key] = new RouteRecord(result, key, defs[key].action);
+      routes[key] = new PathRouteRecord(result, key, defs[key].action);
     }
     result.#wildcardRoute = this.#wildcardRoute;
     // this.#rawBuilder.inheritTo(result.#rawBuilder);
