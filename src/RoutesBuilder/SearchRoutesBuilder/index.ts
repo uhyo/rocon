@@ -2,7 +2,6 @@ import { RoutesBuilder } from "..";
 import { SearchLocationComposer } from "../../LocationComposer/SearchLocationComposer";
 import type {
   RouteRecordType,
-  RoutesDefinitionToRouteRecords,
   WildcardInRouteRecords,
 } from "../../RouteRecord";
 import {
@@ -12,10 +11,7 @@ import {
 import type { RouteResolver } from "../../RouteResolver";
 import type { AttachableRoutesBuilder } from "../AttachableRoutesBuilder";
 import type { RoutesBuilderOptions } from "../RoutesBuilderOptions";
-import type {
-  RouteDefinition,
-  RoutesDefinition,
-} from "../RoutesDefinitionObject";
+import type { RouteDefinition } from "../RoutesDefinitionObject";
 import { wildcardRouteKey } from "../symbols";
 import type {
   ActionTypeToWildcardFlag,
@@ -30,7 +26,6 @@ export type SearchRoutesBuilderOptions<ActionResult> = Omit<
 
 export class SearchRoutesBuilder<
   ActionResult,
-  Defs extends RoutesDefinition<ActionResult>,
   WildcardFlag extends ExistingWildcardFlagType,
   Match
 > implements AttachableRoutesBuilder<ActionResult> {
@@ -51,7 +46,6 @@ export class SearchRoutesBuilder<
     options: Partial<SearchRoutesBuilderOptions<ActionResult>> = {}
   ): SearchRoutesBuilder<
     ActionResult,
-    {},
     ActionTypeToWildcardFlag<RD["action"]>,
     Match &
       {
@@ -65,7 +59,6 @@ export class SearchRoutesBuilder<
     const rawBuilder = RoutesBuilder.init<ActionResult>(op);
     const result = new SearchRoutesBuilder<
       ActionResult,
-      {},
       ActionTypeToWildcardFlag<RD["action"]>,
       Match &
         {
@@ -104,7 +97,6 @@ export class SearchRoutesBuilder<
     routeDefinition: RD
   ): SearchRoutesBuilder<
     ActionResult,
-    {},
     ActionTypeToWildcardFlag<RD["action"]>,
     Match &
       {
@@ -143,8 +135,7 @@ export class SearchRoutesBuilder<
   }
 
   getRoutes(): Readonly<
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Match> &
-      WildcardInRouteRecords<ActionResult, WildcardFlag, Match>
+    WildcardInRouteRecords<ActionResult, WildcardFlag, Match>
   > {
     return {
       [wildcardRouteKey]: this.#route,
