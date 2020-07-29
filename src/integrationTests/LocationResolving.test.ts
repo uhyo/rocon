@@ -1,5 +1,5 @@
-import { SearchRoutesBuilder } from "../BuilderLink/SearchRoutesBuilder";
 import { PathRoutesBuilder } from "../RoutesBuilder/PathRoutesBuilder";
+import { SearchRoutesBuilder } from "../RoutesBuilder/SearchRoutesBuilder";
 
 describe("Composed Location resolving", () => {
   describe("path-path", () => {
