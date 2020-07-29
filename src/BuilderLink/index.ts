@@ -51,9 +51,9 @@ export class BuilderLink<ActionResult, Segment>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attachToParent(parentRoute: RouteRecordType<any, any, any>) {
     // TODO: recover this check
-    // if (this.#state !== "unattached") {
-    //   throw new Error("A builder cannot be attached more than once.");
-    // }
+    if (this.#state.state !== "unattached") {
+      throw new Error("A builder cannot be attached more than once.");
+    }
     this.#state = {
       state: "attached",
       parentRoute,

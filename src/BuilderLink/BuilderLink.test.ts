@@ -3,7 +3,7 @@ import { PathRouteRecord } from "../RoutesBuilder/RouteRecord";
 import { WildcardRouteRecord } from "../RoutesBuilder/RouteRecord/WildcardRouteRecord";
 import { wildcardRouteKey } from "../RoutesBuilder/symbols";
 
-describe.skip("RoutesBuilder", () => {
+describe.skip("BuilderLink", () => {
   describe("routes", () => {
     it("Empty at init", () => {
       const b = BuilderLink.init(options1);

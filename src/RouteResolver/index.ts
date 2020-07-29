@@ -42,7 +42,6 @@ export class RouteResolver<ActionResult, Segment> {
     location: Location<BaseState>
   ): Array<ResolvedRoute<ActionResult, never>> {
     const decomposed = this.#composer.decompose(location);
-    console.log("resolveAlsoNoAction", location, decomposed);
     return decomposed.flatMap(([seg, next]) => {
       const nextRoute = this.#resolveSegment(seg);
       if (nextRoute === undefined) {
