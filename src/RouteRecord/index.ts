@@ -1,5 +1,5 @@
 import type { Location } from "../LocationComposer/Location";
-import { AttachableRoutesBuilder } from "../RoutesBuilder/AttachableRoutesBuilder";
+import { HasBuilderLink } from "../RoutesBuilder/AttachableRoutesBuilder";
 import type { RoutesDefinition } from "../RoutesBuilder/RoutesDefinitionObject";
 import { wildcardRouteKey } from "../RoutesBuilder/symbols";
 import type { WildcardFlagType } from "../RoutesBuilder/WildcardFlagType";
@@ -28,10 +28,10 @@ export class RouteRecord<ActionResult, Match, HasAction extends boolean>
    * Key of this route.
    */
   readonly key: string;
-  #parent: AttachableRoutesBuilder<ActionResult, string>;
+  #parent: HasBuilderLink<ActionResult, string>;
 
   constructor(
-    parent: AttachableRoutesBuilder<ActionResult, string>,
+    parent: HasBuilderLink<ActionResult, string>,
     key: string,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {

@@ -3,7 +3,10 @@ import type { Location } from "../LocationComposer/Location";
 import type { RouteRecordType } from "../RouteRecord";
 import { RouteResolver, SegmentResolver } from "../RouteResolver";
 import { PartiallyPartial } from "../util/types/PartiallyPartial";
-import { AttachableRoutesBuilder } from "./AttachableRoutesBuilder";
+import {
+  AttachableRoutesBuilder,
+  HasBuilderLink,
+} from "./AttachableRoutesBuilder";
 import type { BuilderLinkOptions } from "./BuilderLinkOptions";
 import { BuilderLinkState } from "./BuilderLinkState";
 import { fillOptions } from "./fillOptions";
@@ -18,7 +21,7 @@ export type RouteRecordsBase<ActionResult> = Record<
  * Link between parent and child builders.
  */
 export class BuilderLink<ActionResult, Segment>
-  implements AttachableRoutesBuilder<ActionResult, Segment> {
+  implements HasBuilderLink<ActionResult, Segment> {
   static init<ActionResult, Segment>(
     options: PartiallyPartial<BuilderLinkOptions<ActionResult, Segment>, "root">
   ): BuilderLink<ActionResult, Segment> {
@@ -97,6 +100,12 @@ export class BuilderLink<ActionResult, Segment>
 
   getBuilderLink(): this {
     return this;
+  }
+
+  getChildBuilder():
+    | AttachableRoutesBuilder<ActionResult, Segment>
+    | undefined {
+    return this.#childBuilder;
   }
 
   /**

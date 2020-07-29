@@ -1,7 +1,8 @@
 import { RouteRecordType } from ".";
 import { Location } from "../LocationComposer/Location";
-import { AttachableRoutesBuilder } from "../RoutesBuilder/AttachableRoutesBuilder";
+import { HasBuilderLink } from "../RoutesBuilder/AttachableRoutesBuilder";
 import { assertString } from "../util/assert";
+import { resolveLinkLocation } from "./resolveLinkLocation";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
 
 /**
@@ -23,9 +24,9 @@ export class WildcardRouteRecord<ActionResult, Match, HasAction extends boolean>
   extends RouteRecordBase<ActionResult, Match, HasAction>
   implements RouteRecordType<ActionResult, Match, HasAction> {
   readonly matchKey: Extract<keyof Match, string>;
-  #parent: AttachableRoutesBuilder<ActionResult, string>;
+  #parent: HasBuilderLink<ActionResult, string>;
   constructor(
-    parent: AttachableRoutesBuilder<ActionResult, string>,
+    parent: HasBuilderLink<ActionResult, string>,
     matchKey: Extract<keyof Match, string>,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
@@ -39,9 +40,8 @@ export class WildcardRouteRecord<ActionResult, Match, HasAction extends boolean>
     assertString(wildcardValue);
 
     const link = this.#parent.getBuilderLink();
-    return link.composer.compose(
-      link.getRootLocation(match as never),
-      wildcardValue
+    return resolveLinkLocation(link, match, (parentLocation) =>
+      link.composer.compose(parentLocation, wildcardValue)
     );
   }
 }

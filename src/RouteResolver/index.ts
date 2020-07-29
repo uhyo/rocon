@@ -53,7 +53,11 @@ export class RouteResolver<ActionResult, Segment> {
             [nextRoute.route.matchKey]: seg,
           }) as never;
 
-      const childResolver = nextRoute.route.getAttachedBuilder()?.getResolver();
+      const childResolver = nextRoute.route
+        .getAttachedBuilder()
+        ?.getBuilderLink()
+        .getChildBuilder()
+        ?.getResolver();
       if (childResolver === undefined || childResolver.#composer.isLeaf(next)) {
         return [
           {

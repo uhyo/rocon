@@ -1,5 +1,5 @@
 import type { Location } from "../LocationComposer/Location";
-import type { AttachableRoutesBuilder } from "../RoutesBuilder/AttachableRoutesBuilder";
+import type { HasBuilderLink } from "../RoutesBuilder/AttachableRoutesBuilder";
 import { ActionTypeOfRouteRecord } from "./RouteRecordBase";
 
 /**
@@ -9,10 +9,10 @@ export type RouteRecordType<ActionResult, Match, HasAction extends boolean> = {
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
   readonly getLocation: (match: Match) => Location;
   readonly getAttachedBuilder: () =>
-    | AttachableRoutesBuilder<ActionResult, string>
+    | HasBuilderLink<ActionResult, string>
     | undefined;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly attach: <B extends AttachableRoutesBuilder<ActionResult, any>>(
+  readonly attach: <B extends HasBuilderLink<ActionResult, any>>(
     builder: B
   ) => B;
 };

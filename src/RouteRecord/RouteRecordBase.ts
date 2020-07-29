@@ -1,5 +1,5 @@
 import { Location } from "../LocationComposer/Location";
-import type { AttachableRoutesBuilder } from "../RoutesBuilder/AttachableRoutesBuilder";
+import type { HasBuilderLink } from "../RoutesBuilder/AttachableRoutesBuilder";
 import type { ActionType } from "../RoutesBuilder/RoutesDefinitionObject";
 
 export type ActionTypeOfRouteRecord<
@@ -21,7 +21,7 @@ export abstract class RouteRecordBase<
    * Action of this route.
    */
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
-  #builder?: AttachableRoutesBuilder<ActionResult, string> = undefined;
+  #builder?: HasBuilderLink<ActionResult, string> = undefined;
 
   constructor(action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>) {
     this.action = action;
@@ -32,18 +32,14 @@ export abstract class RouteRecordBase<
   /**
    * Get the builder attached to this Route.
    */
-  getAttachedBuilder():
-    | AttachableRoutesBuilder<ActionResult, string>
-    | undefined {
+  getAttachedBuilder(): HasBuilderLink<ActionResult, string> | undefined {
     return this.#builder;
   }
 
   /**
    * Attach given builder as a child of this route.
    */
-  attach<B extends AttachableRoutesBuilder<ActionResult, string>>(
-    builder: B
-  ): B {
+  attach<B extends HasBuilderLink<ActionResult, string>>(builder: B): B {
     this.#builder = builder;
     builder.getBuilderLink().attachToParent(this);
     return builder;
