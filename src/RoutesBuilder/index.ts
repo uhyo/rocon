@@ -14,8 +14,6 @@ export type RouteRecordsBase<ActionResult> = Record<
   RouteRecordType<ActionResult, any, any>
 >;
 
-declare const wildcardCovariance: unique symbol;
-
 /**
  * State of RoutesBuilder.
  * - unattached: this builder is not attached to a parent.
@@ -27,25 +25,28 @@ type RoutesBuilderState = "unattached" | "attached" | "invalidated";
 /**
  * Abstract Builder to define routes.
  */
-export class RoutesBuilder<ActionResult> {
-  static init<ActionResult>(
+export class RoutesBuilder<ActionResult, Segment> {
+  static init<ActionResult, Segment>(
     options: PartiallyPartial<
-      RoutesBuilderOptions<ActionResult, string>,
+      RoutesBuilderOptions<ActionResult, Segment>,
       "root"
     >
-  ): RoutesBuilder<ActionResult> {
+  ): RoutesBuilder<ActionResult, Segment> {
     fillOptions(options);
-    return new RoutesBuilder<ActionResult>(options);
+    return new RoutesBuilder<ActionResult, Segment>(options);
   }
 
   #state: RoutesBuilderState = "unattached";
-  #registeredBuilder?: AttachableRoutesBuilder<ActionResult> = undefined;
-  #composer: LocationComposer<string>;
+  #registeredBuilder?: AttachableRoutesBuilder<
+    ActionResult,
+    Segment
+  > = undefined;
+  #composer: LocationComposer<Segment>;
   #rootLocation: Location;
-  #routeRecordConfig: RouteRecordConfig;
+  #routeRecordConfig: RouteRecordConfig<Segment>;
   #parentRoute?: RouteRecordType<ActionResult, never, boolean> = undefined;
 
-  private constructor(options: RoutesBuilderOptions<ActionResult, string>) {
+  private constructor(options: RoutesBuilderOptions<ActionResult, Segment>) {
     this.#composer = options.composer;
     this.#rootLocation = options.root;
     this.#routeRecordConfig = {
@@ -77,15 +78,15 @@ export class RoutesBuilder<ActionResult> {
   /**
    * TODO: wanna make this private
    */
-  getRouteRecordConfig(): RouteRecordConfig {
+  getRouteRecordConfig(): RouteRecordConfig<Segment> {
     return this.#routeRecordConfig;
   }
 
   /**
    * TODO: wanna deprecate in favor of inherit
    */
-  clone(): RoutesBuilder<ActionResult> {
-    const result = new RoutesBuilder<ActionResult>({
+  clone(): RoutesBuilder<ActionResult, Segment> {
+    const result = new RoutesBuilder<ActionResult, Segment>({
       composer: this.#composer,
       root: this.#rootLocation,
     });
@@ -100,7 +101,7 @@ export class RoutesBuilder<ActionResult> {
    */
   register(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    builder: AttachableRoutesBuilder<ActionResult>
+    builder: AttachableRoutesBuilder<ActionResult, Segment>
   ): void {
     this.#registeredBuilder = builder;
   }
@@ -109,7 +110,7 @@ export class RoutesBuilder<ActionResult> {
    * Inherit internal information to a builder generated from this.
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  inheritTo(target: RoutesBuilder<ActionResult>): void {
+  inheritTo(target: RoutesBuilder<ActionResult, any>): void {
     target.#parentRoute = this.#parentRoute;
     switch (this.#state) {
       case "unattached": {
@@ -135,8 +136,8 @@ export class RoutesBuilder<ActionResult> {
   }
 
   getResolver(
-    resolveSegment: SegmentResolver<ActionResult, string>
-  ): RouteResolver<ActionResult, string> {
+    resolveSegment: SegmentResolver<ActionResult, Segment>
+  ): RouteResolver<ActionResult, Segment> {
     this.checkInvalidation();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return new RouteResolver(this.#composer, resolveSegment);

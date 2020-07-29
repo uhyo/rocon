@@ -8,11 +8,10 @@ import { ActionTypeOfRouteRecord } from "./RouteRecordBase";
 export type RouteRecordType<ActionResult, Match, HasAction extends boolean> = {
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
   readonly getLocation: (match: Match) => Location;
-  readonly getBuilder: () => AttachableRoutesBuilder<ActionResult> | undefined;
-  readonly attach: <
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    B extends AttachableRoutesBuilder<ActionResult>
-  >(
+  readonly getBuilder: () =>
+    | AttachableRoutesBuilder<ActionResult, string>
+    | undefined;
+  readonly attach: <B extends AttachableRoutesBuilder<ActionResult, string>>(
     builder: B
   ) => B;
 };

@@ -22,9 +22,9 @@ export class WildcardRouteRecord<ActionResult, Match, HasAction extends boolean>
   extends RouteRecordBase<ActionResult, Match, HasAction>
   implements RouteRecordType<ActionResult, Match, HasAction> {
   readonly matchKey: Extract<keyof Match, string>;
-  #config: RouteRecordConfig;
+  #config: RouteRecordConfig<string>;
   constructor(
-    config: RouteRecordConfig,
+    config: RouteRecordConfig<string>,
     matchKey: Extract<keyof Match, string>,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {

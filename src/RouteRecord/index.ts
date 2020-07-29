@@ -11,14 +11,14 @@ import type { WildcardRouteRecordObject } from "./WildcardRouteRecord";
 export type { RouteRecordType };
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type RouteRecordConfig = {
-  composer: LocationComposer<string>;
+export type RouteRecordConfig<Segment> = {
+  composer: LocationComposer<Segment>;
   getRootLocation: (match: any) => Location<any>;
   /**
    * Attach given builder to a route.
    */
   attachBuilderToRoute: (
-    builder: RoutesBuilder<any>,
+    builder: RoutesBuilder<any, any>,
     route: RouteRecordType<any, any, any>
   ) => void;
 };
@@ -36,10 +36,10 @@ export class RouteRecord<ActionResult, Match, HasAction extends boolean>
    * Key of this route.
    */
   readonly key: string;
-  #config: RouteRecordConfig;
+  #config: RouteRecordConfig<string>;
 
   constructor(
-    config: RouteRecordConfig,
+    config: RouteRecordConfig<string>,
     key: string,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {

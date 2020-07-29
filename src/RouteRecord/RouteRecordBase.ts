@@ -22,11 +22,11 @@ export abstract class RouteRecordBase<
    * Action of this route.
    */
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
-  #builder?: AttachableRoutesBuilder<ActionResult> = undefined;
-  #config: RouteRecordConfig;
+  #builder?: AttachableRoutesBuilder<ActionResult, string> = undefined;
+  #config: RouteRecordConfig<string>;
 
   constructor(
-    config: RouteRecordConfig,
+    config: RouteRecordConfig<string>,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
     this.#config = config;
@@ -38,12 +38,14 @@ export abstract class RouteRecordBase<
   /**
    * Get the builder attached to this Route.
    */
-  getBuilder(): AttachableRoutesBuilder<ActionResult> | undefined {
+  getBuilder(): AttachableRoutesBuilder<ActionResult, string> | undefined {
     return this.#builder;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  attach<B extends AttachableRoutesBuilder<ActionResult>>(builder: B): B {
+  attach<B extends AttachableRoutesBuilder<ActionResult, string>>(
+    builder: B
+  ): B {
     this.#builder = builder;
     this.#config.attachBuilderToRoute(builder.getRawBuilder(), this);
     return builder;

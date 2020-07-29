@@ -24,7 +24,7 @@ export class SearchRoutesBuilder<
   ActionResult,
   WildcardFlag extends ExistingWildcardFlagType,
   Match
-> implements AttachableRoutesBuilder<ActionResult> {
+> implements AttachableRoutesBuilder<ActionResult, string> {
   static init<
     ActionResult,
     Key extends string,
@@ -52,7 +52,7 @@ export class SearchRoutesBuilder<
       ...options,
       composer: new SearchLocationComposer(key),
     };
-    const rawBuilder = RoutesBuilder.init<ActionResult>(op);
+    const rawBuilder = RoutesBuilder.init<ActionResult, string>(op);
     const result = new SearchRoutesBuilder<
       ActionResult,
       ActionTypeToWildcardFlag<RD["action"]>,
@@ -111,11 +111,11 @@ export class SearchRoutesBuilder<
     return r.attach(b);
   }
 
-  #rawBuilder: RoutesBuilder<ActionResult>;
+  #rawBuilder: RoutesBuilder<ActionResult, string>;
   #route: WildcardRouteRecordObject<ActionResult, Match, boolean>;
 
   private constructor(
-    rawBuilder: RoutesBuilder<ActionResult>,
+    rawBuilder: RoutesBuilder<ActionResult, string>,
     route: WildcardRouteRecordObject<ActionResult, Match, boolean>
   ) {
     this.#rawBuilder = rawBuilder;
@@ -130,7 +130,7 @@ export class SearchRoutesBuilder<
     return this.#route.route;
   }
 
-  getRawBuilder(): RoutesBuilder<ActionResult> {
+  getRawBuilder(): RoutesBuilder<ActionResult, string> {
     return this.#rawBuilder;
   }
 

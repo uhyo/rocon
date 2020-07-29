@@ -36,7 +36,7 @@ export class PathRoutesBuilder<
   Defs extends RoutesDefinition<ActionResult>,
   WildcardFlag extends WildcardFlagType,
   Match
-> implements AttachableRoutesBuilder<ActionResult> {
+> implements AttachableRoutesBuilder<ActionResult, string> {
   static init<ActionResult, Match = {}>(
     options: Partial<PathRoutesBuilderOptions<ActionResult>> = {}
   ): PathRoutesBuilder<ActionResult, {}, "none", Match> {
@@ -44,7 +44,7 @@ export class PathRoutesBuilder<
       ...options,
       composer: new PathLocationComposer(),
     };
-    const rawBuilder = RoutesBuilder.init<ActionResult>(op);
+    const rawBuilder = RoutesBuilder.init<ActionResult, string>(op);
     return new PathRoutesBuilder(rawBuilder);
   }
 
@@ -57,13 +57,13 @@ export class PathRoutesBuilder<
     return route.attach(PathRoutesBuilder.init());
   }
 
-  #rawBuilder: RoutesBuilder<ActionResult>;
+  #rawBuilder: RoutesBuilder<ActionResult, string>;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
     | WildcardRouteRecordObject<ActionResult, Match, boolean>
     | undefined = undefined;
 
-  private constructor(rawBuilder: RoutesBuilder<ActionResult>) {
+  private constructor(rawBuilder: RoutesBuilder<ActionResult, string>) {
     this.#rawBuilder = rawBuilder;
     rawBuilder.register(this);
   }
@@ -168,7 +168,7 @@ export class PathRoutesBuilder<
     }
   }
 
-  getRawBuilder(): RoutesBuilder<ActionResult> {
+  getRawBuilder(): RoutesBuilder<ActionResult, string> {
     return this.#rawBuilder;
   }
 
