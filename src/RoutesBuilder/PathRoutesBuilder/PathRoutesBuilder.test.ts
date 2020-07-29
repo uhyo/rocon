@@ -117,7 +117,7 @@ describe("PathRoutesBuilder", () => {
         state: null,
       });
     });
-    it.only("change location after attach", () => {
+    it("change location after attach", () => {
       const sub = PathRoutesBuilder.init<string>().routes({
         bom: {
           action: () => "bom!",

@@ -1,7 +1,6 @@
-import { BuilderLink } from ".";
-import { RouteResolver } from "../RouteResolver";
+import type { BuilderLink } from ".";
 
+// TODO: rename
 export interface AttachableRoutesBuilder<ActionResult, Segment> {
   getBuilderLink(): BuilderLink<ActionResult, Segment>;
-  getResolver(): RouteResolver<ActionResult, Segment>;
 }

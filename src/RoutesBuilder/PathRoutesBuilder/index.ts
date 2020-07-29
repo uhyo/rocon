@@ -57,7 +57,7 @@ export class PathRoutesBuilder<
     return route.attach(PathRoutesBuilder.init());
   }
 
-  #rawBuilder: BuilderLink<ActionResult, string>;
+  readonly #rawBuilder: BuilderLink<ActionResult, string>;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
     | WildcardRouteRecordObject<ActionResult, Match, boolean>
@@ -83,7 +83,7 @@ export class PathRoutesBuilder<
       Omit<Defs, keyof D> & D,
       WildcardFlag,
       Match
-    >(this.#rawBuilder.clone());
+    >(this.#rawBuilder.inherit());
     const routes = result.#routes;
     Object.assign(routes, this.#routes);
     for (const key of Object.getOwnPropertyNames(defs) as (keyof D &
@@ -91,7 +91,7 @@ export class PathRoutesBuilder<
       routes[key] = new RouteRecord(this, key, defs[key].action);
     }
     result.#wildcardRoute = this.#wildcardRoute;
-    this.#rawBuilder.inheritTo(result.#rawBuilder);
+    // this.#rawBuilder.inheritTo(result.#rawBuilder);
     return result;
   }
 
@@ -126,8 +126,7 @@ export class PathRoutesBuilder<
         {
           [K in Key]: string;
         }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    >(this.#rawBuilder.clone() as any);
+    >(this.#rawBuilder.inherit());
     result.#routes = this.#routes;
     result.#wildcardRoute = {
       matchKey: key,
@@ -138,7 +137,7 @@ export class PathRoutesBuilder<
         routeDefinition.action
       ),
     };
-    this.#rawBuilder.inheritTo(result.#rawBuilder);
+    // this.#rawBuilder.inheritTo(result.#rawBuilder);
     return result;
   }
 

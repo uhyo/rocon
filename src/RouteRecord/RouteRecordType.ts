@@ -11,7 +11,8 @@ export type RouteRecordType<ActionResult, Match, HasAction extends boolean> = {
   readonly getAttachedBuilder: () =>
     | AttachableRoutesBuilder<ActionResult, string>
     | undefined;
-  readonly attach: <B extends AttachableRoutesBuilder<ActionResult, string>>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly attach: <B extends AttachableRoutesBuilder<ActionResult, any>>(
     builder: B
   ) => B;
 };

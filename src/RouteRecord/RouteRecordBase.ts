@@ -38,12 +38,14 @@ export abstract class RouteRecordBase<
     return this.#builder;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  /**
+   * Attach given builder as a child of this route.
+   */
   attach<B extends AttachableRoutesBuilder<ActionResult, string>>(
     builder: B
   ): B {
     this.#builder = builder;
-    builder.getBuilderLink().attach(this);
+    builder.getBuilderLink().attachToParent(this);
     return builder;
   }
 }
