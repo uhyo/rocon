@@ -1,15 +1,12 @@
-import { PathLocationComposer } from "../LocationComposer/PathLocationComposer";
-import { RoutesBuilderOptions } from "./RoutesBuilderOptions";
+import type { PartiallyPartial } from "../util/types/PartiallyPartial";
+import type { RoutesBuilderOptions } from "./RoutesBuilderOptions";
 
 /**
  * Fill missing fields in RoutesOptions object.
  */
-export function fillOptions(
-  obj: Partial<RoutesBuilderOptions>
-): asserts obj is RoutesBuilderOptions {
-  if (!obj.composer) {
-    obj.composer = new PathLocationComposer();
-  }
+export function fillOptions<ActionResult, Segment>(
+  obj: PartiallyPartial<RoutesBuilderOptions<ActionResult, Segment>, "root">
+): asserts obj is RoutesBuilderOptions<ActionResult, Segment> {
   if (!obj.root) {
     obj.root = {
       pathname: "/",

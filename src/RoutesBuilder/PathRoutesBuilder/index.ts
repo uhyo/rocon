@@ -1,10 +1,15 @@
-import { RoutesBuilder } from "..";
+import { RouteRecordsBase, RoutesBuilder } from "..";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
-import type {
+import {
+  RouteRecord,
   RouteRecordType,
   RoutesDefinitionToRouteRecords,
   WildcardInRouteRecords,
 } from "../../RouteRecord";
+import {
+  WildcardRouteRecord,
+  WildcardRouteRecordObject,
+} from "../../RouteRecord/WildcardRouteRecord";
 import { RouteResolver } from "../../RouteResolver";
 import type { AttachableRoutesBuilder } from "../AttachableRoutesBuilder";
 import type { RoutesBuilderOptions } from "../RoutesBuilderOptions";
@@ -12,12 +17,16 @@ import type {
   RouteDefinition,
   RoutesDefinition,
 } from "../RoutesDefinitionObject";
+import { wildcardRouteKey } from "../symbols";
 import type {
   ActionTypeToWildcardFlag,
   WildcardFlagType,
 } from "../WildcardFlagType";
 
-export type PathRoutesBuilderOptions = Omit<RoutesBuilderOptions, "composer">;
+export type PathRoutesBuilderOptions<ActionResult> = Omit<
+  RoutesBuilderOptions<ActionResult, string>,
+  "composer"
+>;
 
 /**
  * Builder to define routes using pathname.
@@ -29,7 +38,7 @@ export class PathRoutesBuilder<
   Match
 > implements AttachableRoutesBuilder<ActionResult, Defs, WildcardFlag, Match> {
   static init<ActionResult, Match = {}>(
-    options: Partial<PathRoutesBuilderOptions> = {}
+    options: Partial<PathRoutesBuilderOptions<ActionResult>> = {}
   ): PathRoutesBuilder<ActionResult, {}, "none", Match> {
     const op = {
       ...options,
@@ -49,11 +58,16 @@ export class PathRoutesBuilder<
   }
 
   #rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Match>;
+  #routes: RouteRecordsBase<ActionResult> = Object.create(null);
+  #wildcardRoute:
+    | WildcardRouteRecordObject<ActionResult, Match, boolean>
+    | undefined = undefined;
 
   private constructor(
     rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Match>
   ) {
     this.#rawBuilder = rawBuilder;
+    rawBuilder.register(this);
   }
 
   routes<D extends RoutesDefinition<ActionResult>>(
@@ -64,7 +78,27 @@ export class PathRoutesBuilder<
     WildcardFlag,
     Match
   > {
-    return new PathRoutesBuilder(this.#rawBuilder.routes(defs));
+    this.#rawBuilder.checkInvalidation();
+
+    const result = new PathRoutesBuilder<
+      ActionResult,
+      Omit<Defs, keyof D> & D,
+      WildcardFlag,
+      Match
+    >(this.#rawBuilder.clone());
+    const routes = result.#routes;
+    Object.assign(routes, this.#routes);
+    for (const key of Object.getOwnPropertyNames(defs) as (keyof D &
+      string)[]) {
+      routes[key] = new RouteRecord(
+        result.#rawBuilder.getRouteRecordConfig(),
+        key,
+        defs[key].action
+      );
+    }
+    result.#wildcardRoute = this.#wildcardRoute;
+    this.#rawBuilder.inheritTo(result.#rawBuilder);
+    return result;
   }
 
   any<
@@ -88,16 +122,52 @@ export class PathRoutesBuilder<
         [K in Key]: string;
       }
   > {
-    return new PathRoutesBuilder(
-      this.#rawBuilder.wildcard(key, routeDefinition)
-    );
+    this.#rawBuilder.checkInvalidation();
+
+    const result = new PathRoutesBuilder<
+      ActionResult,
+      Defs,
+      undefined extends RD["action"] ? "noaction" : "hasaction",
+      Match &
+        {
+          [K in Key]: string;
+        }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    >(this.#rawBuilder.clone() as any);
+    result.#routes = this.#routes;
+    result.#wildcardRoute = {
+      matchKey: key,
+      route: new WildcardRouteRecord(
+        result.#rawBuilder.getRouteRecordConfig(),
+        // TypeScript requires this `as` but this should be true because Key extends string.
+        key as Extract<Key, string>,
+        routeDefinition.action
+      ),
+    };
+    this.#rawBuilder.inheritTo(result.#rawBuilder);
+    return result;
   }
 
   getRoutes(): Readonly<
     RoutesDefinitionToRouteRecords<ActionResult, Defs, Match> &
       WildcardInRouteRecords<ActionResult, WildcardFlag, Match>
   > {
-    return this.#rawBuilder.getRoutes();
+    this.#rawBuilder.checkInvalidation();
+    const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
+      ActionResult,
+      Defs,
+      Match
+    >;
+    if (this.#wildcardRoute) {
+      return {
+        ...routes,
+        [wildcardRouteKey]: this.#wildcardRoute,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any;
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return routes as any;
+    }
   }
 
   getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag, Match> {
@@ -105,6 +175,22 @@ export class PathRoutesBuilder<
   }
 
   getResolver(): RouteResolver<ActionResult, string> {
-    return this.#rawBuilder.getResolver();
+    return this.#rawBuilder.getResolver((segment) => {
+      const route = this.#routes[segment];
+      if (route !== undefined) {
+        return {
+          type: "normal",
+          route,
+        };
+      }
+      const wildcardRoute = this.#wildcardRoute;
+      if (wildcardRoute !== undefined) {
+        return {
+          type: "wildcard",
+          route: wildcardRoute.route,
+        };
+      }
+      return undefined;
+    });
   }
 }

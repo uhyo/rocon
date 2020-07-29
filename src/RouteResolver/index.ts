@@ -14,7 +14,7 @@ export type ResolvedSegmentType<ActionResult> =
       route: WildcardRouteRecord<ActionResult, never, boolean>;
     };
 
-type SegmentResolver<ActionResult, Segment> = (
+export type SegmentResolver<ActionResult, Segment> = (
   segment: Segment
 ) => ResolvedSegmentType<ActionResult> | undefined;
 

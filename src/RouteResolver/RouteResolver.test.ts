@@ -1,12 +1,7 @@
-import { PathLocationComposer } from "../LocationComposer/PathLocationComposer";
 import { RouteRecord } from "../RouteRecord";
-import { RoutesBuilder } from "../RoutesBuilder";
+import { PathRoutesBuilder } from "../RoutesBuilder/PathRoutesBuilder";
 
-const composer = new PathLocationComposer();
-
-const b1 = RoutesBuilder.init<string>({
-  composer,
-}).routes({
+const b1 = PathRoutesBuilder.init<string>().routes({
   foo: {
     action: () => "foo!",
   },
@@ -19,32 +14,28 @@ const b1 = RoutesBuilder.init<string>({
   noaction: {},
 });
 
-const b2 = b1.wildcard("id", {
+const b2 = b1.any("id", {
   action: ({ id }) => `id is ${id}`,
 });
 
 const routes = b1.getRoutes();
 
 routes.foo.attach(
-  RoutesBuilder.init<string>({ composer }).routes({
+  PathRoutesBuilder.init<string>().routes({
     hoge: {
       action: () => "hoge",
     },
   })
 );
 
-routes.bar
-  .attach(
-    RoutesBuilder.init<string>({ composer })
-  )
-  .routes({
-    fuga: {
-      action: () => "fuga",
-    },
-  });
+routes.bar.attach(PathRoutesBuilder.init<string>()).routes({
+  fuga: {
+    action: () => "fuga",
+  },
+});
 
 routes.noaction.attach(
-  RoutesBuilder.init<string>({ composer }).routes({
+  PathRoutesBuilder.init<string>().routes({
     wow: {
       action: () => "wow",
     },
