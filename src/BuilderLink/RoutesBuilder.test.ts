@@ -1,7 +1,7 @@
 import { BuilderLink } from ".";
 import { PathRouteRecord } from "../RoutesBuilder/RouteRecord";
 import { WildcardRouteRecord } from "../RoutesBuilder/RouteRecord/WildcardRouteRecord";
-import { wildcardRouteKey } from "./symbols";
+import { wildcardRouteKey } from "../RoutesBuilder/symbols";
 
 describe.skip("RoutesBuilder", () => {
   describe("routes", () => {

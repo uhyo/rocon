@@ -1,9 +1,9 @@
-import { HasBuilderLink } from "../../BuilderLink/AttachableRoutesBuilder";
-import { Location } from "../../LocationComposer/Location";
+import type { HasBuilderLink } from "../../BuilderLink/AttachableRoutesBuilder";
+import type { Location } from "../../LocationComposer/Location";
 import { resolveLinkLocation } from "./resolveLinkLocation";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
-import { RouteRecordType } from "./RouteRecordType";
-/* eslint-enable @typescript-eslint/no-explicit-any */
+import type { RouteRecordType } from "./RouteRecordType";
+
 /**
  * Object for each route provided by PathRoutesBuilder.
  */

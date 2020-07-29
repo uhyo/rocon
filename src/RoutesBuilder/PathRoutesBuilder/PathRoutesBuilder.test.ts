@@ -1,5 +1,5 @@
 import { PathRoutesBuilder } from ".";
-import { wildcardRouteKey } from "../../BuilderLink/symbols";
+import { wildcardRouteKey } from "../symbols";
 
 describe("PathRoutesBuilder", () => {
   describe("routes", () => {
