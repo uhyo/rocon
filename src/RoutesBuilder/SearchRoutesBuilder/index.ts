@@ -135,10 +135,7 @@ export class SearchRoutesBuilder<
     return this.#rawBuilder;
   }
 
-  getResolver(): RouteResolver<
-    ActionResult,
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Match>
-  > {
+  getResolver(): RouteResolver<ActionResult, string> {
     return this.#rawBuilder.getResolver();
   }
 }

@@ -233,12 +233,25 @@ export class RoutesBuilder<
     }
   }
 
-  getResolver(): RouteResolver<
-    ActionResult,
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Match>
-  > {
+  getResolver(): RouteResolver<ActionResult, string> {
     this.checkInvalidation();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return new RouteResolver(this.getRoutes() as any, this.#composer);
+    return new RouteResolver(this.#composer, (segment) => {
+      const route = this.#routes[segment];
+      if (route !== undefined) {
+        return {
+          type: "normal",
+          route,
+        };
+      }
+      const wildcardRoute = this.#wildcardRoute;
+      if (wildcardRoute !== undefined) {
+        return {
+          type: "wildcard",
+          route: wildcardRoute.route,
+        };
+      }
+      return undefined;
+    });
   }
 }

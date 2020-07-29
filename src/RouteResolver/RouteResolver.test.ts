@@ -1,4 +1,3 @@
-import { RouteResolver } from ".";
 import { PathLocationComposer } from "../LocationComposer/PathLocationComposer";
 import { RouteRecord } from "../RouteRecord";
 import { RoutesBuilder } from "../RoutesBuilder";
@@ -25,7 +24,6 @@ const b2 = b1.wildcard("id", {
 });
 
 const routes = b1.getRoutes();
-const wildcardRoutes = b2.getRoutes();
 
 routes.foo.attach(
   RoutesBuilder.init<string>({ composer }).routes({
@@ -53,11 +51,10 @@ routes.noaction.attach(
   })
 );
 
-const resolver = new RouteResolver<string, typeof routes>(routes, composer);
-const wildcardResolver = new RouteResolver<string, typeof wildcardRoutes>(
-  wildcardRoutes,
-  composer
-);
+const resolver = b1.getResolver();
+const wildcardResolver = b2.getResolver();
+
+const emptyMatch = {} as never;
 
 describe("RouteResolver", () => {
   describe("resolves shallow location", () => {
@@ -71,7 +68,7 @@ describe("RouteResolver", () => {
       expect(resolved.length).toBe(1);
       const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
-      expect(routeRecord.action({})).toBe("foo!");
+      expect(routeRecord.action(emptyMatch)).toBe("foo!");
       expect(next).toEqual({
         pathname: "/",
         state: {
@@ -87,7 +84,7 @@ describe("RouteResolver", () => {
       expect(resolved.length).toBe(1);
       const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
-      expect(routeRecord.action({})).toBe("bar");
+      expect(routeRecord.action(emptyMatch)).toBe("bar");
       expect(next).toEqual({
         pathname: "/",
         state: null,
@@ -101,7 +98,7 @@ describe("RouteResolver", () => {
       expect(resolved.length).toBe(1);
       const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
-      expect(routeRecord.action({})).toBe("baz.");
+      expect(routeRecord.action(emptyMatch)).toBe("baz.");
       expect(next).toEqual({
         pathname: "/",
         state: null,
@@ -117,7 +114,7 @@ describe("RouteResolver", () => {
       expect(resolved.length).toBe(1);
       const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
-      expect(routeRecord.action({})).toBe("foo!");
+      expect(routeRecord.action(emptyMatch)).toBe("foo!");
       expect(next).toEqual({
         pathname: "/",
         state: {
@@ -137,7 +134,7 @@ describe("RouteResolver", () => {
       expect(resolved.length).toBe(1);
       const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
-      expect(routeRecord.action({})).toBe("hoge");
+      expect(routeRecord.action(emptyMatch)).toBe("hoge");
       expect(next).toEqual({
         pathname: "/",
         state: {
@@ -153,7 +150,7 @@ describe("RouteResolver", () => {
       expect(resolved.length).toBe(1);
       const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
-      expect(routeRecord.action({})).toBe("fuga");
+      expect(routeRecord.action(emptyMatch)).toBe("fuga");
       expect(next).toEqual({
         pathname: "/",
         state: null,
@@ -167,7 +164,7 @@ describe("RouteResolver", () => {
       expect(resolved.length).toBe(1);
       const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
-      expect(routeRecord.action({})).toBe("fuga");
+      expect(routeRecord.action(emptyMatch)).toBe("fuga");
       expect(next).toEqual({
         pathname: "/",
         state: null,
@@ -181,7 +178,7 @@ describe("RouteResolver", () => {
       expect(resolved.length).toBe(1);
       const { route: routeRecord, location: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(RouteRecord));
-      expect(routeRecord.action({})).toBe("wow");
+      expect(routeRecord.action(emptyMatch)).toBe("wow");
       expect(next).toEqual({
         pathname: "/",
         state: null,
