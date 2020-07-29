@@ -109,18 +109,6 @@ export class BuilderLink<ActionResult, Segment>
   }
 
   /**
-   * TODO: wanna deprecate in favor of inherit
-   */
-  clone(): BuilderLink<ActionResult, Segment> {
-    const result = new BuilderLink<ActionResult, Segment>({
-      composer: this.composer,
-      root: this.#rootLocation,
-    });
-    result.#state = this.#state;
-    return result;
-  }
-
-  /**
    * TODO: rethink
    */
   register(builder: AttachableRoutesBuilder<ActionResult, Segment>): void {
@@ -133,7 +121,12 @@ export class BuilderLink<ActionResult, Segment>
   inherit(): BuilderLink<ActionResult, Segment> {
     switch (this.#state.state) {
       case "unattached": {
-        return this.clone();
+        const result = new BuilderLink<ActionResult, Segment>({
+          composer: this.composer,
+          root: this.#rootLocation,
+        });
+        result.#state = this.#state;
+        return result;
       }
       case "attached": {
         const result = new BuilderLink<ActionResult, Segment>({
