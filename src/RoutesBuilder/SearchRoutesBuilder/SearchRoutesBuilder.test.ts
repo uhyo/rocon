@@ -1,6 +1,5 @@
 import { SearchRoutesBuilder } from ".";
 import { WildcardRouteRecord } from "../../RouteRecord/WildcardRouteRecord";
-import { wildcardRouteKey } from "../symbols";
 
 describe("SearchRoutesBuilder", () => {
   describe("init", () => {
@@ -9,12 +8,7 @@ describe("SearchRoutesBuilder", () => {
         action: ({ key }) => `key is ${key}`,
       });
 
-      expect(b.getRoutes()).toEqual({
-        [wildcardRouteKey]: {
-          matchKey: "key",
-          route: expect.any(WildcardRouteRecord),
-        },
-      });
+      expect(b.getRoute()).toEqual(expect.any(WildcardRouteRecord));
     });
   });
   describe("attach", () => {
@@ -22,9 +16,9 @@ describe("SearchRoutesBuilder", () => {
     const sub = SearchRoutesBuilder.attachTo(toplevel, "bar", {
       action: ({ foo, bar }) => `foo is ${foo}, bar is ${bar}`,
     });
-    const routes = sub.getRoutes();
+    const route = sub.getRoute();
     expect(
-      routes[wildcardRouteKey].route.action({
+      route.action({
         foo: "123",
         bar: "456",
       })

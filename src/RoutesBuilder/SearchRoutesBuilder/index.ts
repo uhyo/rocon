@@ -1,9 +1,6 @@
 import { RoutesBuilder } from "..";
 import { SearchLocationComposer } from "../../LocationComposer/SearchLocationComposer";
-import type {
-  RouteRecordType,
-  WildcardInRouteRecords,
-} from "../../RouteRecord";
+import type { RouteRecordType } from "../../RouteRecord";
 import {
   WildcardRouteRecord,
   WildcardRouteRecordObject,
@@ -12,7 +9,6 @@ import type { RouteResolver } from "../../RouteResolver";
 import type { AttachableRoutesBuilder } from "../AttachableRoutesBuilder";
 import type { RoutesBuilderOptions } from "../RoutesBuilderOptions";
 import type { RouteDefinition } from "../RoutesDefinitionObject";
-import { wildcardRouteKey } from "../symbols";
 import type {
   ActionTypeToWildcardFlag,
   ExistingWildcardFlagType,
@@ -132,15 +128,6 @@ export class SearchRoutesBuilder<
     WildcardFlagToHasAction<WildcardFlag>
   > {
     return this.#route.route;
-  }
-
-  getRoutes(): Readonly<
-    WildcardInRouteRecords<ActionResult, WildcardFlag, Match>
-  > {
-    return {
-      [wildcardRouteKey]: this.#route,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
   }
 
   getRawBuilder(): RoutesBuilder<ActionResult> {
