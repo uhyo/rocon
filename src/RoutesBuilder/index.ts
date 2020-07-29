@@ -39,14 +39,7 @@ export class RoutesBuilder<ActionResult> {
   }
 
   #state: RoutesBuilderState = "unattached";
-  #registeredBuilder?: AttachableRoutesBuilder<
-    ActionResult,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    any,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    any,
-    never
-  > = undefined;
+  #registeredBuilder?: AttachableRoutesBuilder<ActionResult> = undefined;
   #composer: LocationComposer<string>;
   #rootLocation: Location;
   #routeRecordConfig: RouteRecordConfig;
@@ -107,7 +100,7 @@ export class RoutesBuilder<ActionResult> {
    */
   register(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    builder: AttachableRoutesBuilder<ActionResult, any, any, never>
+    builder: AttachableRoutesBuilder<ActionResult>
   ): void {
     this.#registeredBuilder = builder;
   }

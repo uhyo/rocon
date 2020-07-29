@@ -33,7 +33,7 @@ export class SearchRoutesBuilder<
   Defs extends RoutesDefinition<ActionResult>,
   WildcardFlag extends ExistingWildcardFlagType,
   Match
-> implements AttachableRoutesBuilder<ActionResult, Defs, WildcardFlag, Match> {
+> implements AttachableRoutesBuilder<ActionResult> {
   static init<
     ActionResult,
     Key extends string,

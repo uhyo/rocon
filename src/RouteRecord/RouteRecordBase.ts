@@ -1,11 +1,7 @@
 import type { RouteRecordConfig } from ".";
 import { Location } from "../LocationComposer/Location";
 import type { AttachableRoutesBuilder } from "../RoutesBuilder/AttachableRoutesBuilder";
-import type {
-  ActionType,
-  RouteDefinition,
-} from "../RoutesBuilder/RoutesDefinitionObject";
-import { WildcardFlagType } from "../RoutesBuilder/WildcardFlagType";
+import type { ActionType } from "../RoutesBuilder/RoutesDefinitionObject";
 
 export type ActionTypeOfRouteRecord<
   ActionResult,
@@ -26,12 +22,7 @@ export abstract class RouteRecordBase<
    * Action of this route.
    */
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
-  #builder?: AttachableRoutesBuilder<
-    ActionResult,
-    Record<string, RouteDefinition<ActionResult, Match>>,
-    WildcardFlagType,
-    Match
-  > = undefined;
+  #builder?: AttachableRoutesBuilder<ActionResult> = undefined;
   #config: RouteRecordConfig;
 
   constructor(
@@ -47,21 +38,12 @@ export abstract class RouteRecordBase<
   /**
    * Get the builder attached to this Route.
    */
-  getBuilder():
-    | AttachableRoutesBuilder<
-        ActionResult,
-        Record<string, RouteDefinition<ActionResult, Match>>,
-        WildcardFlagType,
-        Match
-      >
-    | undefined {
+  getBuilder(): AttachableRoutesBuilder<ActionResult> | undefined {
     return this.#builder;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  attach<B extends AttachableRoutesBuilder<ActionResult, any, any, Match>>(
-    builder: B
-  ): B {
+  attach<B extends AttachableRoutesBuilder<ActionResult>>(builder: B): B {
     this.#builder = builder;
     this.#config.attachBuilderToRoute(builder.getRawBuilder(), this);
     return builder;

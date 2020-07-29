@@ -36,7 +36,7 @@ export class PathRoutesBuilder<
   Defs extends RoutesDefinition<ActionResult>,
   WildcardFlag extends WildcardFlagType,
   Match
-> implements AttachableRoutesBuilder<ActionResult, Defs, WildcardFlag, Match> {
+> implements AttachableRoutesBuilder<ActionResult> {
   static init<ActionResult, Match = {}>(
     options: Partial<PathRoutesBuilderOptions<ActionResult>> = {}
   ): PathRoutesBuilder<ActionResult, {}, "none", Match> {
