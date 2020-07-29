@@ -1,5 +1,5 @@
-import { PathRoutesBuilder } from "../BuilderLink/PathRoutesBuilder";
 import { RouteRecord } from "../RouteRecord";
+import { PathRoutesBuilder } from "../RoutesBuilder/PathRoutesBuilder";
 
 const b1 = PathRoutesBuilder.init<string>().routes({
   foo: {

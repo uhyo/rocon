@@ -1,4 +1,15 @@
-import { BuilderLink, RouteRecordsBase } from "..";
+import { BuilderLink, RouteRecordsBase } from "../../BuilderLink";
+import type { AttachableRoutesBuilder } from "../../BuilderLink/AttachableRoutesBuilder";
+import type { BuilderLinkOptions } from "../../BuilderLink/BuilderLinkOptions";
+import type {
+  RouteDefinition,
+  RoutesDefinition,
+} from "../../BuilderLink/RoutesDefinitionObject";
+import { wildcardRouteKey } from "../../BuilderLink/symbols";
+import type {
+  ActionTypeToWildcardFlag,
+  WildcardFlagType,
+} from "../../BuilderLink/WildcardFlagType";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
 import {
   RouteRecord,
@@ -11,17 +22,6 @@ import {
   WildcardRouteRecordObject,
 } from "../../RouteRecord/WildcardRouteRecord";
 import { RouteResolver } from "../../RouteResolver";
-import type { AttachableRoutesBuilder } from "../AttachableRoutesBuilder";
-import type { BuilderLinkOptions } from "../BuilderLinkOptions";
-import type {
-  RouteDefinition,
-  RoutesDefinition,
-} from "../RoutesDefinitionObject";
-import { wildcardRouteKey } from "../symbols";
-import type {
-  ActionTypeToWildcardFlag,
-  WildcardFlagType,
-} from "../WildcardFlagType";
 
 export type PathRoutesBuilderOptions<ActionResult> = Omit<
   BuilderLinkOptions<ActionResult, string>,
