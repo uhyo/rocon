@@ -88,7 +88,7 @@ export class PathRoutesBuilder<
     Object.assign(routes, this.#routes);
     for (const key of Object.getOwnPropertyNames(defs) as (keyof D &
       string)[]) {
-      routes[key] = new RouteRecord(this, key, defs[key].action);
+      routes[key] = new RouteRecord(result, key, defs[key].action);
     }
     result.#wildcardRoute = this.#wildcardRoute;
     // this.#rawBuilder.inheritTo(result.#rawBuilder);
@@ -131,7 +131,7 @@ export class PathRoutesBuilder<
     result.#wildcardRoute = {
       matchKey: key,
       route: new WildcardRouteRecord(
-        this,
+        result,
         // TypeScript requires this `as` but this should be true because Key extends string.
         key as Extract<Key, string>,
         routeDefinition.action

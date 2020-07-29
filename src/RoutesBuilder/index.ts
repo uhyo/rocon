@@ -92,7 +92,7 @@ export class BuilderLink<ActionResult, Segment>
       .result;
   }
 
-  getRootLocation() {
+  getRootLocation(): Location {
     return this.followInheritanceChain((link) => link.#rootLocation).result;
   }
 
@@ -109,7 +109,6 @@ export class BuilderLink<ActionResult, Segment>
       root: this.#rootLocation,
     });
     result.#state = this.#state;
-    result.#childBuilder = this.#childBuilder;
     return result;
   }
 
