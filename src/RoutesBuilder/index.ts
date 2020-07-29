@@ -7,8 +7,6 @@ import { PartiallyPartial } from "../util/types/PartiallyPartial";
 import { AttachableRoutesBuilder } from "./AttachableRoutesBuilder";
 import { fillOptions } from "./fillOptions";
 import type { RoutesBuilderOptions } from "./RoutesBuilderOptions";
-import type { RoutesDefinition } from "./RoutesDefinitionObject";
-import { WildcardFlagType } from "./WildcardFlagType";
 
 export type RouteRecordsBase<ActionResult> = Record<
   string,
@@ -29,19 +27,15 @@ type RoutesBuilderState = "unattached" | "attached" | "invalidated";
 /**
  * Abstract Builder to define routes.
  */
-export class RoutesBuilder<
-  ActionResult,
-  Defs extends RoutesDefinition<ActionResult>,
-  WildcardFlag extends WildcardFlagType
-> {
+export class RoutesBuilder<ActionResult> {
   static init<ActionResult>(
     options: PartiallyPartial<
       RoutesBuilderOptions<ActionResult, string>,
       "root"
     >
-  ): RoutesBuilder<ActionResult, {}, "none"> {
+  ): RoutesBuilder<ActionResult> {
     fillOptions(options);
-    return new RoutesBuilder<ActionResult, {}, "none">(options);
+    return new RoutesBuilder<ActionResult>(options);
   }
 
   #state: RoutesBuilderState = "unattached";
@@ -97,8 +91,8 @@ export class RoutesBuilder<
   /**
    * TODO: wanna deprecate in favor of inherit
    */
-  clone(): RoutesBuilder<ActionResult, Defs, WildcardFlag> {
-    const result = new RoutesBuilder<ActionResult, Defs, WildcardFlag>({
+  clone(): RoutesBuilder<ActionResult> {
+    const result = new RoutesBuilder<ActionResult>({
       composer: this.#composer,
       root: this.#rootLocation,
     });
@@ -122,7 +116,7 @@ export class RoutesBuilder<
    * Inherit internal information to a builder generated from this.
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  inheritTo(target: RoutesBuilder<ActionResult, any, any>): void {
+  inheritTo(target: RoutesBuilder<ActionResult>): void {
     target.#parentRoute = this.#parentRoute;
     switch (this.#state) {
       case "unattached": {

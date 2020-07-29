@@ -18,7 +18,7 @@ export type RouteRecordConfig = {
    * Attach given builder to a route.
    */
   attachBuilderToRoute: (
-    builder: RoutesBuilder<any, any, any>,
+    builder: RoutesBuilder<any>,
     route: RouteRecordType<any, any, any>
   ) => void;
 };

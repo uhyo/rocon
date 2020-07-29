@@ -57,15 +57,13 @@ export class PathRoutesBuilder<
     return route.attach(PathRoutesBuilder.init());
   }
 
-  #rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag>;
+  #rawBuilder: RoutesBuilder<ActionResult>;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
     | WildcardRouteRecordObject<ActionResult, Match, boolean>
     | undefined = undefined;
 
-  private constructor(
-    rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag>
-  ) {
+  private constructor(rawBuilder: RoutesBuilder<ActionResult>) {
     this.#rawBuilder = rawBuilder;
     rawBuilder.register(this);
   }
@@ -170,7 +168,7 @@ export class PathRoutesBuilder<
     }
   }
 
-  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag> {
+  getRawBuilder(): RoutesBuilder<ActionResult> {
     return this.#rawBuilder;
   }
 

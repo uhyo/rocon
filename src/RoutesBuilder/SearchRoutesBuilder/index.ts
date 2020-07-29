@@ -123,11 +123,11 @@ export class SearchRoutesBuilder<
     return r.attach(b);
   }
 
-  #rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag>;
+  #rawBuilder: RoutesBuilder<ActionResult>;
   #route: WildcardRouteRecordObject<ActionResult, Match, boolean>;
 
   private constructor(
-    rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag>,
+    rawBuilder: RoutesBuilder<ActionResult>,
     route: WildcardRouteRecordObject<ActionResult, Match, boolean>
   ) {
     this.#rawBuilder = rawBuilder;
@@ -152,7 +152,7 @@ export class SearchRoutesBuilder<
     } as any;
   }
 
-  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag> {
+  getRawBuilder(): RoutesBuilder<ActionResult> {
     return this.#rawBuilder;
   }
 
