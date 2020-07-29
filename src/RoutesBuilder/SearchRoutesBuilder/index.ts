@@ -52,7 +52,7 @@ export class SearchRoutesBuilder<
       ...options,
       composer: new SearchLocationComposer(key),
     };
-    const rawBuilder = BuilderLink.init<ActionResult, string>(op);
+    const link = BuilderLink.init<ActionResult, string>(op);
     const result = new SearchRoutesBuilder<
       ActionResult,
       ActionTypeToWildcardFlag<RD["action"]>,
@@ -61,7 +61,7 @@ export class SearchRoutesBuilder<
           [K in Key]: string;
         }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    >(rawBuilder, key as any, routeDefinition.action);
+    >(link, key as any, routeDefinition.action);
     return result;
   }
 
@@ -104,20 +104,20 @@ export class SearchRoutesBuilder<
     return r.attach(b);
   }
 
-  #rawBuilder: BuilderLink<ActionResult, string>;
+  #link: BuilderLink<ActionResult, string>;
   #route: WildcardRouteRecordObject<ActionResult, Match, boolean>;
 
   private constructor(
-    rawBuilder: BuilderLink<ActionResult, string>,
+    link: BuilderLink<ActionResult, string>,
     key: Extract<keyof Match, string>,
     action: ActionType<ActionResult, Match> | undefined
   ) {
-    this.#rawBuilder = rawBuilder;
+    this.#link = link;
     this.#route = {
       matchKey: key,
       route: new WildcardRouteRecord(this, key, action),
     };
-    rawBuilder.register(this);
+    link.register(this);
   }
 
   getRoute(): WildcardRouteRecord<
@@ -129,11 +129,11 @@ export class SearchRoutesBuilder<
   }
 
   getBuilderLink(): BuilderLink<ActionResult, string> {
-    return this.#rawBuilder;
+    return this.#link;
   }
 
   getResolver(): RouteResolver<ActionResult, string> {
-    return this.#rawBuilder.getResolver(() => {
+    return this.#link.getResolver(() => {
       return {
         type: "wildcard",
         route: this.#route.route,

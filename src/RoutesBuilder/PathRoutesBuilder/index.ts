@@ -44,8 +44,8 @@ export class PathRoutesBuilder<
       ...options,
       composer: new PathLocationComposer(),
     };
-    const rawBuilder = BuilderLink.init<ActionResult, string>(op);
-    return new PathRoutesBuilder(rawBuilder);
+    const link = BuilderLink.init<ActionResult, string>(op);
+    return new PathRoutesBuilder(link);
   }
 
   /**
@@ -57,15 +57,15 @@ export class PathRoutesBuilder<
     return route.attach(PathRoutesBuilder.init());
   }
 
-  readonly #rawBuilder: BuilderLink<ActionResult, string>;
+  readonly #link: BuilderLink<ActionResult, string>;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
     | WildcardRouteRecordObject<ActionResult, Match, boolean>
     | undefined = undefined;
 
-  private constructor(rawBuilder: BuilderLink<ActionResult, string>) {
-    this.#rawBuilder = rawBuilder;
-    rawBuilder.register(this);
+  private constructor(link: BuilderLink<ActionResult, string>) {
+    this.#link = link;
+    link.register(this);
   }
 
   routes<D extends RoutesDefinition<ActionResult>>(
@@ -76,14 +76,14 @@ export class PathRoutesBuilder<
     WildcardFlag,
     Match
   > {
-    this.#rawBuilder.checkInvalidation();
+    this.#link.checkInvalidation();
 
     const result = new PathRoutesBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
       WildcardFlag,
       Match
-    >(this.#rawBuilder.inherit());
+    >(this.#link.inherit());
     const routes = result.#routes;
     Object.assign(routes, this.#routes);
     for (const key of Object.getOwnPropertyNames(defs) as (keyof D &
@@ -91,7 +91,6 @@ export class PathRoutesBuilder<
       routes[key] = new PathRouteRecord(result, key, defs[key].action);
     }
     result.#wildcardRoute = this.#wildcardRoute;
-    // this.#rawBuilder.inheritTo(result.#rawBuilder);
     return result;
   }
 
@@ -116,7 +115,7 @@ export class PathRoutesBuilder<
         [K in Key]: string;
       }
   > {
-    this.#rawBuilder.checkInvalidation();
+    this.#link.checkInvalidation();
 
     const result = new PathRoutesBuilder<
       ActionResult,
@@ -126,7 +125,7 @@ export class PathRoutesBuilder<
         {
           [K in Key]: string;
         }
-    >(this.#rawBuilder.inherit());
+    >(this.#link.inherit());
     result.#routes = this.#routes;
     result.#wildcardRoute = {
       matchKey: key,
@@ -137,7 +136,6 @@ export class PathRoutesBuilder<
         routeDefinition.action
       ),
     };
-    // this.#rawBuilder.inheritTo(result.#rawBuilder);
     return result;
   }
 
@@ -145,7 +143,7 @@ export class PathRoutesBuilder<
     RoutesDefinitionToRouteRecords<ActionResult, Defs, Match> &
       WildcardInRouteRecords<ActionResult, WildcardFlag, Match>
   > {
-    this.#rawBuilder.checkInvalidation();
+    this.#link.checkInvalidation();
     const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
       ActionResult,
       Defs,
@@ -164,11 +162,11 @@ export class PathRoutesBuilder<
   }
 
   getBuilderLink(): BuilderLink<ActionResult, string> {
-    return this.#rawBuilder;
+    return this.#link;
   }
 
   getResolver(): RouteResolver<ActionResult, string> {
-    return this.#rawBuilder.getResolver((segment) => {
+    return this.#link.getResolver((segment) => {
       const route = this.#routes[segment];
       if (route !== undefined) {
         return {

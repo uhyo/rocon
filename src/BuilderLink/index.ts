@@ -72,7 +72,10 @@ export class BuilderLink<ActionResult, Segment>
     if (this.#state.state === "inherited") {
       const res = this.#state.inheritor.followInheritanceChain(callback);
       // short-cut optimization
-      this.#state.inheritor = res.last;
+      this.#state = {
+        state: "inherited",
+        inheritor: res.last,
+      };
       return res;
     } else {
       const result = callback(this);
