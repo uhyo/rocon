@@ -62,13 +62,7 @@ export class SearchRoutesBuilder<
       ...options,
       composer: new SearchLocationComposer(key),
     };
-    const rawBuilder = RoutesBuilder.init<
-      ActionResult,
-      Match &
-        {
-          [K in Key]: string;
-        }
-    >(op);
+    const rawBuilder = RoutesBuilder.init<ActionResult>(op);
     const result = new SearchRoutesBuilder<
       ActionResult,
       {},
@@ -129,11 +123,11 @@ export class SearchRoutesBuilder<
     return r.attach(b);
   }
 
-  #rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Match>;
+  #rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag>;
   #route: WildcardRouteRecordObject<ActionResult, Match, boolean>;
 
   private constructor(
-    rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Match>,
+    rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag>,
     route: WildcardRouteRecordObject<ActionResult, Match, boolean>
   ) {
     this.#rawBuilder = rawBuilder;
@@ -158,7 +152,7 @@ export class SearchRoutesBuilder<
     } as any;
   }
 
-  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag, Match> {
+  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag> {
     return this.#rawBuilder;
   }
 

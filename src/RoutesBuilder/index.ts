@@ -1,21 +1,13 @@
 import type { LocationComposer } from "../LocationComposer";
 import type { Location } from "../LocationComposer/Location";
-import { RouteRecord } from "../RouteRecord";
 import type { RouteRecordConfig, RouteRecordType } from "../RouteRecord";
-import {
-  WildcardRouteRecord,
-  WildcardRouteRecordObject,
-} from "../RouteRecord/WildcardRouteRecord";
 import { RouteResolver, SegmentResolver } from "../RouteResolver";
 import { assertNever } from "../util/assert";
 import { PartiallyPartial } from "../util/types/PartiallyPartial";
 import { AttachableRoutesBuilder } from "./AttachableRoutesBuilder";
 import { fillOptions } from "./fillOptions";
 import type { RoutesBuilderOptions } from "./RoutesBuilderOptions";
-import type {
-  RouteDefinition,
-  RoutesDefinition,
-} from "./RoutesDefinitionObject";
+import type { RoutesDefinition } from "./RoutesDefinitionObject";
 import { WildcardFlagType } from "./WildcardFlagType";
 
 export type RouteRecordsBase<ActionResult> = Record<
@@ -40,20 +32,16 @@ type RoutesBuilderState = "unattached" | "attached" | "invalidated";
 export class RoutesBuilder<
   ActionResult,
   Defs extends RoutesDefinition<ActionResult>,
-  WildcardFlag extends WildcardFlagType,
-  Match
+  WildcardFlag extends WildcardFlagType
 > {
-  // RoutesBuilder is covariant upon Wildcard
-  declare readonly [wildcardCovariance]: Match;
-
-  static init<ActionResult, Match = {}>(
+  static init<ActionResult>(
     options: PartiallyPartial<
       RoutesBuilderOptions<ActionResult, string>,
       "root"
     >
-  ): RoutesBuilder<ActionResult, {}, "none", Match> {
+  ): RoutesBuilder<ActionResult, {}, "none"> {
     fillOptions(options);
-    return new RoutesBuilder<ActionResult, {}, "none", Match>(options);
+    return new RoutesBuilder<ActionResult, {}, "none">(options);
   }
 
   #state: RoutesBuilderState = "unattached";
@@ -69,10 +57,6 @@ export class RoutesBuilder<
   #rootLocation: Location;
   #routeRecordConfig: RouteRecordConfig;
   #parentRoute?: RouteRecordType<ActionResult, never, boolean> = undefined;
-  #routes: RouteRecordsBase<ActionResult> = Object.create(null);
-  #wildcardRoute:
-    | WildcardRouteRecordObject<ActionResult, Match, boolean>
-    | undefined = undefined;
 
   private constructor(options: RoutesBuilderOptions<ActionResult, string>) {
     this.#composer = options.composer;
@@ -113,8 +97,8 @@ export class RoutesBuilder<
   /**
    * TODO: wanna deprecate in favor of inherit
    */
-  clone(): RoutesBuilder<ActionResult, Defs, WildcardFlag, Match> {
-    const result = new RoutesBuilder<ActionResult, Defs, WildcardFlag, Match>({
+  clone(): RoutesBuilder<ActionResult, Defs, WildcardFlag> {
+    const result = new RoutesBuilder<ActionResult, Defs, WildcardFlag>({
       composer: this.#composer,
       root: this.#rootLocation,
     });
@@ -138,7 +122,7 @@ export class RoutesBuilder<
    * Inherit internal information to a builder generated from this.
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  inheritTo(target: RoutesBuilder<ActionResult, any, any, any>): void {
+  inheritTo(target: RoutesBuilder<ActionResult, any, any>): void {
     target.#parentRoute = this.#parentRoute;
     switch (this.#state) {
       case "unattached": {
@@ -161,92 +145,6 @@ export class RoutesBuilder<
         assertNever(this.#state);
       }
     }
-  }
-
-  routes<D extends RoutesDefinition<ActionResult>>(
-    defs: D
-  ): RoutesBuilder<ActionResult, Omit<Defs, keyof D> & D, WildcardFlag, Match> {
-    this.checkInvalidation();
-
-    const result = new RoutesBuilder<
-      ActionResult,
-      Omit<Defs, keyof D> & D,
-      WildcardFlag,
-      Match
-    >({
-      composer: this.#composer,
-      root: this.#rootLocation,
-    });
-    const routes = result.#routes;
-    Object.assign(routes, this.#routes);
-    for (const key of Object.getOwnPropertyNames(defs) as (keyof D &
-      string)[]) {
-      routes[key] = new RouteRecord(
-        result.#routeRecordConfig,
-        key,
-        defs[key].action
-      );
-    }
-    result.#wildcardRoute = this.#wildcardRoute;
-    this.inheritTo(result);
-    return result as RoutesBuilder<
-      ActionResult,
-      Omit<Defs, keyof D> & D,
-      WildcardFlag,
-      Match
-    >;
-  }
-
-  /**
-   * Add a wildcard route and return a new RoutesBuilder.
-   */
-  wildcard<
-    Key extends string,
-    ValueType,
-    RD extends RouteDefinition<
-      ActionResult,
-      Match &
-        {
-          [K in Key]: ValueType;
-        }
-    >
-  >(
-    key: Key,
-    routeDefinition: RD
-  ): RoutesBuilder<
-    ActionResult,
-    Defs,
-    undefined extends RD["action"] ? "noaction" : "hasaction",
-    Match &
-      {
-        [K in Key]: ValueType;
-      }
-  > {
-    this.checkInvalidation();
-    const result = new RoutesBuilder<
-      ActionResult,
-      Defs,
-      undefined extends RD["action"] ? "noaction" : "hasaction",
-      Match &
-        {
-          [K in Key]: ValueType;
-        }
-    >({
-      composer: this.#composer,
-      root: this.#rootLocation,
-    });
-    result.#routes = this.#routes;
-    result.#wildcardRoute = {
-      matchKey: key,
-      route: new WildcardRouteRecord(
-        result.#routeRecordConfig,
-        // TypeScript requires this `as` but this should be true because Key extends string.
-        key as Extract<Key, string>,
-        routeDefinition.action
-      ),
-    };
-    this.inheritTo(result);
-    return result;
   }
 
   getResolver(

@@ -44,7 +44,7 @@ export class PathRoutesBuilder<
       ...options,
       composer: new PathLocationComposer(),
     };
-    const rawBuilder = RoutesBuilder.init<ActionResult, Match>(op);
+    const rawBuilder = RoutesBuilder.init<ActionResult>(op);
     return new PathRoutesBuilder(rawBuilder);
   }
 
@@ -57,14 +57,14 @@ export class PathRoutesBuilder<
     return route.attach(PathRoutesBuilder.init());
   }
 
-  #rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Match>;
+  #rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag>;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
     | WildcardRouteRecordObject<ActionResult, Match, boolean>
     | undefined = undefined;
 
   private constructor(
-    rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag, Match>
+    rawBuilder: RoutesBuilder<ActionResult, Defs, WildcardFlag>
   ) {
     this.#rawBuilder = rawBuilder;
     rawBuilder.register(this);
@@ -170,7 +170,7 @@ export class PathRoutesBuilder<
     }
   }
 
-  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag, Match> {
+  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag> {
     return this.#rawBuilder;
   }
 

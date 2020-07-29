@@ -9,6 +9,6 @@ export interface AttachableRoutesBuilder<
   WildcardFlag extends WildcardFlagType,
   Match
 > {
-  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag, Match>;
+  getRawBuilder(): RoutesBuilder<ActionResult, Defs, WildcardFlag>;
   getResolver(): RouteResolver<ActionResult, string>;
 }
