@@ -1,9 +1,9 @@
-import type { LocationComposer } from "../LocationComposer";
 import type { Location } from "../LocationComposer/Location";
-import { RoutesBuilder } from "../RoutesBuilder";
+import { AttachableRoutesBuilder } from "../RoutesBuilder/AttachableRoutesBuilder";
 import type { RoutesDefinition } from "../RoutesBuilder/RoutesDefinitionObject";
 import { wildcardRouteKey } from "../RoutesBuilder/symbols";
 import type { WildcardFlagType } from "../RoutesBuilder/WildcardFlagType";
+import { resolveLinkLocation } from "./resolveLinkLocation";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
 import type { RouteRecordType } from "./RouteRecordType";
 import type { WildcardRouteRecordObject } from "./WildcardRouteRecord";
@@ -12,15 +12,7 @@ export type { RouteRecordType };
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type RouteRecordConfig<Segment> = {
-  composer: LocationComposer<Segment>;
   getRootLocation: (match: any) => Location<any>;
-  /**
-   * Attach given builder to a route.
-   */
-  attachBuilderToRoute: (
-    builder: RoutesBuilder<any, any>,
-    route: RouteRecordType<any, any, any>
-  ) => void;
 };
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
@@ -36,21 +28,23 @@ export class RouteRecord<ActionResult, Match, HasAction extends boolean>
    * Key of this route.
    */
   readonly key: string;
-  #config: RouteRecordConfig<string>;
+  #parent: AttachableRoutesBuilder<ActionResult, string>;
 
   constructor(
-    config: RouteRecordConfig<string>,
+    parent: AttachableRoutesBuilder<ActionResult, string>,
     key: string,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
-    super(config, action);
-    this.#config = config;
+    super(action);
+    this.#parent = parent;
     this.key = key;
   }
 
   getLocation(match: Match): Location {
-    const parentLocation = this.#config.getRootLocation(match);
-    return this.#config.composer.compose(parentLocation, this.key);
+    const link = this.#parent.getBuilderLink();
+    return resolveLinkLocation(link, match, (parentLocation) =>
+      link.composer.compose(parentLocation, this.key)
+    );
   }
 }
 

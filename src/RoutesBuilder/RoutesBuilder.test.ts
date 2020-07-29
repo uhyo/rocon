@@ -1,17 +1,17 @@
 import { RouteRecord } from "../RouteRecord";
 import { WildcardRouteRecord } from "../RouteRecord/WildcardRouteRecord";
-import { RoutesBuilder } from "./";
+import { BuilderLink } from "./";
 import { wildcardRouteKey } from "./symbols";
 
 describe.skip("RoutesBuilder", () => {
   describe("routes", () => {
     it("Empty at init", () => {
-      const b = RoutesBuilder.init(options1);
+      const b = BuilderLink.init(options1);
       expect(b.getRoutes()).toEqual({});
     });
 
     it("Reflects one routes() call", () => {
-      const res = RoutesBuilder.init<string>().routes({
+      const res = BuilderLink.init<string>().routes({
         foo: {
           action: () => "foo!",
         },
@@ -34,7 +34,7 @@ describe.skip("RoutesBuilder", () => {
     });
 
     it("Reflects two routes() calls", () => {
-      const res = RoutesBuilder.init<string>()
+      const res = BuilderLink.init<string>()
         .routes({
           foo: {
             action: () => "foo!",
@@ -60,7 +60,7 @@ describe.skip("RoutesBuilder", () => {
     });
 
     it("RoutesBuilder is immutable", () => {
-      const b1 = RoutesBuilder.init<string>().routes({
+      const b1 = BuilderLink.init<string>().routes({
         foo: {
           action: () => "foo!",
         },
@@ -77,7 +77,7 @@ describe.skip("RoutesBuilder", () => {
     });
 
     it("no action route", () => {
-      const res = RoutesBuilder.init<string>().routes({
+      const res = BuilderLink.init<string>().routes({
         foo: {},
         bar: {
           action: () => "bar?",
@@ -100,7 +100,7 @@ describe.skip("RoutesBuilder", () => {
 
   describe("wildcard", () => {
     it("define wilecard route", () => {
-      const b = RoutesBuilder.init<string>().wildcard("k", {
+      const b = BuilderLink.init<string>().wildcard("k", {
         action: ({ k }) => `k is ${k}`,
       });
 
@@ -122,7 +122,7 @@ describe.skip("RoutesBuilder", () => {
 
   describe("attach", () => {
     it("composed location action", () => {
-      const toplevel = RoutesBuilder.init<string>()
+      const toplevel = BuilderLink.init<string>()
         .routes({
           foo: {
             action: () => "foo!",
@@ -130,7 +130,7 @@ describe.skip("RoutesBuilder", () => {
         })
         .getRoutes();
       const sub = toplevel.foo
-        .attach(RoutesBuilder.init<string>())
+        .attach(BuilderLink.init<string>())
         .routes({
           bar: {
             action: () => "bar!",
@@ -141,7 +141,7 @@ describe.skip("RoutesBuilder", () => {
       expect(sub.bar.action({})).toBe("bar!");
     });
     it("composed location object", () => {
-      const toplevel = RoutesBuilder.init<string>()
+      const toplevel = BuilderLink.init<string>()
         .routes({
           foo: {
             action: () => "foo!",
@@ -149,7 +149,7 @@ describe.skip("RoutesBuilder", () => {
         })
         .getRoutes();
       const sub = toplevel.foo
-        .attach(RoutesBuilder.init<string>())
+        .attach(BuilderLink.init<string>())
         .routes({
           bar: {
             action: () => "bar!",
@@ -163,7 +163,7 @@ describe.skip("RoutesBuilder", () => {
       });
     });
     it("change location after attach", () => {
-      const sub = RoutesBuilder.init<string>().routes({
+      const sub = BuilderLink.init<string>().routes({
         bom: {
           action: () => "bom!",
         },
@@ -174,7 +174,7 @@ describe.skip("RoutesBuilder", () => {
         state: null,
       });
 
-      const toplevel = RoutesBuilder.init<string>()
+      const toplevel = BuilderLink.init<string>()
         .routes({
           foo: {
             action: () => "foo!",
@@ -188,13 +188,13 @@ describe.skip("RoutesBuilder", () => {
       });
     });
     it("attach to wildcard", () => {
-      const toplevel = RoutesBuilder.init<string>()
+      const toplevel = BuilderLink.init<string>()
         .wildcard("id", {
           action: ({ id }) => `id is ${id}`,
         })
         .getRoutes();
       const sub = toplevel[wildcardRouteKey].route
-        .attach(RoutesBuilder.init<string, { id: unknown }>())
+        .attach(BuilderLink.init<string, { id: unknown }>())
         .routes({
           bar: {
             action: ({ id }) => `bar! id is ${id}`,
@@ -213,13 +213,13 @@ describe.skip("RoutesBuilder", () => {
       expect(sub.bar.action({ id: 123 })).toBe("bar! id is 123");
     });
     it("attach to no-action route", () => {
-      const toplevel = RoutesBuilder.init<string>()
+      const toplevel = BuilderLink.init<string>()
         .routes({
           foo: {},
         })
         .getRoutes();
       const sub = toplevel.foo
-        .attach(RoutesBuilder.init<string>())
+        .attach(BuilderLink.init<string>())
         .routes({
           wow: {
             action: () => "wow",
@@ -230,20 +230,20 @@ describe.skip("RoutesBuilder", () => {
       expect(sub.wow.action({})).toBe("wow");
     });
     it("no attaching twice", () => {
-      const { foo } = RoutesBuilder.init<string>()
+      const { foo } = BuilderLink.init<string>()
         .routes({
           foo: {},
         })
         .getRoutes();
 
-      const sub = RoutesBuilder.init<string>();
+      const sub = BuilderLink.init<string>();
       foo.attach(sub);
       expect(() => foo.attach(sub)).toThrow();
     });
   });
 
   describe("getResolver", () => {
-    const resolver = RoutesBuilder.init<string>()
+    const resolver = BuilderLink.init<string>()
       .routes({
         foo: {
           action: () => "foo!",

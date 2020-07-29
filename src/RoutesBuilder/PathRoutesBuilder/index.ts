@@ -1,4 +1,4 @@
-import { RouteRecordsBase, RoutesBuilder } from "..";
+import { BuilderLink, RouteRecordsBase } from "..";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
 import {
   RouteRecord,
@@ -12,7 +12,7 @@ import {
 } from "../../RouteRecord/WildcardRouteRecord";
 import { RouteResolver } from "../../RouteResolver";
 import type { AttachableRoutesBuilder } from "../AttachableRoutesBuilder";
-import type { RoutesBuilderOptions } from "../RoutesBuilderOptions";
+import type { BuilderLinkOptions } from "../BuilderLinkOptions";
 import type {
   RouteDefinition,
   RoutesDefinition,
@@ -24,7 +24,7 @@ import type {
 } from "../WildcardFlagType";
 
 export type PathRoutesBuilderOptions<ActionResult> = Omit<
-  RoutesBuilderOptions<ActionResult, string>,
+  BuilderLinkOptions<ActionResult, string>,
   "composer"
 >;
 
@@ -44,7 +44,7 @@ export class PathRoutesBuilder<
       ...options,
       composer: new PathLocationComposer(),
     };
-    const rawBuilder = RoutesBuilder.init<ActionResult, string>(op);
+    const rawBuilder = BuilderLink.init<ActionResult, string>(op);
     return new PathRoutesBuilder(rawBuilder);
   }
 
@@ -57,13 +57,13 @@ export class PathRoutesBuilder<
     return route.attach(PathRoutesBuilder.init());
   }
 
-  #rawBuilder: RoutesBuilder<ActionResult, string>;
+  #rawBuilder: BuilderLink<ActionResult, string>;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
     | WildcardRouteRecordObject<ActionResult, Match, boolean>
     | undefined = undefined;
 
-  private constructor(rawBuilder: RoutesBuilder<ActionResult, string>) {
+  private constructor(rawBuilder: BuilderLink<ActionResult, string>) {
     this.#rawBuilder = rawBuilder;
     rawBuilder.register(this);
   }
@@ -88,11 +88,7 @@ export class PathRoutesBuilder<
     Object.assign(routes, this.#routes);
     for (const key of Object.getOwnPropertyNames(defs) as (keyof D &
       string)[]) {
-      routes[key] = new RouteRecord(
-        result.#rawBuilder.getRouteRecordConfig(),
-        key,
-        defs[key].action
-      );
+      routes[key] = new RouteRecord(this, key, defs[key].action);
     }
     result.#wildcardRoute = this.#wildcardRoute;
     this.#rawBuilder.inheritTo(result.#rawBuilder);
@@ -136,7 +132,7 @@ export class PathRoutesBuilder<
     result.#wildcardRoute = {
       matchKey: key,
       route: new WildcardRouteRecord(
-        result.#rawBuilder.getRouteRecordConfig(),
+        this,
         // TypeScript requires this `as` but this should be true because Key extends string.
         key as Extract<Key, string>,
         routeDefinition.action
@@ -168,7 +164,7 @@ export class PathRoutesBuilder<
     }
   }
 
-  getRawBuilder(): RoutesBuilder<ActionResult, string> {
+  getBuilderLink(): BuilderLink<ActionResult, string> {
     return this.#rawBuilder;
   }
 

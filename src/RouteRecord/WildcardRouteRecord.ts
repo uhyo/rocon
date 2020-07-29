@@ -1,5 +1,6 @@
-import { RouteRecordConfig, RouteRecordType } from ".";
+import { RouteRecordType } from ".";
 import { Location } from "../LocationComposer/Location";
+import { AttachableRoutesBuilder } from "../RoutesBuilder/AttachableRoutesBuilder";
 import { assertString } from "../util/assert";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
 
@@ -22,14 +23,14 @@ export class WildcardRouteRecord<ActionResult, Match, HasAction extends boolean>
   extends RouteRecordBase<ActionResult, Match, HasAction>
   implements RouteRecordType<ActionResult, Match, HasAction> {
   readonly matchKey: Extract<keyof Match, string>;
-  #config: RouteRecordConfig<string>;
+  #parent: AttachableRoutesBuilder<ActionResult, string>;
   constructor(
-    config: RouteRecordConfig<string>,
+    parent: AttachableRoutesBuilder<ActionResult, string>,
     matchKey: Extract<keyof Match, string>,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
-    super(config, action);
-    this.#config = config;
+    super(action);
+    this.#parent = parent;
     this.matchKey = matchKey;
   }
 
@@ -37,8 +38,9 @@ export class WildcardRouteRecord<ActionResult, Match, HasAction extends boolean>
     const wildcardValue = match[this.matchKey];
     assertString(wildcardValue);
 
-    return this.#config.composer.compose(
-      this.#config.getRootLocation(match),
+    const link = this.#parent.getBuilderLink();
+    return link.composer.compose(
+      link.getRootLocation(match as never),
       wildcardValue
     );
   }

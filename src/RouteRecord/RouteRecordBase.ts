@@ -1,4 +1,3 @@
-import type { RouteRecordConfig } from ".";
 import { Location } from "../LocationComposer/Location";
 import type { AttachableRoutesBuilder } from "../RoutesBuilder/AttachableRoutesBuilder";
 import type { ActionType } from "../RoutesBuilder/RoutesDefinitionObject";
@@ -23,13 +22,8 @@ export abstract class RouteRecordBase<
    */
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
   #builder?: AttachableRoutesBuilder<ActionResult, string> = undefined;
-  #config: RouteRecordConfig<string>;
 
-  constructor(
-    config: RouteRecordConfig<string>,
-    action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
-  ) {
-    this.#config = config;
+  constructor(action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>) {
     this.action = action;
   }
 
@@ -38,7 +32,9 @@ export abstract class RouteRecordBase<
   /**
    * Get the builder attached to this Route.
    */
-  getBuilder(): AttachableRoutesBuilder<ActionResult, string> | undefined {
+  getAttachedBuilder():
+    | AttachableRoutesBuilder<ActionResult, string>
+    | undefined {
     return this.#builder;
   }
 
@@ -47,7 +43,7 @@ export abstract class RouteRecordBase<
     builder: B
   ): B {
     this.#builder = builder;
-    this.#config.attachBuilderToRoute(builder.getRawBuilder(), this);
+    builder.getBuilderLink().attach(this);
     return builder;
   }
 }
