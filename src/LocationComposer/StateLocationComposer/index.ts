@@ -1,11 +1,13 @@
 import { LocationComposer } from "..";
 import { BaseState, Location } from "../Location";
 
+export type Validator<R> = (value: unknown) => value is R;
+
 export class StateLocationComposer<Key extends string, StateValue>
   implements LocationComposer<StateValue> {
   readonly key: Key;
-  readonly validator: (value: unknown) => value is StateValue;
-  constructor(key: Key, validator: (value: unknown) => value is StateValue) {
+  readonly validator: Validator<StateValue>;
+  constructor(key: Key, validator: Validator<StateValue>) {
     this.key = key;
     this.validator = validator;
   }

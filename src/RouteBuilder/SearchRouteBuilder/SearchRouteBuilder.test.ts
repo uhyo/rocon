@@ -11,7 +11,7 @@ describe("SearchRouteBuilder", () => {
       expect(b.getRoute()).toEqual(expect.any(WildcardRouteRecord));
     });
   });
-  describe("attach", () => {
+  it("attach", () => {
     const toplevel = SearchRouteBuilder.init("foo", {}).getRoute();
     const sub = SearchRouteBuilder.attachTo(toplevel, "bar", {
       action: ({ foo, bar }) => `foo is ${foo}, bar is ${bar}`,
