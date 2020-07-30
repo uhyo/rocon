@@ -1,12 +1,12 @@
+import { Path, Search, State } from "../RouteBuilder/initializers";
 import { PathRouteBuilder } from "../RouteBuilder/PathRouteBuilder";
 import { SearchRouteBuilder } from "../RouteBuilder/SearchRouteBuilder";
-import { StateRouteBuilder } from "../RouteBuilder/StateRouteBuilder";
 import { isString } from "../validator";
 
 describe("Composed Location resolving", () => {
   describe("path-path", () => {
     it("1", () => {
-      const builder = PathRouteBuilder.init<string>().routes({
+      const builder = Path<string>().routes({
         foo: {
           action: () => "foo!",
         },
@@ -46,7 +46,7 @@ describe("Composed Location resolving", () => {
   });
   describe("path-search", () => {
     it("1", () => {
-      const builder = PathRouteBuilder.init<string>().routes({
+      const builder = Path<string>().routes({
         foo: {},
       });
       const resolver = builder.getResolver();
@@ -68,12 +68,13 @@ describe("Composed Location resolving", () => {
   });
   describe("path-search-state", () => {
     it("1", () => {
-      const tab = SearchRouteBuilder.init("tab", {});
+      const tab = Search("tab", {});
       const ss = tab
         .getRoute()
-        .attach(StateRouteBuilder.init("username", isString))
+        .attach(State("username", isString))
         .action(({ tab, username }) => `hello, ${username}! tab=${tab}`);
-      PathRouteBuilder.init()
+
+      Path()
         .routes({
           user: {},
         })
