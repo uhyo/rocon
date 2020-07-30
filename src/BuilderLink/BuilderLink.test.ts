@@ -1,6 +1,6 @@
 import { BuilderLink } from ".";
 import { PathLocationComposer } from "../LocationComposer/PathLocationComposer";
-import { PathRoutesBuilder } from "../RouteBuilder/PathRoutesBuilder";
+import { PathRouteBuilder } from "../RouteBuilder/PathRouteBuilder";
 
 const composer = new PathLocationComposer();
 
@@ -11,12 +11,12 @@ describe("BuilderLink", () => {
         composer,
       });
 
-      const parent1 = PathRoutesBuilder.init()
+      const parent1 = PathRouteBuilder.init()
         .routes({
           foo: { action: () => "foo" },
         })
         .getRoutes();
-      const parent2 = PathRoutesBuilder.init()
+      const parent2 = PathRouteBuilder.init()
         .routes({
           bar: { action: () => "bar" },
         })
@@ -30,7 +30,7 @@ describe("BuilderLink", () => {
         composer,
       });
 
-      const parent1 = PathRoutesBuilder.init()
+      const parent1 = PathRouteBuilder.init()
         .routes({
           foo: { action: () => "foo" },
         })
@@ -46,7 +46,7 @@ describe("BuilderLink", () => {
         composer,
       });
 
-      const parent1 = PathRoutesBuilder.init()
+      const parent1 = PathRouteBuilder.init()
         .routes({
           foo: { action: () => "foo" },
         })
@@ -71,7 +71,7 @@ describe("BuilderLink", () => {
         composer,
       });
 
-      const parent1 = PathRoutesBuilder.init()
+      const parent1 = PathRouteBuilder.init()
         .routes({
           foo: { action: () => "foo" },
         })
@@ -86,7 +86,7 @@ describe("BuilderLink", () => {
         composer,
       });
 
-      const parent1 = PathRoutesBuilder.init()
+      const parent1 = PathRouteBuilder.init()
         .routes({
           foo: { action: () => "foo" },
         })
@@ -102,7 +102,7 @@ describe("BuilderLink", () => {
         composer,
       });
 
-      const parent1 = PathRoutesBuilder.init()
+      const parent1 = PathRouteBuilder.init()
         .routes({
           foo: { action: () => "foo" },
         })
@@ -120,7 +120,7 @@ describe("BuilderLink", () => {
 
       const link2 = link.inherit();
 
-      const parent1 = PathRoutesBuilder.init()
+      const parent1 = PathRouteBuilder.init()
         .routes({
           foo: { action: () => "foo" },
         })

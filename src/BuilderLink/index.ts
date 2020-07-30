@@ -4,9 +4,9 @@ import type { RouteRecordType } from "../RouteBuilder/RouteRecord";
 import { RouteResolver, SegmentResolver } from "../RouteResolver";
 import { PartiallyPartial } from "../util/types/PartiallyPartial";
 import {
-  AttachableRoutesBuilder,
+  AttachableRouteBuilder,
   HasBuilderLink,
-} from "./AttachableRoutesBuilder";
+} from "./AttachableRouteBuilder";
 import type { BuilderLinkOptions } from "./BuilderLinkOptions";
 import { BuilderLinkState } from "./BuilderLinkState";
 import { fillOptions } from "./fillOptions";
@@ -35,7 +35,7 @@ export class BuilderLink<ActionResult, Segment>
   /**
    * Registered child builder.
    */
-  #childBuilder?: AttachableRoutesBuilder<ActionResult, Segment> = undefined;
+  #childBuilder?: AttachableRouteBuilder<ActionResult, Segment> = undefined;
   // TODO: want to remove this one
   readonly composer: LocationComposer<Segment>;
   #rootLocation: Location;
@@ -88,7 +88,7 @@ export class BuilderLink<ActionResult, Segment>
 
   checkInvalidation() {
     if (this.#state.state === "inherited") {
-      throw new Error("This RoutesBuilder is already invalidated.");
+      throw new Error("This BuilderLink is already invalidated.");
     }
   }
 
@@ -105,16 +105,14 @@ export class BuilderLink<ActionResult, Segment>
     return this;
   }
 
-  getChildBuilder():
-    | AttachableRoutesBuilder<ActionResult, Segment>
-    | undefined {
+  getChildBuilder(): AttachableRouteBuilder<ActionResult, Segment> | undefined {
     return this.#childBuilder;
   }
 
   /**
    * TODO: rethink
    */
-  register(builder: AttachableRoutesBuilder<ActionResult, Segment>): void {
+  register(builder: AttachableRouteBuilder<ActionResult, Segment>): void {
     this.#childBuilder = builder;
   }
 

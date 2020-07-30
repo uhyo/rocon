@@ -1,10 +1,10 @@
-import { SearchRoutesBuilder } from ".";
+import { SearchRouteBuilder } from ".";
 import { WildcardRouteRecord } from "../RouteRecord/WildcardRouteRecord";
 
-describe("SearchRoutesBuilder", () => {
+describe("SearchRouteBuilder", () => {
   describe("init", () => {
     it("has wildcard route from start", () => {
-      const b = SearchRoutesBuilder.init("key", {
+      const b = SearchRouteBuilder.init("key", {
         action: ({ key }) => `key is ${key}`,
       });
 
@@ -12,8 +12,8 @@ describe("SearchRoutesBuilder", () => {
     });
   });
   describe("attach", () => {
-    const toplevel = SearchRoutesBuilder.init("foo", {}).getRoute();
-    const sub = SearchRoutesBuilder.attachTo(toplevel, "bar", {
+    const toplevel = SearchRouteBuilder.init("foo", {}).getRoute();
+    const sub = SearchRouteBuilder.attachTo(toplevel, "bar", {
       action: ({ foo, bar }) => `foo is ${foo}, bar is ${bar}`,
     });
     const route = sub.getRoute();

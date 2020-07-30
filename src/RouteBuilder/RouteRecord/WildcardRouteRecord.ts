@@ -1,5 +1,5 @@
 import { RouteRecordType } from ".";
-import { HasBuilderLink } from "../../BuilderLink/AttachableRoutesBuilder";
+import { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
 import { Location } from "../../LocationComposer/Location";
 import { assertString } from "../../util/assert";
 import { resolveLinkLocation } from "./resolveLinkLocation";
@@ -18,7 +18,7 @@ export type WildcardRouteRecordObject<
 };
 
 /**
- * Object for wildcard route in RoutesBuilder.
+ * Object for wildcard route in RouteBuilder.
  */
 export class WildcardRouteRecord<ActionResult, Match, HasAction extends boolean>
   extends RouteRecordBase<ActionResult, Match, HasAction>

@@ -1,5 +1,5 @@
 import { BuilderLink, RouteRecordsBase } from "../../BuilderLink";
-import type { AttachableRoutesBuilder } from "../../BuilderLink/AttachableRoutesBuilder";
+import type { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
 import type { BuilderLinkOptions } from "../../BuilderLink/BuilderLinkOptions";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
 import { RouteResolver } from "../../RouteResolver";
@@ -23,7 +23,7 @@ import type {
   WildcardFlagType,
 } from "../WildcardFlagType";
 
-export type PathRoutesBuilderOptions<ActionResult> = Omit<
+export type PathRouteBuilderOptions<ActionResult> = Omit<
   BuilderLinkOptions<ActionResult, string>,
   "composer"
 >;
@@ -31,21 +31,21 @@ export type PathRoutesBuilderOptions<ActionResult> = Omit<
 /**
  * Builder to define routes using pathname.
  */
-export class PathRoutesBuilder<
+export class PathRouteBuilder<
   ActionResult,
   Defs extends RoutesDefinition<ActionResult>,
   WildcardFlag extends WildcardFlagType,
   Match
-> implements AttachableRoutesBuilder<ActionResult, string> {
+> implements AttachableRouteBuilder<ActionResult, string> {
   static init<ActionResult, Match = {}>(
-    options: Partial<PathRoutesBuilderOptions<ActionResult>> = {}
-  ): PathRoutesBuilder<ActionResult, {}, "none", Match> {
+    options: Partial<PathRouteBuilderOptions<ActionResult>> = {}
+  ): PathRouteBuilder<ActionResult, {}, "none", Match> {
     const op = {
       ...options,
       composer: new PathLocationComposer(),
     };
     const link = BuilderLink.init<ActionResult, string>(op);
-    return new PathRoutesBuilder(link);
+    return new PathRouteBuilder(link);
   }
 
   /**
@@ -53,8 +53,8 @@ export class PathRoutesBuilder<
    */
   static attachTo<ActionResult, Match, HasAction extends boolean>(
     route: RouteRecordType<ActionResult, Match, HasAction>
-  ): PathRoutesBuilder<ActionResult, {}, "none", Match> {
-    return route.attach(PathRoutesBuilder.init());
+  ): PathRouteBuilder<ActionResult, {}, "none", Match> {
+    return route.attach(PathRouteBuilder.init());
   }
 
   readonly #link: BuilderLink<ActionResult, string>;
@@ -70,7 +70,7 @@ export class PathRoutesBuilder<
 
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
-  ): PathRoutesBuilder<
+  ): PathRouteBuilder<
     ActionResult,
     Omit<Defs, keyof D> & D,
     WildcardFlag,
@@ -78,7 +78,7 @@ export class PathRoutesBuilder<
   > {
     this.#link.checkInvalidation();
 
-    const result = new PathRoutesBuilder<
+    const result = new PathRouteBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
       WildcardFlag,
@@ -106,7 +106,7 @@ export class PathRoutesBuilder<
   >(
     key: Key,
     routeDefinition: RD
-  ): PathRoutesBuilder<
+  ): PathRouteBuilder<
     ActionResult,
     Defs,
     ActionTypeToWildcardFlag<RD["action"]>,
@@ -117,7 +117,7 @@ export class PathRoutesBuilder<
   > {
     this.#link.checkInvalidation();
 
-    const result = new PathRoutesBuilder<
+    const result = new PathRouteBuilder<
       ActionResult,
       Defs,
       undefined extends RD["action"] ? "noaction" : "hasaction",

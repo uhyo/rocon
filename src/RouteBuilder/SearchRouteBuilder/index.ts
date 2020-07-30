@@ -1,5 +1,5 @@
 import { BuilderLink } from "../../BuilderLink";
-import type { AttachableRoutesBuilder } from "../../BuilderLink/AttachableRoutesBuilder";
+import type { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
 import type { BuilderLinkOptions } from "../../BuilderLink/BuilderLinkOptions";
 import { SearchLocationComposer } from "../../LocationComposer/SearchLocationComposer";
 import type { RouteResolver } from "../../RouteResolver";
@@ -15,16 +15,16 @@ import type {
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
 
-export type SearchRoutesBuilderOptions<ActionResult> = Omit<
+export type SearchRouteBuilderOptions<ActionResult> = Omit<
   BuilderLinkOptions<ActionResult, string>,
   "composer"
 >;
 
-export class SearchRoutesBuilder<
+export class SearchRouteBuilder<
   ActionResult,
   WildcardFlag extends ExistingWildcardFlagType,
   Match
-> implements AttachableRoutesBuilder<ActionResult, string> {
+> implements AttachableRouteBuilder<ActionResult, string> {
   static init<
     ActionResult,
     Key extends string,
@@ -39,8 +39,8 @@ export class SearchRoutesBuilder<
   >(
     key: Key,
     routeDefinition: RD,
-    options: Partial<SearchRoutesBuilderOptions<ActionResult>> = {}
-  ): SearchRoutesBuilder<
+    options: Partial<SearchRouteBuilderOptions<ActionResult>> = {}
+  ): SearchRouteBuilder<
     ActionResult,
     ActionTypeToWildcardFlag<RD["action"]>,
     Match &
@@ -53,7 +53,7 @@ export class SearchRoutesBuilder<
       composer: new SearchLocationComposer(key),
     };
     const link = BuilderLink.init<ActionResult, string>(op);
-    const result = new SearchRoutesBuilder<
+    const result = new SearchRouteBuilder<
       ActionResult,
       ActionTypeToWildcardFlag<RD["action"]>,
       Match &
@@ -84,7 +84,7 @@ export class SearchRoutesBuilder<
     route: RouteRecordType<ActionResult, Match, HasAction>,
     key: Key,
     routeDefinition: RD
-  ): SearchRoutesBuilder<
+  ): SearchRouteBuilder<
     ActionResult,
     ActionTypeToWildcardFlag<RD["action"]>,
     Match &
@@ -92,7 +92,7 @@ export class SearchRoutesBuilder<
         [K in Key]: string;
       }
   > {
-    const b = SearchRoutesBuilder.init<ActionResult, Key, RD, Match>(
+    const b = SearchRouteBuilder.init<ActionResult, Key, RD, Match>(
       key,
       routeDefinition
     );

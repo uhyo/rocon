@@ -1,9 +1,9 @@
-import type { HasBuilderLink } from "../../BuilderLink/AttachableRoutesBuilder";
+import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
 import type { Location } from "../../LocationComposer/Location";
 import { ActionTypeOfRouteRecord } from "./RouteRecordBase";
 
 /**
- * Route object internally stored in RoutesBuilder.
+ * Route object internally stored in RouteBuilder.
  */
 export type RouteRecordType<ActionResult, Match, HasAction extends boolean> = {
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;

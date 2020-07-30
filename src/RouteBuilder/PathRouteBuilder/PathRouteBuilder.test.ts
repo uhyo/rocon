@@ -1,15 +1,15 @@
-import { PathRoutesBuilder } from ".";
+import { PathRouteBuilder } from ".";
 import { wildcardRouteKey } from "../symbols";
 
-describe("PathRoutesBuilder", () => {
+describe("PathRouteBuilder", () => {
   describe("routes", () => {
     it("Empty at init", () => {
-      const b = PathRoutesBuilder.init();
+      const b = PathRouteBuilder.init();
       expect(b.getRoutes()).toEqual({});
     });
 
     it("Reflects one routes() call", () => {
-      const res = PathRoutesBuilder.init<string>().routes({
+      const res = PathRouteBuilder.init<string>().routes({
         foo: {
           action: () => "foo!",
         },
@@ -32,7 +32,7 @@ describe("PathRoutesBuilder", () => {
     });
 
     it("Reflects two routes() calls", () => {
-      const res = PathRoutesBuilder.init<string>()
+      const res = PathRouteBuilder.init<string>()
         .routes({
           foo: {
             action: () => "foo!",
@@ -57,8 +57,8 @@ describe("PathRoutesBuilder", () => {
       });
     });
 
-    it("RoutesBuilder is immutable", () => {
-      const b1 = PathRoutesBuilder.init<string>().routes({
+    it("PathRouteBuilder is immutable", () => {
+      const b1 = PathRouteBuilder.init<string>().routes({
         foo: {
           action: () => "foo!",
         },
@@ -77,7 +77,7 @@ describe("PathRoutesBuilder", () => {
 
   describe("attach", () => {
     it("composed location action", () => {
-      const toplevel = PathRoutesBuilder.init<string>()
+      const toplevel = PathRouteBuilder.init<string>()
         .routes({
           foo: {
             action: () => "foo!",
@@ -85,7 +85,7 @@ describe("PathRoutesBuilder", () => {
         })
         .getRoutes();
       const sub = toplevel.foo
-        .attach(PathRoutesBuilder.init<string>())
+        .attach(PathRouteBuilder.init<string>())
         .routes({
           bar: {
             action: () => "bar!",
@@ -96,7 +96,7 @@ describe("PathRoutesBuilder", () => {
       expect(sub.bar.action({})).toBe("bar!");
     });
     it("composed location object", () => {
-      const toplevel = PathRoutesBuilder.init<string>()
+      const toplevel = PathRouteBuilder.init<string>()
         .routes({
           foo: {
             action: () => "foo!",
@@ -104,7 +104,7 @@ describe("PathRoutesBuilder", () => {
         })
         .getRoutes();
       const sub = toplevel.foo
-        .attach(PathRoutesBuilder.init<string>())
+        .attach(PathRouteBuilder.init<string>())
         .routes({
           bar: {
             action: () => "bar!",
@@ -118,7 +118,7 @@ describe("PathRoutesBuilder", () => {
       });
     });
     it("change location after attach", () => {
-      const sub = PathRoutesBuilder.init<string>().routes({
+      const sub = PathRouteBuilder.init<string>().routes({
         bom: {
           action: () => "bom!",
         },
@@ -129,7 +129,7 @@ describe("PathRoutesBuilder", () => {
         state: null,
       });
 
-      const toplevel = PathRoutesBuilder.init<string>()
+      const toplevel = PathRouteBuilder.init<string>()
         .routes({
           foo: {
             action: () => "foo!",
@@ -146,7 +146,7 @@ describe("PathRoutesBuilder", () => {
 
   describe("any route", () => {
     it("any works like wildcard", () => {
-      const res = PathRoutesBuilder.init<string>().any("id", {
+      const res = PathRouteBuilder.init<string>().any("id", {
         action: ({ id }) => `id is ${id.slice(0, 8)}`,
       });
       const routes = res.getRoutes();
@@ -155,11 +155,11 @@ describe("PathRoutesBuilder", () => {
       );
     });
     it("sub route of any", () => {
-      const res = PathRoutesBuilder.init<string>().any("id", {
+      const res = PathRouteBuilder.init<string>().any("id", {
         action: ({ id }) => `id is ${id.slice(0, 8)}`,
       });
       const routes = res.getRoutes();
-      const subRoutes = PathRoutesBuilder.attachTo(
+      const subRoutes = PathRouteBuilder.attachTo(
         routes[wildcardRouteKey].route
       )
         .routes({

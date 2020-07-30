@@ -1,7 +1,7 @@
-import { PathRoutesBuilder } from "../RouteBuilder/PathRoutesBuilder";
+import { PathRouteBuilder } from "../RouteBuilder/PathRouteBuilder";
 import { PathRouteRecord } from "../RouteBuilder/RouteRecord";
 
-const b1 = PathRoutesBuilder.init<string>().routes({
+const b1 = PathRouteBuilder.init<string>().routes({
   foo: {
     action: () => "foo!",
   },
@@ -21,21 +21,21 @@ const b2 = b1.any("id", {
 const routes = b1.getRoutes();
 
 routes.foo.attach(
-  PathRoutesBuilder.init<string>().routes({
+  PathRouteBuilder.init<string>().routes({
     hoge: {
       action: () => "hoge",
     },
   })
 );
 
-routes.bar.attach(PathRoutesBuilder.init<string>()).routes({
+routes.bar.attach(PathRouteBuilder.init<string>()).routes({
   fuga: {
     action: () => "fuga",
   },
 });
 
 routes.noaction.attach(
-  PathRoutesBuilder.init<string>().routes({
+  PathRouteBuilder.init<string>().routes({
     wow: {
       action: () => "wow",
     },

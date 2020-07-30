@@ -1,11 +1,11 @@
-import type { HasBuilderLink } from "../../BuilderLink/AttachableRoutesBuilder";
+import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
 import type { Location } from "../../LocationComposer/Location";
 import { resolveLinkLocation } from "./resolveLinkLocation";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
 import type { RouteRecordType } from "./RouteRecordType";
 
 /**
- * Object for each route provided by PathRoutesBuilder.
+ * Object for each route provided by PathRouteBuilder.
  */
 export class PathRouteRecord<ActionResult, Match, HasAction extends boolean>
   extends RouteRecordBase<ActionResult, Match, HasAction>

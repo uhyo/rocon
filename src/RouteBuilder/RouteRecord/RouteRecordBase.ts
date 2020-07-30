@@ -1,4 +1,4 @@
-import type { HasBuilderLink } from "../../BuilderLink/AttachableRoutesBuilder";
+import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
 import { Location } from "../../LocationComposer/Location";
 import type { ActionType } from "../RoutesDefinitionObject";
 
@@ -9,7 +9,7 @@ export type ActionTypeOfRouteRecord<
 > = HasAction extends true ? ActionType<ActionResult, Match> : undefined;
 
 /**
- * Object for each route provided by RoutesBuilder.
+ * Object for each route provided by RouteBuilder.
  * Should implement RouteRecordType.
  */
 export abstract class RouteRecordBase<

@@ -1,10 +1,10 @@
-import { PathRoutesBuilder } from "../RouteBuilder/PathRoutesBuilder";
-import { SearchRoutesBuilder } from "../RouteBuilder/SearchRoutesBuilder";
+import { PathRouteBuilder } from "../RouteBuilder/PathRouteBuilder";
+import { SearchRouteBuilder } from "../RouteBuilder/SearchRouteBuilder";
 
 describe("Composed Location resolving", () => {
   describe("path-path", () => {
     it("1", () => {
-      const builder = PathRoutesBuilder.init<string>().routes({
+      const builder = PathRouteBuilder.init<string>().routes({
         foo: {
           action: () => "foo!",
         },
@@ -12,13 +12,13 @@ describe("Composed Location resolving", () => {
       });
       const toplevel = builder.getRoutes();
 
-      PathRoutesBuilder.attachTo(toplevel.foo).routes({
+      PathRouteBuilder.attachTo(toplevel.foo).routes({
         hoge: {
           action: () => "hoge.",
         },
       });
 
-      PathRoutesBuilder.attachTo(toplevel.bar).routes({
+      PathRouteBuilder.attachTo(toplevel.bar).routes({
         fuga: {
           action: () => "fuga!",
         },
@@ -44,12 +44,12 @@ describe("Composed Location resolving", () => {
   });
   describe("path-search", () => {
     it("1", () => {
-      const builder = PathRoutesBuilder.init<string>().routes({
+      const builder = PathRouteBuilder.init<string>().routes({
         foo: {},
       });
       const resolver = builder.getResolver();
 
-      SearchRoutesBuilder.attachTo(builder.getRoutes().foo, "key", {
+      SearchRouteBuilder.attachTo(builder.getRoutes().foo, "key", {
         action: ({ key }) => `key is ${key}`,
       }).getRoute();
 
