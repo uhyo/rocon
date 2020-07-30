@@ -1,5 +1,6 @@
 import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
 import type { Location } from "../../LocationComposer/Location";
+import { AddMatchToRouteBuilder } from "../AddMatchToRouteBuilder";
 import { ActionTypeOfRouteRecord } from "./RouteRecordBase";
 
 /**
@@ -14,5 +15,5 @@ export type RouteRecordType<ActionResult, Match, HasAction extends boolean> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly attach: <B extends HasBuilderLink<ActionResult, any>>(
     builder: B
-  ) => B;
+  ) => AddMatchToRouteBuilder<Match, B>;
 };

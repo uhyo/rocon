@@ -1,5 +1,6 @@
 import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
 import { Location } from "../../LocationComposer/Location";
+import { AddMatchToRouteBuilder } from "../AddMatchToRouteBuilder";
 import type { ActionType } from "../RoutesDefinitionObject";
 
 export type ActionTypeOfRouteRecord<
@@ -39,9 +40,11 @@ export abstract class RouteRecordBase<
   /**
    * Attach given builder as a child of this route.
    */
-  attach<B extends HasBuilderLink<ActionResult, string>>(builder: B): B {
+  attach<B extends HasBuilderLink<ActionResult, string>>(
+    builder: B
+  ): AddMatchToRouteBuilder<Match, B> {
     this.#builder = builder;
     builder.getBuilderLink().attachToParent(this);
-    return builder;
+    return builder as AddMatchToRouteBuilder<Match, B>;
   }
 }
