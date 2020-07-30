@@ -1,272 +1,134 @@
 import { BuilderLink } from ".";
-import { PathRouteRecord } from "../RoutesBuilder/RouteRecord";
-import { WildcardRouteRecord } from "../RoutesBuilder/RouteRecord/WildcardRouteRecord";
-import { wildcardRouteKey } from "../RoutesBuilder/symbols";
+import { PathLocationComposer } from "../LocationComposer/PathLocationComposer";
+import { PathRoutesBuilder } from "../RoutesBuilder/PathRoutesBuilder";
 
-describe.skip("BuilderLink", () => {
-  describe("routes", () => {
-    it("Empty at init", () => {
-      const b = BuilderLink.init(options1);
-      expect(b.getRoutes()).toEqual({});
-    });
+const composer = new PathLocationComposer();
 
-    it("Reflects one routes() call", () => {
-      const res = BuilderLink.init<string>().routes({
-        foo: {
-          action: () => "foo!",
-        },
-        bar: {
-          action: () => "bar?",
-        },
+describe("BuilderLink", () => {
+  describe("attachToParent", () => {
+    it("cannot attach twice", () => {
+      const link = BuilderLink.init({
+        composer,
       });
-      const routes = res.getRoutes();
-      expect(Object.keys(routes)).toEqual(["foo", "bar"]);
-      expect(routes.foo.action({})).toEqual("foo!");
-      expect(routes.foo.getLocation({})).toEqual({
-        pathname: "/foo",
-        state: null,
-      });
-      expect(routes.bar.action({})).toEqual("bar?");
-      expect(routes.bar.getLocation({})).toEqual({
-        pathname: "/bar",
-        state: null,
-      });
-    });
 
-    it("Reflects two routes() calls", () => {
-      const res = BuilderLink.init<string>()
+      const parent1 = PathRoutesBuilder.init()
         .routes({
-          foo: {
-            action: () => "foo!",
-          },
+          foo: { action: () => "foo" },
         })
+        .getRoutes();
+      const parent2 = PathRoutesBuilder.init()
         .routes({
-          bar: {
-            action: () => "bar?",
-          },
-        });
-      const routes = res.getRoutes();
-      expect(Object.keys(routes)).toEqual(["foo", "bar"]);
-      expect(routes.foo.action({})).toEqual("foo!");
-      expect(routes.foo.getLocation({})).toEqual({
-        pathname: "/foo",
-        state: null,
-      });
-      expect(routes.bar.action({})).toEqual("bar?");
-      expect(routes.bar.getLocation({})).toEqual({
-        pathname: "/bar",
-        state: null,
-      });
-    });
+          bar: { action: () => "bar" },
+        })
+        .getRoutes();
 
-    it("RoutesBuilder is immutable", () => {
-      const b1 = BuilderLink.init<string>().routes({
-        foo: {
-          action: () => "foo!",
-        },
-      });
-      const b2 = b1.routes({
-        bar: {
-          action: () => "bar?",
-        },
-      });
-      const routes1 = b1.getRoutes();
-      expect(Object.keys(routes1)).toEqual(["foo"]);
-      const routes2 = b2.getRoutes();
-      expect(Object.keys(routes2)).toEqual(["foo", "bar"]);
+      link.attachToParent(parent1.foo);
+      expect(() => link.attachToParent(parent2.bar)).toThrow();
     });
+    it("cannot inherit twice", () => {
+      const link = BuilderLink.init({
+        composer,
+      });
 
-    it("no action route", () => {
-      const res = BuilderLink.init<string>().routes({
-        foo: {},
-        bar: {
-          action: () => "bar?",
-        },
+      const parent1 = PathRoutesBuilder.init()
+        .routes({
+          foo: { action: () => "foo" },
+        })
+        .getRoutes();
+      // attach
+      link.attachToParent(parent1.foo);
+      link.inherit();
+
+      expect(() => link.inherit()).toThrow();
+    });
+    it("checkInvalidation", () => {
+      const link = BuilderLink.init({
+        composer,
       });
-      const routes = res.getRoutes();
-      expect(Object.keys(routes)).toEqual(["foo", "bar"]);
-      expect(routes.foo.action).toBeUndefined();
-      expect(routes.foo.getLocation({})).toEqual({
-        pathname: "/foo",
-        state: null,
-      });
-      expect(routes.bar.action({})).toEqual("bar?");
-      expect(routes.bar.getLocation({})).toEqual({
-        pathname: "/bar",
-        state: null,
-      });
+
+      const parent1 = PathRoutesBuilder.init()
+        .routes({
+          foo: { action: () => "foo" },
+        })
+        .getRoutes();
+      // attach
+      link.attachToParent(parent1.foo);
+      link.inherit();
+
+      expect(() => link.checkInvalidation()).toThrow();
     });
   });
-
-  describe("wildcard", () => {
-    it("define wilecard route", () => {
-      const b = BuilderLink.init<string>().wildcard("k", {
-        action: ({ k }) => `k is ${k}`,
+  describe("getParentRoute", () => {
+    it("unattached", () => {
+      const link = BuilderLink.init({
+        composer,
       });
 
-      const routes = b.getRoutes();
-
-      expect(routes).toEqual({
-        [wildcardRouteKey]: {
-          matchKey: "k",
-          route: expect.any(WildcardRouteRecord),
-        },
-      });
-      expect(
-        routes[wildcardRouteKey].route.action({
-          k: "123",
-        })
-      ).toBe("k is 123");
+      expect(link.getParentRoute()).toBeUndefined();
     });
-  });
-
-  describe("attach", () => {
-    it("composed location action", () => {
-      const toplevel = BuilderLink.init<string>()
-        .routes({
-          foo: {
-            action: () => "foo!",
-          },
-        })
-        .getRoutes();
-      const sub = toplevel.foo
-        .attach(BuilderLink.init<string>())
-        .routes({
-          bar: {
-            action: () => "bar!",
-          },
-        })
-        .getRoutes();
-
-      expect(sub.bar.action({})).toBe("bar!");
-    });
-    it("composed location object", () => {
-      const toplevel = BuilderLink.init<string>()
-        .routes({
-          foo: {
-            action: () => "foo!",
-          },
-        })
-        .getRoutes();
-      const sub = toplevel.foo
-        .attach(BuilderLink.init<string>())
-        .routes({
-          bar: {
-            action: () => "bar!",
-          },
-        })
-        .getRoutes();
-
-      expect(sub.bar.getLocation({})).toEqual({
-        pathname: "/foo/bar",
-        state: null,
-      });
-    });
-    it("change location after attach", () => {
-      const sub = BuilderLink.init<string>().routes({
-        bom: {
-          action: () => "bom!",
-        },
-      });
-      const subRoutes = sub.getRoutes();
-      expect(subRoutes.bom.getLocation({})).toEqual({
-        pathname: "/bom",
-        state: null,
+    it("attached", () => {
+      const link = BuilderLink.init({
+        composer,
       });
 
-      const toplevel = BuilderLink.init<string>()
+      const parent1 = PathRoutesBuilder.init()
         .routes({
-          foo: {
-            action: () => "foo!",
-          },
+          foo: { action: () => "foo" },
         })
         .getRoutes();
-      toplevel.foo.attach(sub);
-      expect(subRoutes.bom.getLocation({})).toEqual({
-        pathname: "/foo/bom",
-        state: null,
+
+      link.attachToParent(parent1.foo);
+
+      expect(link.getParentRoute()).toBe(parent1.foo);
+    });
+    it("inherited", () => {
+      const link = BuilderLink.init({
+        composer,
       });
-    });
-    it("attach to wildcard", () => {
-      const toplevel = BuilderLink.init<string>()
-        .wildcard("id", {
-          action: ({ id }) => `id is ${id}`,
-        })
-        .getRoutes();
-      const sub = toplevel[wildcardRouteKey].route
-        .attach(BuilderLink.init<string, { id: unknown }>())
+
+      const parent1 = PathRoutesBuilder.init()
         .routes({
-          bar: {
-            action: ({ id }) => `bar! id is ${id}`,
-          },
+          foo: { action: () => "foo" },
         })
         .getRoutes();
 
-      expect(
-        sub.bar.getLocation({
-          id: "random",
-        })
-      ).toEqual({
-        pathname: "/random/bar",
-        state: null,
+      link.attachToParent(parent1.foo);
+      link.inherit();
+
+      expect(link.getParentRoute()).toBe(parent1.foo);
+    });
+    it("attach-inherit", () => {
+      const link = BuilderLink.init({
+        composer,
       });
-      expect(sub.bar.action({ id: 123 })).toBe("bar! id is 123");
-    });
-    it("attach to no-action route", () => {
-      const toplevel = BuilderLink.init<string>()
+
+      const parent1 = PathRoutesBuilder.init()
         .routes({
-          foo: {},
-        })
-        .getRoutes();
-      const sub = toplevel.foo
-        .attach(BuilderLink.init<string>())
-        .routes({
-          wow: {
-            action: () => "wow",
-          },
+          foo: { action: () => "foo" },
         })
         .getRoutes();
 
-      expect(sub.wow.action({})).toBe("wow");
+      link.attachToParent(parent1.foo);
+      const link2 = link.inherit();
+
+      expect(link2.getParentRoute()).toBe(parent1.foo);
     });
-    it("no attaching twice", () => {
-      const { foo } = BuilderLink.init<string>()
+    it("unattached-inherited", () => {
+      const link = BuilderLink.init({
+        composer,
+      });
+
+      const link2 = link.inherit();
+
+      const parent1 = PathRoutesBuilder.init()
         .routes({
-          foo: {},
+          foo: { action: () => "foo" },
         })
         .getRoutes();
 
-      const sub = BuilderLink.init<string>();
-      foo.attach(sub);
-      expect(() => foo.attach(sub)).toThrow();
-    });
-  });
+      link2.attachToParent(parent1.foo);
 
-  describe("getResolver", () => {
-    const resolver = BuilderLink.init<string>()
-      .routes({
-        foo: {
-          action: () => "foo!",
-        },
-        bar: {
-          action: () => "bar?",
-        },
-      })
-      .getResolver();
-    expect(
-      resolver.resolve({
-        pathname: "/foo",
-        state: null,
-      })
-    ).toEqual([
-      {
-        route: expect.any(PathRouteRecord),
-        match: {},
-        location: {
-          pathname: "/",
-          state: null,
-        },
-      },
-    ]);
+      expect(link.getParentRoute()).toBeUndefined();
+    });
   });
 });
