@@ -7,13 +7,9 @@ import {
 } from "../../LocationComposer/StateLocationComposer";
 import { RouteResolver } from "../../RouteResolver";
 import { RouteRecordType } from "../RouteRecord";
+import { WildcardRouteRecord } from "../RouteRecord/WildcardRouteRecord";
+import { ActionType } from "../RoutesDefinitionObject";
 import {
-  WildcardRouteRecord,
-  WildcardRouteRecordObject,
-} from "../RouteRecord/WildcardRouteRecord";
-import { ActionType, RouteDefinition } from "../RoutesDefinitionObject";
-import {
-  ActionTypeToWildcardFlag,
   ExistingWildcardFlagType,
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
@@ -33,25 +29,14 @@ export class StateRouteBuilder<
     ActionResult,
     StateValue,
     Key extends string,
-    RD extends RouteDefinition<
-      ActionResult,
-      Match &
-        {
-          [K in Key]: StateValue;
-        }
-    >,
-    Match = {}
+    Match extends {
+      [K in Key]: StateValue;
+    }
   >(
     key: Key,
     validator: Validator<StateValue>,
-    routeDefinition: RD,
     options: Partial<StateRouteBuilderOptions<ActionResult, StateValue>> = {}
-  ): StateRouteBuilder<
-    ActionResult,
-    StateValue,
-    ActionTypeToWildcardFlag<RD["action"]>,
-    Match & { [K in Key]: StateValue }
-  > {
+  ): StateRouteBuilder<ActionResult, StateValue, "noaction", Match> {
     const op = {
       ...options,
       composer: new StateLocationComposer(key, validator),
@@ -60,10 +45,10 @@ export class StateRouteBuilder<
     const result = new StateRouteBuilder<
       ActionResult,
       StateValue,
-      ActionTypeToWildcardFlag<RD["action"]>,
-      Match & { [K in Key]: StateValue }
+      "noaction",
+      Match
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    >(link, key as any, validator, routeDefinition.action);
+    >(link, key as any, validator);
 
     return result;
   }
@@ -76,33 +61,29 @@ export class StateRouteBuilder<
     Match,
     HasAction extends boolean,
     Key extends string,
-    StateValue,
-    RD extends RouteDefinition<
-      ActionResult,
-      Match &
-        {
-          [K in Key]: StateValue;
-        }
-    >
+    StateValue
   >(
     route: RouteRecordType<ActionResult, Match, HasAction>,
     key: Key,
-    validator: Validator<StateValue>,
-    routeDefinition: RD
+    validator: Validator<StateValue>
   ): StateRouteBuilder<
     ActionResult,
     StateValue,
-    ActionTypeToWildcardFlag<RD["action"]>,
+    "noaction",
     Match &
       {
         [K in Key]: StateValue;
       }
   > {
-    const b = StateRouteBuilder.init<ActionResult, StateValue, Key, RD, Match>(
-      key,
-      validator,
-      routeDefinition
-    );
+    const b = StateRouteBuilder.init<
+      ActionResult,
+      StateValue,
+      Key,
+      Match &
+        {
+          [K in Key]: StateValue;
+        }
+    >(key, validator);
     const r: RouteRecordType<
       ActionResult,
       Match & { [K in Key]: StateValue },
@@ -111,31 +92,57 @@ export class StateRouteBuilder<
     return r.attach(b);
   }
 
+  readonly key: Extract<keyof Match, string>;
+
   #link: BuilderLink<ActionResult, StateValue>;
   #validator: Validator<StateValue>;
-  #route: WildcardRouteRecordObject<ActionResult, StateValue, Match, boolean>;
+  #route: WildcardRouteRecord<ActionResult, StateValue, Match, boolean>;
 
   private constructor(
     link: BuilderLink<ActionResult, StateValue>,
     key: Extract<keyof Match, string>,
-    validator: Validator<StateValue>,
-    action: ActionType<ActionResult, Match> | undefined
+    validator: Validator<StateValue>
   ) {
     this.#link = link;
+    this.key = key;
     this.#validator = validator;
-    this.#route = {
-      matchKey: key,
-      route: new WildcardRouteRecord(this, key, validator, action),
-    };
+    this.#route = new WildcardRouteRecord(this, key, validator, undefined);
   }
 
-  getRoute(): WildcardRouteRecord<
-    ActionResult,
-    StateValue,
-    Match,
-    WildcardFlagToHasAction<WildcardFlag>
-  > {
-    return this.#route.route;
+  /**
+   * Define action for this route and return a new instance of StateRouteBuilder.
+   */
+  action(
+    action: ActionType<ActionResult, Match>
+  ): StateRouteBuilder<ActionResult, StateValue, "hasaction", Match> {
+    const validator = this.#validator;
+
+    const result = new StateRouteBuilder<
+      ActionResult,
+      StateValue,
+      "hasaction",
+      Match
+    >(this.#link.inherit(), this.key, validator);
+
+    result.#route = new WildcardRouteRecord(
+      result,
+      this.key,
+      validator,
+      action
+    );
+    return result;
+  }
+
+  getRoute(): WildcardFlag extends ExistingWildcardFlagType
+    ? WildcardRouteRecord<
+        ActionResult,
+        StateValue,
+        Match,
+        WildcardFlagToHasAction<WildcardFlag>
+      >
+    : undefined {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return this.#route as any;
   }
 
   getBuilderLink(): BuilderLink<ActionResult, StateValue> {
@@ -144,9 +151,12 @@ export class StateRouteBuilder<
 
   getResolver(): RouteResolver<ActionResult, StateValue> {
     return this.#link.getResolver(() => {
+      if (this.#route === undefined) {
+        return undefined;
+      }
       return {
         type: "wildcard",
-        route: this.#route.route,
+        route: this.#route,
       };
     });
   }

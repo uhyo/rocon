@@ -77,8 +77,6 @@ export class PathRouteBuilder<
     WildcardFlag,
     Match
   > {
-    this.#link.checkInvalidation();
-
     const result = new PathRouteBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
