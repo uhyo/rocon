@@ -3,7 +3,7 @@ import { Location } from "./Location";
 /**
  * Interface of composer.
  */
-export interface LocationComposer<Segment> {
+export interface LocationComposer</* invariant */ Segment> {
   /**
    * Returns whether given location is a leaf location.
    */

@@ -1,11 +1,11 @@
 import { LocationComposer } from "../LocationComposer";
 import { Location } from "../LocationComposer/Location";
 
-export type RoutesBuilderOptions = {
+export type BuilderLinkOptions<ActionResult, Segment> = {
   /**
    * LocationComposer for composing children paths.
    */
-  composer: LocationComposer<string>;
+  composer: LocationComposer<Segment>;
   /**
    * Root location.
    */

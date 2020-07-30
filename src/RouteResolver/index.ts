@@ -1,69 +1,64 @@
 import { LocationComposer } from "../LocationComposer";
 import type { BaseState, Location } from "../LocationComposer/Location";
-import type { RouteRecordType } from "../RouteRecord";
-import {
-  WildcardRouteRecord,
-  WildcardRouteRecordObject,
-} from "../RouteRecord/WildcardRouteRecord";
-import { RouteRecordsBase } from "../RoutesBuilder";
-import { wildcardRouteKey } from "../RoutesBuilder/symbols";
+import type { RouteRecordType } from "../RoutesBuilder/RouteRecord";
+import { WildcardRouteRecord } from "../RoutesBuilder/RouteRecord/WildcardRouteRecord";
 import { ResolvedRoute } from "./ResolvedRoute";
 
-type ResolvedSegmentType<ActionResult> =
+export type ResolvedSegmentType<ActionResult> =
   | {
       type: "normal";
-      route: RouteRecordType<ActionResult, {}, boolean>;
+      route: RouteRecordType<ActionResult, never, boolean>;
     }
   | {
       type: "wildcard";
-      route: WildcardRouteRecord<ActionResult, {}, boolean>;
+      route: WildcardRouteRecord<ActionResult, never, boolean>;
     };
+
+export type SegmentResolver<ActionResult, Segment> = (
+  segment: Segment
+) => ResolvedSegmentType<ActionResult> | undefined;
 
 /**
  * Object that resolves given URL to a Route.
  */
-export class RouteResolver<
-  ActionResult,
-  Routes extends RouteRecordsBase<ActionResult> & {
-    readonly [wildcardRouteKey]?: WildcardRouteRecordObject<
-      ActionResult,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      any
-    >;
-  }
-> {
-  #routes: Routes;
-  #composer: LocationComposer<string>;
-  constructor(routes: Routes, composer: LocationComposer<string>) {
-    this.#routes = routes;
+export class RouteResolver<ActionResult, Segment> {
+  #resolveSegment: SegmentResolver<ActionResult, Segment>;
+  #composer: LocationComposer<Segment>;
+  constructor(
+    composer: LocationComposer<Segment>,
+    resolveSegment: SegmentResolver<ActionResult, Segment>
+  ) {
     this.#composer = composer;
+    this.#resolveSegment = resolveSegment;
   }
 
   resolve(
     location: Location<BaseState>
-  ): Array<ResolvedRoute<ActionResult, {}>> {
+  ): Array<ResolvedRoute<ActionResult, never>> {
     return this.resolveAlsoNoAction(location).filter((res) => res.route.action);
   }
 
   resolveAlsoNoAction(
     location: Location<BaseState>
-  ): Array<ResolvedRoute<ActionResult, {}>> {
+  ): Array<ResolvedRoute<ActionResult, never>> {
     const decomposed = this.#composer.decompose(location);
     return decomposed.flatMap(([seg, next]) => {
-      const nextRoute = this.resolveSegment(seg);
+      const nextRoute = this.#resolveSegment(seg);
       if (nextRoute === undefined) {
         return [];
       }
-      const match =
-        nextRoute.type === "normal"
-          ? {}
-          : {
-              [nextRoute.route.matchKey]: seg,
-            };
+      const match = (nextRoute.type === "normal"
+        ? {}
+        : {
+            [nextRoute.route.matchKey]: seg,
+          }) as never;
 
-      const childResolver = nextRoute.route.getBuilder()?.getResolver();
+      const childResolver = nextRoute.route
+        .getAttachedBuilder()
+        ?.getBuilderLink()
+        .getChildBuilder()
+        ?.getResolver();
+
       if (childResolver === undefined || childResolver.#composer.isLeaf(next)) {
         return [
           {
@@ -87,25 +82,5 @@ export class RouteResolver<
         }
       }
     });
-  }
-
-  private resolveSegment(
-    segment: string
-  ): ResolvedSegmentType<ActionResult> | undefined {
-    const route = this.#routes[segment];
-    if (route !== undefined) {
-      return {
-        type: "normal",
-        route,
-      };
-    }
-    const wildcardRoute = this.#routes[wildcardRouteKey];
-    if (wildcardRoute !== undefined) {
-      return {
-        type: "wildcard",
-        route: wildcardRoute.route,
-      };
-    }
-    return undefined;
   }
 }
