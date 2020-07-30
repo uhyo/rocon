@@ -1,8 +1,9 @@
 {
-  "name": "ronder",
-  "version": "0.0.1",
+  "name": "rocon",
+  "version": "0.0.1-alpha.0",
   "description": "A router library",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build:ts_babel": "babel src --out-dir lib --extensions '.ts'",
     "build:ts": "tsc --build",
@@ -13,30 +14,33 @@
     "test:watch": "jest --watch",
     "watch:typecheck": "tsc --build --watch"
   },
+  "files": [
+    "lib/**/*"
+  ],
   "keywords": [
     "router"
   ],
   "author": "uhyo <uhyo@uhy.ooo>",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "^7.10.4",
-    "@babel/core": "^7.10.4",
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
-    "@commitlint/cli": "^9.0.1",
-    "@commitlint/config-conventional": "^9.0.1",
-    "@types/jest": "^26.0.4",
-    "@typescript-eslint/eslint-plugin": "^3.6.1",
-    "@typescript-eslint/parser": "^3.6.1",
-    "babel-jest": "^26.1.0",
+    "@commitlint/cli": "^9.1.1",
+    "@commitlint/config-conventional": "^9.1.1",
+    "@types/jest": "^26.0.7",
+    "@typescript-eslint/eslint-plugin": "^3.7.1",
+    "@typescript-eslint/parser": "^3.7.1",
+    "babel-jest": "^26.2.0",
     "cz-conventional-changelog": "^3.2.0",
     "eslint": "^7.5.0",
     "eslint-config-prettier": "^6.11.0",
     "husky": "^4.2.5",
-    "jest": "^26.1.0",
+    "jest": "^26.2.0",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
-    "typescript": "^4.0.0-beta"
+    "typescript": "^4.0.0-dev.20200730"
   },
   "husky": {
     "hooks": {
