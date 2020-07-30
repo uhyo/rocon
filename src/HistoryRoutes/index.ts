@@ -1,5 +1,5 @@
 import type { State } from "history";
-import type { RoutesDefinition } from "../RoutesBuilder/RoutesDefinitionObject";
+import type { RoutesDefinition } from "../RouteBuilder/RoutesDefinitionObject";
 import type { Destination } from "./Destination";
 import type { HistoryRoutesOptions } from "./HistoryRoutesOptions";
 import type { DefinitionFromRouteObjects, RouteObject } from "./RouteObject";

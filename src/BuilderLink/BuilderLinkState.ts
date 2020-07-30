@@ -1,5 +1,5 @@
 import type { BuilderLink } from ".";
-import type { RouteRecordType } from "../RoutesBuilder/RouteRecord";
+import type { RouteRecordType } from "../RouteBuilder/RouteRecord";
 
 /**
  * State of BuilderLink.

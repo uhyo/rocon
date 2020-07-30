@@ -1,6 +1,6 @@
 import type { Location } from "../LocationComposer/Location";
-import type { RouteRecordType } from "../RoutesBuilder/RouteRecord";
-import type { WildcardRouteRecord } from "../RoutesBuilder/RouteRecord/WildcardRouteRecord";
+import type { RouteRecordType } from "../RouteBuilder/RouteRecord";
+import type { WildcardRouteRecord } from "../RouteBuilder/RouteRecord/WildcardRouteRecord";
 
 /**
  * Object that represents one resolved route.
