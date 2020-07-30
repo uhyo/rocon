@@ -4,14 +4,10 @@ import type { BuilderLinkOptions } from "../../BuilderLink/BuilderLinkOptions";
 import { SearchLocationComposer } from "../../LocationComposer/SearchLocationComposer";
 import type { RouteResolver } from "../../RouteResolver";
 import { isString } from "../../validator";
-import type { RouteRecordType } from "../RouteRecord";
-import {
-  WildcardRouteRecord,
-  WildcardRouteRecordObject,
-} from "../RouteRecord/WildcardRouteRecord";
-import type { ActionType, RouteDefinition } from "../RoutesDefinitionObject";
+import { RouteRecordType } from "../RouteRecord";
+import { WildcardRouteRecord } from "../RouteRecord/WildcardRouteRecord";
+import { ActionType } from "../RoutesDefinitionObject";
 import type {
-  ActionTypeToWildcardFlag,
   ExistingWildcardFlagType,
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
@@ -29,26 +25,13 @@ export class SearchRouteBuilder<
   static init<
     ActionResult,
     Key extends string,
-    RD extends RouteDefinition<
-      ActionResult,
-      Match &
-        {
-          [K in Key]: string;
-        }
-    >,
-    Match = {}
+    Match extends {
+      [K in Key]: string;
+    }
   >(
     key: Key,
-    routeDefinition: RD,
     options: Partial<SearchRouteBuilderOptions<ActionResult>> = {}
-  ): SearchRouteBuilder<
-    ActionResult,
-    ActionTypeToWildcardFlag<RD["action"]>,
-    Match &
-      {
-        [K in Key]: string;
-      }
-  > {
+  ): SearchRouteBuilder<ActionResult, "noaction", Match> {
     const op = {
       ...options,
       composer: new SearchLocationComposer(key),
@@ -56,13 +39,13 @@ export class SearchRouteBuilder<
     const link = BuilderLink.init<ActionResult, string>(op);
     const result = new SearchRouteBuilder<
       ActionResult,
-      ActionTypeToWildcardFlag<RD["action"]>,
+      "noaction",
       Match &
         {
           [K in Key]: string;
         }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    >(link, key as any, routeDefinition.action);
+    >(link, key as any);
     return result;
   }
 
@@ -73,30 +56,26 @@ export class SearchRouteBuilder<
     ActionResult,
     Match,
     HasAction extends boolean,
-    Key extends string,
-    RD extends RouteDefinition<
-      ActionResult,
-      Match &
-        {
-          [K in Key]: string;
-        }
-    >
+    Key extends string
   >(
     route: RouteRecordType<ActionResult, Match, HasAction>,
-    key: Key,
-    routeDefinition: RD
+    key: Key
   ): SearchRouteBuilder<
     ActionResult,
-    ActionTypeToWildcardFlag<RD["action"]>,
+    "noaction",
     Match &
       {
         [K in Key]: string;
       }
   > {
-    const b = SearchRouteBuilder.init<ActionResult, Key, RD, Match>(
-      key,
-      routeDefinition
-    );
+    const b = SearchRouteBuilder.init<
+      ActionResult,
+      Key,
+      Match &
+        {
+          [K in Key]: string;
+        }
+    >(key);
     const r: RouteRecordType<
       ActionResult,
       Match & { [K in Key]: string },
@@ -105,20 +84,34 @@ export class SearchRouteBuilder<
     return r.attach(b);
   }
 
+  readonly key: Extract<keyof Match, string>;
+
   #link: BuilderLink<ActionResult, string>;
-  #route: WildcardRouteRecordObject<ActionResult, string, Match, boolean>;
+  #route: WildcardRouteRecord<ActionResult, string, Match, boolean>;
 
   private constructor(
     link: BuilderLink<ActionResult, string>,
-    key: Extract<keyof Match, string>,
-    action: ActionType<ActionResult, Match> | undefined
+    key: Extract<keyof Match, string>
   ) {
     this.#link = link;
-    this.#route = {
-      matchKey: key,
-      route: new WildcardRouteRecord(this, key, isString, action),
-    };
+    this.key = key;
+    this.#route = new WildcardRouteRecord(this, key, isString, undefined);
     link.register(this);
+  }
+
+  /**
+   * Define action for this route and return a new instance of SearchRouteBuilder.
+   */
+  action(
+    action: ActionType<ActionResult, Match>
+  ): SearchRouteBuilder<ActionResult, "hasaction", Match> {
+    const result = new SearchRouteBuilder<ActionResult, "hasaction", Match>(
+      this.#link.inherit(),
+      this.key
+    );
+
+    result.#route = new WildcardRouteRecord(result, this.key, isString, action);
+    return result;
   }
 
   getRoute(): WildcardRouteRecord<
@@ -127,7 +120,7 @@ export class SearchRouteBuilder<
     Match,
     WildcardFlagToHasAction<WildcardFlag>
   > {
-    return this.#route.route;
+    return this.#route;
   }
 
   getBuilderLink(): BuilderLink<ActionResult, string> {
@@ -136,9 +129,13 @@ export class SearchRouteBuilder<
 
   getResolver(): RouteResolver<ActionResult, string> {
     return this.#link.getResolver(() => {
+      const route = this.#route;
+      if (route === undefined) {
+        return undefined;
+      }
       return {
         type: "wildcard",
-        route: this.#route.route,
+        route,
       };
     });
   }

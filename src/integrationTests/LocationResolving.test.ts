@@ -51,9 +51,9 @@ describe("Composed Location resolving", () => {
       });
       const resolver = builder.getResolver();
 
-      SearchRouteBuilder.attachTo(builder.getRoutes().foo, "key", {
-        action: ({ key }) => `key is ${key}`,
-      }).getRoute();
+      SearchRouteBuilder.attachTo(builder.getRoutes().foo, "key")
+        .action(({ key }) => `key is ${key}`)
+        .getRoute();
 
       const result = resolver.resolve({
         pathname: "/foo",
@@ -69,11 +69,10 @@ describe("Composed Location resolving", () => {
   describe("path-search-state", () => {
     it("1", () => {
       const tab = SearchRouteBuilder.init("tab", {});
-      const ss = tab.getRoute().attach(
-        StateRouteBuilder.init("username", isString, {
-          action: ({ tab, username }) => `hello, ${username}! tab=${tab}`,
-        })
-      );
+      const ss = tab
+        .getRoute()
+        .attach(StateRouteBuilder.init("username", isString))
+        .action(({ tab, username }) => `hello, ${username}! tab=${tab}`);
       PathRouteBuilder.init()
         .routes({
           user: {},

@@ -4,18 +4,18 @@ import { WildcardRouteRecord } from "../RouteRecord/WildcardRouteRecord";
 describe("SearchRouteBuilder", () => {
   describe("init", () => {
     it("has wildcard route from start", () => {
-      const b = SearchRouteBuilder.init("key", {
-        action: ({ key }) => `key is ${key}`,
-      });
+      const b = SearchRouteBuilder.init("key").action(
+        ({ key }) => `key is ${key}`
+      );
 
       expect(b.getRoute()).toEqual(expect.any(WildcardRouteRecord));
     });
   });
   it("attach", () => {
     const toplevel = SearchRouteBuilder.init("foo", {}).getRoute();
-    const sub = SearchRouteBuilder.attachTo(toplevel, "bar", {
-      action: ({ foo, bar }) => `foo is ${foo}, bar is ${bar}`,
-    });
+    const sub = SearchRouteBuilder.attachTo(toplevel, "bar").action(
+      ({ foo, bar }) => `foo is ${foo}, bar is ${bar}`
+    );
     const route = sub.getRoute();
     expect(
       route.action({

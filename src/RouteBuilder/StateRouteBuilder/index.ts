@@ -107,6 +107,7 @@ export class StateRouteBuilder<
     this.key = key;
     this.#validator = validator;
     this.#route = new WildcardRouteRecord(this, key, validator, undefined);
+    link.register(this);
   }
 
   /**
