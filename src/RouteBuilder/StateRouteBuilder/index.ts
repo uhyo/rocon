@@ -7,7 +7,7 @@ import {
 } from "../../LocationComposer/StateLocationComposer";
 import { RouteResolver } from "../../RouteResolver";
 import { RouteRecordType } from "../RouteRecord";
-import { MatchingRouteRecord } from "../RouteRecord/WildcardRouteRecord";
+import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
 import {
   ExistingWildcardFlagType,

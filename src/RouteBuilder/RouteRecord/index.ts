@@ -2,9 +2,9 @@ import type { Location } from "../../LocationComposer/Location";
 import type { RoutesDefinition } from "../RoutesDefinitionObject";
 import { wildcardRouteKey } from "../symbols";
 import type { WildcardFlagType } from "../WildcardFlagType";
+import type { MatchingRouteRecordObject } from "./MatchingRouteRecord";
 import { PathRouteRecord } from "./PathRouteRecord";
 import type { RouteRecordType } from "./RouteRecordType";
-import type { MatchingRouteRecordObject } from "./WildcardRouteRecord";
 
 export { PathRouteRecord };
 export type { RouteRecordType };

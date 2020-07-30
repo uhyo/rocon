@@ -13,7 +13,7 @@ import {
 import {
   MatchingRouteRecord,
   MatchingRouteRecordObject,
-} from "../RouteRecord/WildcardRouteRecord";
+} from "../RouteRecord/MatchingRouteRecord";
 import type {
   RouteDefinition,
   RoutesDefinition,

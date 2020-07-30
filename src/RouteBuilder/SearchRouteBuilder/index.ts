@@ -5,7 +5,7 @@ import { SearchLocationComposer } from "../../LocationComposer/SearchLocationCom
 import type { RouteResolver } from "../../RouteResolver";
 import { isString } from "../../validator";
 import { RouteRecordType } from "../RouteRecord";
-import { MatchingRouteRecord } from "../RouteRecord/WildcardRouteRecord";
+import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
 import type {
   ExistingWildcardFlagType,

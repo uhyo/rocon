@@ -1,5 +1,5 @@
 import { SearchRouteBuilder } from ".";
-import { MatchingRouteRecord } from "../RouteRecord/WildcardRouteRecord";
+import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 
 describe("SearchRouteBuilder", () => {
   describe("init", () => {
