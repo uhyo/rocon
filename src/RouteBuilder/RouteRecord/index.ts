@@ -27,6 +27,7 @@ export type RoutesDefinitionToRouteRecords<
 
 export type WildcardInRouteRecords<
   ActionResult,
+  Value,
   WildcardFlag extends WildcardFlagType,
   Match
 > = {
@@ -34,6 +35,7 @@ export type WildcardInRouteRecords<
   noaction: {
     readonly [wildcardRouteKey]: WildcardRouteRecordObject<
       ActionResult,
+      Value,
       Match,
       false
     >;
@@ -41,6 +43,7 @@ export type WildcardInRouteRecords<
   hasaction: {
     readonly [wildcardRouteKey]: WildcardRouteRecordObject<
       ActionResult,
+      Value,
       Match,
       true
     >;

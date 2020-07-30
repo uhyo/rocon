@@ -141,7 +141,7 @@ export class PathRouteBuilder<
 
   getRoutes(): Readonly<
     RoutesDefinitionToRouteRecords<ActionResult, Defs, Match> &
-      WildcardInRouteRecords<ActionResult, WildcardFlag, Match>
+      WildcardInRouteRecords<ActionResult, string, WildcardFlag, Match>
   > {
     this.#link.checkInvalidation();
     const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
