@@ -217,7 +217,7 @@ describe("RouteResolver", () => {
           },
           route: {
             action: expect.any(Function),
-            matchKey: "id",
+            key: "id",
           },
         },
       ]);

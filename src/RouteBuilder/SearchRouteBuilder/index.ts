@@ -5,7 +5,7 @@ import { SearchLocationComposer } from "../../LocationComposer/SearchLocationCom
 import type { RouteResolver } from "../../RouteResolver";
 import { isString } from "../../validator";
 import { RouteRecordType } from "../RouteRecord";
-import { WildcardRouteRecord } from "../RouteRecord/WildcardRouteRecord";
+import { MatchingRouteRecord } from "../RouteRecord/WildcardRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
 import type {
   ExistingWildcardFlagType,
@@ -87,7 +87,7 @@ export class SearchRouteBuilder<
   readonly key: Extract<keyof Match, string>;
 
   #link: BuilderLink<ActionResult, string>;
-  #route: WildcardRouteRecord<ActionResult, string, Match, boolean>;
+  #route: MatchingRouteRecord<ActionResult, string, Match, boolean>;
 
   private constructor(
     link: BuilderLink<ActionResult, string>,
@@ -95,7 +95,7 @@ export class SearchRouteBuilder<
   ) {
     this.#link = link;
     this.key = key;
-    this.#route = new WildcardRouteRecord(this, key, isString, undefined);
+    this.#route = new MatchingRouteRecord(this, key, isString, undefined);
     link.register(this);
   }
 
@@ -110,11 +110,11 @@ export class SearchRouteBuilder<
       this.key
     );
 
-    result.#route = new WildcardRouteRecord(result, this.key, isString, action);
+    result.#route = new MatchingRouteRecord(result, this.key, isString, action);
     return result;
   }
 
-  getRoute(): WildcardRouteRecord<
+  getRoute(): MatchingRouteRecord<
     ActionResult,
     string,
     Match,

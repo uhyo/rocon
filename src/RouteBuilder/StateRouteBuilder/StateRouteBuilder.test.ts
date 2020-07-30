@@ -1,5 +1,5 @@
 import { StateRouteBuilder } from ".";
-import { WildcardRouteRecord } from "../RouteRecord/WildcardRouteRecord";
+import { MatchingRouteRecord } from "../RouteRecord/WildcardRouteRecord";
 
 const isString = (value: unknown): value is string => typeof value === "string";
 const isNumber = (value: unknown): value is number => typeof value === "number";
@@ -11,7 +11,7 @@ describe("StateRouteBuilder", () => {
         ({ foostate }) => `foo is ${foostate.slice(0)}`
       );
 
-      expect(b.getRoute()).toEqual(expect.any(WildcardRouteRecord));
+      expect(b.getRoute()).toEqual(expect.any(MatchingRouteRecord));
     });
     it("getRoute", () => {
       const b = StateRouteBuilder.init("foostate", isString).action(

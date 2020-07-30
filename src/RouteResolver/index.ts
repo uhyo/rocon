@@ -1,7 +1,7 @@
 import { LocationComposer } from "../LocationComposer";
 import type { BaseState, Location } from "../LocationComposer/Location";
 import type { RouteRecordType } from "../RouteBuilder/RouteRecord";
-import { WildcardRouteRecord } from "../RouteBuilder/RouteRecord/WildcardRouteRecord";
+import { MatchingRouteRecord } from "../RouteBuilder/RouteRecord/WildcardRouteRecord";
 import { ResolvedRoute } from "./ResolvedRoute";
 
 export type ResolvedSegmentType<ActionResult> =
@@ -11,7 +11,7 @@ export type ResolvedSegmentType<ActionResult> =
     }
   | {
       type: "wildcard";
-      route: WildcardRouteRecord<ActionResult, unknown, never, boolean>;
+      route: MatchingRouteRecord<ActionResult, unknown, never, boolean>;
     };
 
 export type SegmentResolver<ActionResult, Segment> = (
@@ -50,7 +50,7 @@ export class RouteResolver<ActionResult, Segment> {
       const match = (nextRoute.type === "normal"
         ? {}
         : {
-            [nextRoute.route.matchKey]: seg,
+            [nextRoute.route.key]: seg,
           }) as never;
 
       const childResolver = nextRoute.route
@@ -76,7 +76,7 @@ export class RouteResolver<ActionResult, Segment> {
         case "wildcard": {
           return result.map((res) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (res.match as any)[nextRoute.route.matchKey] = seg;
+            (res.match as any)[nextRoute.route.key] = seg;
             return res;
           });
         }

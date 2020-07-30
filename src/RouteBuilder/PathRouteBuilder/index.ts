@@ -11,8 +11,8 @@ import {
   WildcardInRouteRecords,
 } from "../RouteRecord";
 import {
-  WildcardRouteRecord,
-  WildcardRouteRecordObject,
+  MatchingRouteRecord,
+  MatchingRouteRecordObject,
 } from "../RouteRecord/WildcardRouteRecord";
 import type {
   RouteDefinition,
@@ -61,7 +61,7 @@ export class PathRouteBuilder<
   readonly #link: BuilderLink<ActionResult, string>;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
-    | WildcardRouteRecordObject<ActionResult, string, Match, boolean>
+    | MatchingRouteRecordObject<ActionResult, string, Match, boolean>
     | undefined = undefined;
 
   private constructor(link: BuilderLink<ActionResult, string>) {
@@ -128,7 +128,7 @@ export class PathRouteBuilder<
     result.#routes = this.#routes;
     result.#wildcardRoute = {
       matchKey: key,
-      route: new WildcardRouteRecord(
+      route: new MatchingRouteRecord(
         result,
         // TypeScript requires this `as` but this should be true because Key extends string.
         key as Extract<Key, string>,

@@ -7,7 +7,7 @@ import {
 } from "../../LocationComposer/StateLocationComposer";
 import { RouteResolver } from "../../RouteResolver";
 import { RouteRecordType } from "../RouteRecord";
-import { WildcardRouteRecord } from "../RouteRecord/WildcardRouteRecord";
+import { MatchingRouteRecord } from "../RouteRecord/WildcardRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
 import {
   ExistingWildcardFlagType,
@@ -96,7 +96,7 @@ export class StateRouteBuilder<
 
   #link: BuilderLink<ActionResult, StateValue>;
   #validator: Validator<StateValue>;
-  #route: WildcardRouteRecord<ActionResult, StateValue, Match, boolean>;
+  #route: MatchingRouteRecord<ActionResult, StateValue, Match, boolean>;
 
   private constructor(
     link: BuilderLink<ActionResult, StateValue>,
@@ -106,7 +106,7 @@ export class StateRouteBuilder<
     this.#link = link;
     this.key = key;
     this.#validator = validator;
-    this.#route = new WildcardRouteRecord(this, key, validator, undefined);
+    this.#route = new MatchingRouteRecord(this, key, validator, undefined);
     link.register(this);
   }
 
@@ -125,7 +125,7 @@ export class StateRouteBuilder<
       Match
     >(this.#link.inherit(), this.key, validator);
 
-    result.#route = new WildcardRouteRecord(
+    result.#route = new MatchingRouteRecord(
       result,
       this.key,
       validator,
@@ -135,7 +135,7 @@ export class StateRouteBuilder<
   }
 
   getRoute(): WildcardFlag extends ExistingWildcardFlagType
-    ? WildcardRouteRecord<
+    ? MatchingRouteRecord<
         ActionResult,
         StateValue,
         Match,

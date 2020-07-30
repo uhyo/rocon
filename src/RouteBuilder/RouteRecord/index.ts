@@ -4,7 +4,7 @@ import { wildcardRouteKey } from "../symbols";
 import type { WildcardFlagType } from "../WildcardFlagType";
 import { PathRouteRecord } from "./PathRouteRecord";
 import type { RouteRecordType } from "./RouteRecordType";
-import type { WildcardRouteRecordObject } from "./WildcardRouteRecord";
+import type { MatchingRouteRecordObject } from "./WildcardRouteRecord";
 
 export { PathRouteRecord };
 export type { RouteRecordType };
@@ -33,7 +33,7 @@ export type WildcardInRouteRecords<
 > = {
   none: {};
   noaction: {
-    readonly [wildcardRouteKey]: WildcardRouteRecordObject<
+    readonly [wildcardRouteKey]: MatchingRouteRecordObject<
       ActionResult,
       Value,
       Match,
@@ -41,7 +41,7 @@ export type WildcardInRouteRecords<
     >;
   };
   hasaction: {
-    readonly [wildcardRouteKey]: WildcardRouteRecordObject<
+    readonly [wildcardRouteKey]: MatchingRouteRecordObject<
       ActionResult,
       Value,
       Match,

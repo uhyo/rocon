@@ -1,5 +1,5 @@
 import { SearchRouteBuilder } from ".";
-import { WildcardRouteRecord } from "../RouteRecord/WildcardRouteRecord";
+import { MatchingRouteRecord } from "../RouteRecord/WildcardRouteRecord";
 
 describe("SearchRouteBuilder", () => {
   describe("init", () => {
@@ -8,7 +8,7 @@ describe("SearchRouteBuilder", () => {
         ({ key }) => `key is ${key}`
       );
 
-      expect(b.getRoute()).toEqual(expect.any(WildcardRouteRecord));
+      expect(b.getRoute()).toEqual(expect.any(MatchingRouteRecord));
     });
   });
   it("attach", () => {
