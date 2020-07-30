@@ -3,6 +3,7 @@ import type { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBu
 import type { BuilderLinkOptions } from "../../BuilderLink/BuilderLinkOptions";
 import { SearchLocationComposer } from "../../LocationComposer/SearchLocationComposer";
 import type { RouteResolver } from "../../RouteResolver";
+import { isString } from "../../validator";
 import type { RouteRecordType } from "../RouteRecord";
 import {
   WildcardRouteRecord,
@@ -105,7 +106,7 @@ export class SearchRouteBuilder<
   }
 
   #link: BuilderLink<ActionResult, string>;
-  #route: WildcardRouteRecordObject<ActionResult, Match, boolean>;
+  #route: WildcardRouteRecordObject<ActionResult, string, Match, boolean>;
 
   private constructor(
     link: BuilderLink<ActionResult, string>,
@@ -115,13 +116,14 @@ export class SearchRouteBuilder<
     this.#link = link;
     this.#route = {
       matchKey: key,
-      route: new WildcardRouteRecord(this, key, action),
+      route: new WildcardRouteRecord(this, key, isString, action),
     };
     link.register(this);
   }
 
   getRoute(): WildcardRouteRecord<
     ActionResult,
+    string,
     Match,
     WildcardFlagToHasAction<WildcardFlag>
   > {

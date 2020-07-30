@@ -113,7 +113,7 @@ export class StateRouteBuilder<
 
   #link: BuilderLink<ActionResult, StateValue>;
   #validator: Validator<StateValue>;
-  #route: WildcardRouteRecordObject<ActionResult, Match, boolean>;
+  #route: WildcardRouteRecordObject<ActionResult, StateValue, Match, boolean>;
 
   private constructor(
     link: BuilderLink<ActionResult, StateValue>,
@@ -125,12 +125,13 @@ export class StateRouteBuilder<
     this.#validator = validator;
     this.#route = {
       matchKey: key,
-      route: new WildcardRouteRecord(this, key, action),
+      route: new WildcardRouteRecord(this, key, validator, action),
     };
   }
 
   getRoute(): WildcardRouteRecord<
     ActionResult,
+    StateValue,
     Match,
     WildcardFlagToHasAction<WildcardFlag>
   > {

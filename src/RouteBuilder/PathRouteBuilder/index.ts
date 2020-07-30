@@ -3,6 +3,7 @@ import type { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBu
 import type { BuilderLinkOptions } from "../../BuilderLink/BuilderLinkOptions";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
 import { RouteResolver } from "../../RouteResolver";
+import { isString } from "../../validator";
 import {
   PathRouteRecord,
   RouteRecordType,
@@ -60,7 +61,7 @@ export class PathRouteBuilder<
   readonly #link: BuilderLink<ActionResult, string>;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
-    | WildcardRouteRecordObject<ActionResult, Match, boolean>
+    | WildcardRouteRecordObject<ActionResult, string, Match, boolean>
     | undefined = undefined;
 
   private constructor(link: BuilderLink<ActionResult, string>) {
@@ -133,6 +134,7 @@ export class PathRouteBuilder<
         result,
         // TypeScript requires this `as` but this should be true because Key extends string.
         key as Extract<Key, string>,
+        isString,
         routeDefinition.action
       ),
     };

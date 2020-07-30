@@ -11,7 +11,7 @@ export type ResolvedSegmentType<ActionResult> =
     }
   | {
       type: "wildcard";
-      route: WildcardRouteRecord<ActionResult, never, boolean>;
+      route: WildcardRouteRecord<ActionResult, unknown, never, boolean>;
     };
 
 export type SegmentResolver<ActionResult, Segment> = (

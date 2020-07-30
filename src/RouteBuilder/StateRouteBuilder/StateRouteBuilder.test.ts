@@ -53,7 +53,7 @@ describe("StateRouteBuilder", () => {
         pathname: "/",
         state: {
           foo: "あいう",
-          bar: 5555,
+          bar: 555,
         },
       });
     });
