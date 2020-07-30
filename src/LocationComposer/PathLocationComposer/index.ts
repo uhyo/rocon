@@ -1,5 +1,5 @@
-import { LocationComposer } from "..";
-import { BaseState, Location } from "../Location";
+import type { LocationComposer } from "..";
+import type { BaseState, Location } from "../Location";
 import { composePath } from "./composePath";
 import { decomposePath } from "./decomposePath";
 
