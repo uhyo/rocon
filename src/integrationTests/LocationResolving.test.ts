@@ -1,5 +1,7 @@
 import { PathRouteBuilder } from "../RouteBuilder/PathRouteBuilder";
 import { SearchRouteBuilder } from "../RouteBuilder/SearchRouteBuilder";
+import { StateRouteBuilder } from "../RouteBuilder/StateRouteBuilder";
+import { isString } from "../validator";
 
 describe("Composed Location resolving", () => {
   describe("path-path", () => {
@@ -62,6 +64,35 @@ describe("Composed Location resolving", () => {
       const res = result[0];
       expect(res.match).toEqual({ key: "value" });
       expect(res.route.action(res.match)).toBe("key is value");
+    });
+  });
+  describe("path-search-state", () => {
+    it("1", () => {
+      const tab = SearchRouteBuilder.init("tab", {});
+      const ss = tab.getRoute().attach(
+        StateRouteBuilder.init("username", isString, {
+          action: ({ tab, username }) => `hello, ${username}! tab=${tab}`,
+        })
+      );
+      PathRouteBuilder.init()
+        .routes({
+          user: {},
+        })
+        .getRoutes()
+        .user.attach(tab);
+
+      expect(
+        ss.getRoute().getLocation({
+          tab: "123",
+          username: "uhyo",
+        })
+      ).toEqual({
+        pathname: "/user",
+        search: "tab=123",
+        state: {
+          username: "uhyo",
+        },
+      });
     });
   });
 });
