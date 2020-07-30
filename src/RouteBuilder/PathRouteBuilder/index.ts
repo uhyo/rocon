@@ -166,8 +166,8 @@ export class PathRouteBuilder<
   }
 
   getResolver(): RouteResolver<ActionResult, string> {
-    return this.#link.getResolver((segment) => {
-      const route = this.#routes[segment];
+    return this.#link.getResolver((value) => {
+      const route = this.#routes[value];
       if (route !== undefined) {
         return {
           type: "normal",
@@ -177,8 +177,9 @@ export class PathRouteBuilder<
       const wildcardRoute = this.#wildcardRoute;
       if (wildcardRoute !== undefined) {
         return {
-          type: "wildcard",
+          type: "matching",
           route: wildcardRoute.route,
+          value,
         };
       }
       return undefined;

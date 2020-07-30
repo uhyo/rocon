@@ -151,13 +151,14 @@ export class StateRouteBuilder<
   }
 
   getResolver(): RouteResolver<ActionResult, StateValue> {
-    return this.#link.getResolver(() => {
+    return this.#link.getResolver((value) => {
       if (this.#route === undefined) {
         return undefined;
       }
       return {
-        type: "wildcard",
+        type: "matching",
         route: this.#route,
+        value,
       };
     });
   }

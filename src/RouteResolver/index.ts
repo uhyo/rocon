@@ -4,19 +4,20 @@ import type { RouteRecordType } from "../RouteBuilder/RouteRecord";
 import { MatchingRouteRecord } from "../RouteBuilder/RouteRecord/MatchingRouteRecord";
 import { ResolvedRoute } from "./ResolvedRoute";
 
-export type ResolvedSegmentType<ActionResult> =
+export type ResolvedSegmentType<ActionResult, Segment> =
   | {
       type: "normal";
       route: RouteRecordType<ActionResult, never, boolean>;
     }
   | {
-      type: "wildcard";
-      route: MatchingRouteRecord<ActionResult, unknown, never, boolean>;
+      type: "matching";
+      route: MatchingRouteRecord<ActionResult, Segment, never, boolean>;
+      value: Segment;
     };
 
 export type SegmentResolver<ActionResult, Segment> = (
   segment: Segment
-) => ResolvedSegmentType<ActionResult> | undefined;
+) => ResolvedSegmentType<ActionResult, Segment> | undefined;
 
 /**
  * Object that resolves given URL to a Route.
@@ -73,10 +74,12 @@ export class RouteResolver<ActionResult, Segment> {
         case "normal": {
           return result;
         }
-        case "wildcard": {
+        case "matching": {
+          const key = nextRoute.route.key;
+          const matchedValue = nextRoute.value;
           return result.map((res) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (res.match as any)[nextRoute.route.key] = seg;
+            (res.match as any)[key] = matchedValue;
             return res;
           });
         }
