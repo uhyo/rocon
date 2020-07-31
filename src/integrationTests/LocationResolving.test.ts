@@ -1,4 +1,4 @@
-import { Path, Search, State } from "../RouteBuilder/initializers";
+import { Path, Rocon, Search, State } from "..";
 import { wildcardRouteKey } from "../RouteBuilder/symbols";
 import { isString } from "../validator";
 
@@ -135,13 +135,13 @@ describe("Composed Location resolving", () => {
       });
     });
     it("2", () => {
-      const route = Path()
+      const route = Rocon.Path()
         .routes({
           user: {},
         })
         .getRoutes()
-        .user.attach(Search("tab"))
-        .attach(State("username", isString))
+        .user.attach(Rocon.Search("tab"))
+        .attach(Rocon.State("username", isString))
         .action(({ tab, username }) => `hello, ${username}! tab=${tab}`);
 
       expect(

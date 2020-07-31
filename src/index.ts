@@ -1,3 +1,4 @@
-export { BuilderLink } from "./BuilderLink";
-export * from "./RouteBuilder/initializers";
-export * as validator from "./validator";
+import * as Rocon from "./Rocon";
+
+export * from "./Rocon";
+export { Rocon, Rocon as default };
