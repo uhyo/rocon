@@ -1,6 +1,7 @@
 import { Path, Search, State } from "../RouteBuilder/initializers";
 import { PathRouteBuilder } from "../RouteBuilder/PathRouteBuilder";
 import { SearchRouteBuilder } from "../RouteBuilder/SearchRouteBuilder";
+import { wildcardRouteKey } from "../RouteBuilder/symbols";
 import { isString } from "../validator";
 
 describe("Composed Location resolving", () => {
@@ -42,6 +43,46 @@ describe("Composed Location resolving", () => {
       expect(fugaResults.length).toBe(1);
       const [fugaRoute] = fugaResults;
       expect(fugaRoute.route.action(fugaRoute.match)).toBe("fuga!");
+    });
+    it("2", () => {
+      const builder = Path<string>().routes({
+        user: {},
+      });
+      builder
+        .getRoutes()
+        .user.attach(Path<string>())
+        .any("id", {
+          action: ({ id }) => `Hello, user ${id}`,
+        });
+
+      const resolver = builder.getResolver();
+      const results = resolver.resolve({
+        pathname: "/user/uhyo",
+        state: null,
+      });
+      expect(results.length).toBe(1);
+      const [res] = results;
+      expect(res.route.action(res.match)).toBe("Hello, user uhyo");
+    });
+    it("3", () => {
+      const builder = Path<string>().any("user", {});
+      builder
+        .getRoutes()
+        [wildcardRouteKey].route.attach(Path<string>())
+        .routes({
+          profile: {
+            action: ({ user }) => `Hello, user ${user}`,
+          },
+        });
+
+      const resolver = builder.getResolver();
+      const results = resolver.resolve({
+        pathname: "/uhyo/profile",
+        state: null,
+      });
+      expect(results.length).toBe(1);
+      const [res] = results;
+      expect(res.route.action(res.match)).toBe("Hello, user uhyo");
     });
   });
   describe("path-search", () => {
