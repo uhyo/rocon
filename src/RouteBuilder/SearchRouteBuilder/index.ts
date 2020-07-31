@@ -130,9 +130,6 @@ export class SearchRouteBuilder<
   getResolver(): RouteResolver<ActionResult, string> {
     return this.#link.getResolver((value) => {
       const route = this.#route;
-      if (route === undefined) {
-        return undefined;
-      }
       return {
         type: "matching",
         route,
