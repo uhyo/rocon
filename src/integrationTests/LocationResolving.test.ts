@@ -1,6 +1,4 @@
 import { Path, Search, State } from "../RouteBuilder/initializers";
-import { PathRouteBuilder } from "../RouteBuilder/PathRouteBuilder";
-import { SearchRouteBuilder } from "../RouteBuilder/SearchRouteBuilder";
 import { wildcardRouteKey } from "../RouteBuilder/symbols";
 import { isString } from "../validator";
 
@@ -15,13 +13,13 @@ describe("Composed Location resolving", () => {
       });
       const toplevel = builder.getRoutes();
 
-      PathRouteBuilder.attachTo(toplevel.foo).routes({
+      toplevel.foo.attach(Path()).routes({
         hoge: {
           action: () => "hoge.",
         },
       });
 
-      PathRouteBuilder.attachTo(toplevel.bar).routes({
+      toplevel.bar.attach(Path()).routes({
         fuga: {
           action: () => "fuga!",
         },
@@ -50,7 +48,7 @@ describe("Composed Location resolving", () => {
       });
       builder
         .getRoutes()
-        .user.attach(Path<string>())
+        .user.attach(Path())
         .any("id", {
           action: ({ id }) => `Hello, user ${id}`,
         });
@@ -92,7 +90,9 @@ describe("Composed Location resolving", () => {
       });
       const resolver = builder.getResolver();
 
-      SearchRouteBuilder.attachTo(builder.getRoutes().foo, "key")
+      builder
+        .getRoutes()
+        .foo.attach(Search("key"))
         .action(({ key }) => `key is ${key}`)
         .getRoute();
 
