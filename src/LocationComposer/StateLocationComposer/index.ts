@@ -1,7 +1,6 @@
-import { LocationComposer } from "..";
-import { BaseState, Location } from "../Location";
-
-export type Validator<R> = (value: unknown) => value is R;
+import type { LocationComposer } from "..";
+import type { Validator } from "../../validator";
+import type { BaseState, Location } from "../Location";
 
 export class StateLocationComposer<Key extends string, StateValue>
   implements LocationComposer<StateValue> {
