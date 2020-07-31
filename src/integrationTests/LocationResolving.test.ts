@@ -134,5 +134,28 @@ describe("Composed Location resolving", () => {
         },
       });
     });
+    it("2", () => {
+      const route = Path()
+        .routes({
+          user: {},
+        })
+        .getRoutes()
+        .user.attach(Search("tab"))
+        .attach(State("username", isString))
+        .action(({ tab, username }) => `hello, ${username}! tab=${tab}`);
+
+      expect(
+        route.getLocation({
+          tab: "123",
+          username: "uhyo",
+        })
+      ).toEqual({
+        pathname: "/user",
+        search: "tab=123",
+        state: {
+          username: "uhyo",
+        },
+      });
+    });
   });
 });

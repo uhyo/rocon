@@ -1,5 +1,6 @@
-import { RouteRecordType } from "../RouteRecord";
-import { AttachFunction } from "../RouteRecord/RouteRecordType";
+import type { Location } from "../../LocationComposer/Location";
+import type { RouteRecordType } from "../RouteRecord";
+import type { AttachFunction } from "../RouteRecord/RouteRecordType";
 
 export abstract class SingleRouteAbstractBuilder<
   ActionResult,
@@ -26,4 +27,11 @@ export abstract class SingleRouteAbstractBuilder<
    */
   readonly attach!: AttachFunction<ActionResult, Match>;
   // defined in the constructor
+
+  /**
+   * Get the location of this route.
+   */
+  getLocation(match: Match): Location {
+    return this.getRoute().getLocation(match);
+  }
 }
