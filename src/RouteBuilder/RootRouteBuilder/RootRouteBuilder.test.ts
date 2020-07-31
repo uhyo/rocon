@@ -1,6 +1,8 @@
 import { RootRouteBuilder } from ".";
 import { PathRouteBuilder } from "../PathRouteBuilder";
 
+const emptyMatch = {} as never;
+
 describe("RootRouteBuilder", () => {
   describe("action", () => {
     it("no action at init", () => {
@@ -72,6 +74,82 @@ describe("RootRouteBuilder", () => {
       expect(sub.getLocation({})).toEqual({
         pathname: "/foo",
         state: null,
+      });
+    });
+  });
+  describe("resolve", () => {
+    describe("root resolves", () => {
+      it("1", () => {
+        const toplevel = RootRouteBuilder.init().action(() => "root!?");
+        const resolver = toplevel.getResolver();
+        const res = resolver.resolve({
+          pathname: "/",
+          state: null,
+        });
+        expect(res).toEqual([
+          {
+            location: {
+              pathname: "/",
+              state: null,
+            },
+            match: {},
+            route: {
+              action: expect.any(Function),
+            },
+          },
+        ]);
+        expect(res[0].route.action(emptyMatch)).toBe("root!?");
+      });
+      it("2", () => {
+        const toplevel = RootRouteBuilder.init().action(() => "root.");
+        const resolver = toplevel.getResolver();
+        const res = resolver.resolve({
+          pathname: "/foo/bar",
+          search: "key=value",
+          state: null,
+        });
+        expect(res).toEqual([
+          {
+            location: {
+              pathname: "/foo/bar",
+              search: "key=value",
+              state: null,
+            },
+            match: {},
+            route: {
+              action: expect.any(Function),
+            },
+          },
+        ]);
+        expect(res[0].route.action(emptyMatch)).toBe("root.");
+      });
+      it("digs attached Root", () => {
+        const toplevel = PathRouteBuilder.init().routes({
+          hoge: {
+            action: () => "I am hoge",
+          },
+        });
+        toplevel
+          .getRoutes()
+          .hoge.attach(RootRouteBuilder.init().action(() => "I am root"));
+        const resolver = toplevel.getResolver();
+        const res = resolver.resolve({
+          pathname: "/hoge",
+          state: null,
+        });
+        expect(res).toEqual([
+          {
+            location: {
+              pathname: "/",
+              state: null,
+            },
+            match: {},
+            route: {
+              action: expect.any(Function),
+            },
+          },
+        ]);
+        expect(res[0].route.action(emptyMatch)).toBe("I am root");
       });
     });
   });

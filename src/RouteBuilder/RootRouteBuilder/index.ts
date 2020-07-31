@@ -37,6 +37,7 @@ export class RootRouteBuilder<
   private constructor(link: BuilderLink<ActionResult, unknown>) {
     this.#link = link;
     this.#route = new IdentityRouteRecord(this, undefined);
+    link.register(this);
   }
 
   action(
