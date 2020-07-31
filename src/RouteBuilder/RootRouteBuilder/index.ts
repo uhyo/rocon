@@ -20,7 +20,7 @@ export class RootRouteBuilder<
   Match
 > implements AttachableRouteBuilder<ActionResult, unknown> {
   static init<ActionResult>(
-    options: RootRouteBuilderOptions
+    options: Partial<RootRouteBuilderOptions> = {}
   ): RootRouteBuilder<ActionResult, "noaction", {}> {
     const link = BuilderLink.init({
       // TODO
