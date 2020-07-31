@@ -7,6 +7,7 @@ import { isString } from "../../validator";
 import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
+import { SingleRouteAbstractBuilder } from "../SingleRouteAbstractBuilder";
 import type {
   ExistingWildcardFlagType,
   WildcardFlagToHasAction,
@@ -21,7 +22,8 @@ export class SearchRouteBuilder<
   ActionResult,
   WildcardFlag extends ExistingWildcardFlagType,
   Match
-> implements AttachableRouteBuilder<ActionResult, string> {
+> extends SingleRouteAbstractBuilder<ActionResult, Match, boolean>
+  implements AttachableRouteBuilder<ActionResult, string> {
   static init<
     ActionResult,
     Key extends string,
@@ -93,6 +95,7 @@ export class SearchRouteBuilder<
     link: BuilderLink<ActionResult, string>,
     key: Extract<keyof Match, string>
   ) {
+    super();
     this.#link = link;
     this.key = key;
     this.#route = new MatchingRouteRecord(this, key, isString, undefined);
@@ -114,6 +117,9 @@ export class SearchRouteBuilder<
     return result;
   }
 
+  /**
+   * Get a route object of this builder.
+   */
   getRoute(): MatchingRouteRecord<
     ActionResult,
     string,

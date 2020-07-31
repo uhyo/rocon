@@ -111,7 +111,6 @@ describe("Composed Location resolving", () => {
     it("1", () => {
       const tab = Search("tab", {});
       const ss = tab
-        .getRoute()
         .attach(State("username", isString))
         .action(({ tab, username }) => `hello, ${username}! tab=${tab}`);
 

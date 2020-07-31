@@ -7,6 +7,7 @@ import type { Validator } from "../../validator";
 import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
+import { SingleRouteAbstractBuilder } from "../SingleRouteAbstractBuilder";
 import {
   ExistingWildcardFlagType,
   WildcardFlagToHasAction,
@@ -22,7 +23,8 @@ export class StateRouteBuilder<
   StateValue,
   WildcardFlag extends ExistingWildcardFlagType,
   Match
-> implements AttachableRouteBuilder<ActionResult, StateValue> {
+> extends SingleRouteAbstractBuilder<ActionResult, Match, boolean>
+  implements AttachableRouteBuilder<ActionResult, StateValue> {
   static init<
     ActionResult,
     StateValue,
@@ -101,6 +103,7 @@ export class StateRouteBuilder<
     key: Extract<keyof Match, string>,
     validator: Validator<StateValue>
   ) {
+    super();
     this.#link = link;
     this.key = key;
     this.#validator = validator;

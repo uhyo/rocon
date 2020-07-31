@@ -6,6 +6,7 @@ import { RouteResolver } from "../../RouteResolver";
 import { RouteRecordType } from "../RouteRecord";
 import { IdentityRouteRecord } from "../RouteRecord/IdentityRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
+import { SingleRouteAbstractBuilder } from "../SingleRouteAbstractBuilder";
 import {
   ExistingWildcardFlagType,
   WildcardFlagToHasAction,
@@ -19,7 +20,8 @@ export class RootRouteBuilder<
   ActionResult,
   WildcardFlag extends ExistingWildcardFlagType,
   Match
-> implements AttachableRouteBuilder<ActionResult, unknown> {
+> extends SingleRouteAbstractBuilder<ActionResult, Match, boolean>
+  implements AttachableRouteBuilder<ActionResult, unknown> {
   static init<ActionResult>(
     options: Partial<RootRouteBuilderOptions> = {}
   ): RootRouteBuilder<ActionResult, "noaction", {}> {
@@ -34,6 +36,7 @@ export class RootRouteBuilder<
   #link: BuilderLink<ActionResult, unknown>;
 
   private constructor(link: BuilderLink<ActionResult, unknown>) {
+    super();
     this.#link = link;
     this.#route = new IdentityRouteRecord(this, undefined);
     link.register(this);
