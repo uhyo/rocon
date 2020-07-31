@@ -1,7 +1,7 @@
 import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
 import { Location } from "../../LocationComposer/Location";
-import { AddMatchToRouteBuilder } from "../AddMatchToRouteBuilder";
 import type { ActionType } from "../RoutesDefinitionObject";
+import { AttachFunction } from "./RouteRecordType";
 
 export type ActionTypeOfRouteRecord<
   ActionResult,
@@ -26,6 +26,20 @@ export abstract class RouteRecordBase<
 
   constructor(action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>) {
     this.action = action;
+
+    Object.defineProperty(this, "attach", {
+      configurable: true,
+      writable: true,
+      value(
+        this: RouteRecordBase<ActionResult, Match, HasAction>,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        builder: any
+      ) {
+        this.#builder = builder;
+        builder.getBuilderLink().attachToParent(this);
+        return builder;
+      },
+    });
   }
 
   abstract getLocation(match: Match): Location;
@@ -40,11 +54,5 @@ export abstract class RouteRecordBase<
   /**
    * Attach given builder as a child of this route.
    */
-  attach<B extends HasBuilderLink<ActionResult, string>>(
-    builder: B
-  ): AddMatchToRouteBuilder<Match, B> {
-    this.#builder = builder;
-    builder.getBuilderLink().attachToParent(this);
-    return builder as AddMatchToRouteBuilder<Match, B>;
-  }
+  readonly attach!: AttachFunction<ActionResult, Match>;
 }

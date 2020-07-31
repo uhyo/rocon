@@ -23,8 +23,7 @@ export class RootRouteBuilder<
   static init<ActionResult>(
     options: Partial<RootRouteBuilderOptions> = {}
   ): RootRouteBuilder<ActionResult, "noaction", {}> {
-    const link = BuilderLink.init({
-      // TODO
+    const link = BuilderLink.init<ActionResult, unknown>({
       composer: identityLocationComposer,
       root: options.root,
     });
