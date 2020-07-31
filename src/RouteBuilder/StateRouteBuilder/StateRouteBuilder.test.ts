@@ -60,4 +60,34 @@ describe("StateRouteBuilder", () => {
       });
     });
   });
+  describe("resolve", () => {
+    const toplevel = StateRouteBuilder.init("foo", isString).action(
+      ({ foo }) => `foo is ${foo.slice(0)}`
+    );
+    const res = toplevel.getResolver().resolve({
+      pathname: "/foo",
+      state: {
+        foo: "I am foo",
+        bar: 1234,
+      },
+    });
+    expect(res).toEqual([
+      {
+        location: {
+          pathname: "/foo",
+          state: {
+            bar: 1234,
+          },
+        },
+        match: {
+          foo: "I am foo",
+        },
+        route: {
+          key: "foo",
+          action: expect.any(Function),
+        },
+      },
+    ]);
+    expect(res[0].route.action(res[0].match)).toBe("foo is I am foo");
+  });
 });

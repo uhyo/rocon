@@ -1,11 +1,9 @@
 import { BuilderLink } from "../../BuilderLink";
 import { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
 import { BuilderLinkOptions } from "../../BuilderLink/BuilderLinkOptions";
-import {
-  StateLocationComposer,
-  Validator,
-} from "../../LocationComposer/StateLocationComposer";
+import { StateLocationComposer } from "../../LocationComposer/StateLocationComposer";
 import { RouteResolver } from "../../RouteResolver";
+import type { Validator } from "../../validator";
 import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
@@ -152,9 +150,6 @@ export class StateRouteBuilder<
 
   getResolver(): RouteResolver<ActionResult, StateValue> {
     return this.#link.getResolver((value) => {
-      if (this.#route === undefined) {
-        return undefined;
-      }
       return {
         type: "matching",
         route: this.#route,
