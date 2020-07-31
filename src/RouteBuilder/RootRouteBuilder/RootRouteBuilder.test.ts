@@ -7,9 +7,9 @@ describe("RootRouteBuilder", () => {
       const b = RootRouteBuilder.init();
       expect(b.getRoute().action).toBeUndefined();
     });
-    it.skip("can set action", () => {
+    it("can set action", () => {
       const b = RootRouteBuilder.init().action(() => "root!");
-      expect(b.getRoute().action()).toBe("root!");
+      expect(b.getRoute().action({})).toBe("root!");
     });
   });
   describe("location", () => {

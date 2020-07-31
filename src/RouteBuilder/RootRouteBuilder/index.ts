@@ -5,6 +5,7 @@ import { Location } from "../../LocationComposer/Location";
 import { RouteResolver } from "../../RouteResolver";
 import { RouteRecordType } from "../RouteRecord";
 import { IdentityRouteRecord } from "../RouteRecord/IdentityRouteRecord";
+import { ActionType } from "../RoutesDefinitionObject";
 import {
   ExistingWildcardFlagType,
   WildcardFlagToHasAction,
@@ -36,6 +37,16 @@ export class RootRouteBuilder<
   private constructor(link: BuilderLink<ActionResult, unknown>) {
     this.#link = link;
     this.#route = new IdentityRouteRecord(this, undefined);
+  }
+
+  action(
+    action: ActionType<ActionResult, Match>
+  ): RootRouteBuilder<ActionResult, "hasaction", Match> {
+    const result = new RootRouteBuilder<ActionResult, "hasaction", Match>(
+      this.#link.inherit()
+    );
+    result.#route = new IdentityRouteRecord(result, action);
+    return result;
   }
 
   getRoute(): IdentityRouteRecord<
