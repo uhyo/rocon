@@ -1,4 +1,4 @@
-import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
+import type { HasBuilderLink } from "../../core/BuilderLink/AttachableRouteBuilder";
 import type { PathRouteBuilder } from "../PathRouteBuilder";
 import type { SearchRouteBuilder } from "../SearchRouteBuilder";
 import type { StateRouteBuilder } from "../StateRouteBuilder";

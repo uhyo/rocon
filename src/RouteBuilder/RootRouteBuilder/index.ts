@@ -1,5 +1,5 @@
-import { BuilderLink } from "../../BuilderLink";
-import { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
+import { BuilderLink } from "../../core/BuilderLink";
+import { AttachableRouteBuilder } from "../../core/BuilderLink/AttachableRouteBuilder";
 import { identityLocationComposer } from "../../LocationComposer/IdentityLocationComposer";
 import { Location } from "../../LocationComposer/Location";
 import { RouteRecordType } from "../RouteRecord";

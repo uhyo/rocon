@@ -1,7 +1,7 @@
-import type { LocationComposer } from "../LocationComposer";
-import type { RouteRecordType } from "../RouteBuilder/RouteRecord";
-import { routeRecordParentKey } from "../RouteBuilder/symbols";
-import { RouteResolver, SegmentResolver } from "../RouteResolver";
+import type { LocationComposer } from "../../LocationComposer";
+import type { RouteRecordType } from "../../RouteBuilder/RouteRecord";
+import { routeRecordParentKey } from "../../RouteBuilder/symbols";
+import { RouteResolver, SegmentResolver } from "../../RouteResolver";
 import {
   AttachableRouteBuilder,
   HasBuilderLink,

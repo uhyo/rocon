@@ -1,5 +1,5 @@
-import { BuilderLink } from "../../BuilderLink";
-import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
+import { BuilderLink } from "../../core/BuilderLink";
+import type { HasBuilderLink } from "../../core/BuilderLink/AttachableRouteBuilder";
 import { Location } from "../../LocationComposer/Location";
 import type { ActionType } from "../RoutesDefinitionObject";
 import { routeRecordParentKey } from "../symbols";

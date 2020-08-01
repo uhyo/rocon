@@ -1,4 +1,4 @@
-import type { BuilderLink } from "../BuilderLink";
+import type { BuilderLink } from "../core/BuilderLink";
 import type { Location } from "../LocationComposer/Location";
 import type { ResolvedRoute } from "./ResolvedRoute";
 

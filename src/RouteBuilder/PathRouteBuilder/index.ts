@@ -1,5 +1,5 @@
-import { BuilderLink, RouteRecordsBase } from "../../BuilderLink";
-import type { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
+import { BuilderLink, RouteRecordsBase } from "../../core/BuilderLink";
+import type { AttachableRouteBuilder } from "../../core/BuilderLink/AttachableRouteBuilder";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
 import { isString } from "../../validator";
 import {

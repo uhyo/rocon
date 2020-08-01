@@ -1,5 +1,5 @@
-import { BuilderLink } from "../BuilderLink";
-import { HasBuilderLink } from "../BuilderLink/AttachableRouteBuilder";
+import { BuilderLink } from "../core/BuilderLink";
+import { HasBuilderLink } from "../core/BuilderLink/AttachableRouteBuilder";
 import type { BaseState, Location } from "../LocationComposer/Location";
 import type { RouteRecordType } from "../RouteBuilder/RouteRecord";
 import { MatchingRouteRecord } from "../RouteBuilder/RouteRecord/MatchingRouteRecord";

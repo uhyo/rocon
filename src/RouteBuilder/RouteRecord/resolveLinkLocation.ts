@@ -1,4 +1,4 @@
-import { BuilderLink } from "../../BuilderLink";
+import { BuilderLink } from "../../core/BuilderLink";
 import { Location } from "../../LocationComposer/Location";
 
 const defaultRoot: Location = {

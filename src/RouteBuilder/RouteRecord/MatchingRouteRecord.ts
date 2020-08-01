@@ -1,5 +1,5 @@
 import { RouteRecordType } from ".";
-import { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
+import { HasBuilderLink } from "../../core/BuilderLink/AttachableRouteBuilder";
 import { Location } from "../../LocationComposer/Location";
 import { Validator } from "../../validator";
 import { resolveLinkLocation } from "./resolveLinkLocation";
