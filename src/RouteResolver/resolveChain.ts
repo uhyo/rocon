@@ -3,6 +3,7 @@ import type { Location } from "../LocationComposer/Location";
 import type { ResolvedRoute } from "./ResolvedRoute";
 
 /**
+ * Resolve location from given link and location
  * @package
  */
 export function resolveChain<ActionResult>(
@@ -22,7 +23,7 @@ export function resolveChain<ActionResult>(
         }) as never;
 
     const childLink = nextRoute.route
-      .getAttachedBuilder()
+      .getAttachedBuilderLink()
       ?.getChildBuilder()
       ?.getBuilderLink();
 

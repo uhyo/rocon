@@ -3,7 +3,7 @@ import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
 import { Location } from "../../LocationComposer/Location";
 import type { ActionType } from "../RoutesDefinitionObject";
 import { routeRecordParentKey } from "../symbols";
-import { AttachFunction } from "./RouteRecordType";
+import { AttachFunction, RouteRecordType } from "./RouteRecordType";
 
 export type ActionTypeOfRouteRecord<
   ActionResult,
@@ -19,7 +19,7 @@ export abstract class RouteRecordBase<
   ActionResult,
   Match,
   HasAction extends boolean
-> {
+> implements RouteRecordType<ActionResult, Match, HasAction> {
   /**
    * Action of this route.
    */
@@ -55,9 +55,9 @@ export abstract class RouteRecordBase<
   abstract getLocation(match: Match): Location;
 
   /**
-   * Get the builder attached to this Route.
+   * Get the link attached to this Route.
    */
-  getAttachedBuilder(): BuilderLink<ActionResult, unknown> | undefined {
+  getAttachedBuilderLink(): BuilderLink<ActionResult, unknown> | undefined {
     return this.#builder;
   }
 
