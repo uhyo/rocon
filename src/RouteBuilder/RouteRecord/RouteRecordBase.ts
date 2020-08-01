@@ -26,7 +26,7 @@ export abstract class RouteRecordBase<
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
   readonly [routeRecordParentKey]: BuilderLink<ActionResult, unknown>;
 
-  #builder?: HasBuilderLink<ActionResult, string> = undefined;
+  #builder?: BuilderLink<ActionResult, unknown> = undefined;
 
   constructor(
     parentLink: BuilderLink<ActionResult, unknown>,
@@ -42,11 +42,11 @@ export abstract class RouteRecordBase<
       writable: true,
       value(
         this: RouteRecordBase<ActionResult, Match, HasAction>,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        builder: any
+        builder: HasBuilderLink<ActionResult, unknown>
       ) {
-        this.#builder = builder;
-        builder.getBuilderLink().attachToParent(this);
+        const link = builder.getBuilderLink();
+        this.#builder = link;
+        link.attachToParent(this);
         return builder;
       },
     });
@@ -57,7 +57,7 @@ export abstract class RouteRecordBase<
   /**
    * Get the builder attached to this Route.
    */
-  getAttachedBuilder(): HasBuilderLink<ActionResult, string> | undefined {
+  getAttachedBuilder(): BuilderLink<ActionResult, unknown> | undefined {
     return this.#builder;
   }
 

@@ -54,7 +54,7 @@ export type RouteRecordType<ActionResult, Match, HasAction extends boolean> = {
   readonly [routeRecordParentKey]: BuilderLink<ActionResult, unknown>;
   readonly getLocation: (match: Match) => Location;
   readonly getAttachedBuilder: () =>
-    | HasBuilderLink<ActionResult, string>
+    | BuilderLink<ActionResult, unknown>
     | undefined;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly attach: AttachFunction<ActionResult, Match>;

@@ -58,17 +58,6 @@ describe("BuilderLink", () => {
 
       expect(() => link.checkInvalidation()).toThrow();
     });
-    it("attached links have same RouteResolver", () => {
-      const parent = SearchRouteBuilder.init("foo");
-      const link1 = parent.getBuilderLink();
-
-      const link2 = BuilderLink.init({
-        composer,
-      });
-
-      link2.attachToParent(parent.getRoute());
-      expect(link1.resolver).toBe(link2.resolver);
-    });
     it("inherited links have same RouteResolver", () => {
       const parent = SearchRouteBuilder.init("foo");
       const link1 = BuilderLink.init({ composer });
@@ -77,6 +66,19 @@ describe("BuilderLink", () => {
       const link2 = link1.inherit();
 
       expect(link1.resolver).toBe(link2.resolver);
+    });
+    describe("attached links have same RouteResolver", () => {
+      it("simple", () => {
+        const parent = SearchRouteBuilder.init("foo");
+        const link1 = parent.getBuilderLink();
+
+        const link2 = BuilderLink.init({
+          composer,
+        });
+
+        link2.attachToParent(parent.getRoute());
+        expect(link1.resolver).toBe(link2.resolver);
+      });
     });
   });
   describe("getParentRoute", () => {

@@ -23,8 +23,7 @@ export function resolveChain<ActionResult>(
 
     const childLink = nextRoute.route
       .getAttachedBuilder()
-      ?.getBuilderLink()
-      .getChildBuilder()
+      ?.getChildBuilder()
       ?.getBuilderLink();
 
     if (childLink === undefined || childLink.composer.isLeaf(next)) {
