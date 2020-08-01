@@ -39,7 +39,17 @@ export class RootRouteBuilder<
     super();
     this.#link = link;
     this.#route = new IdentityRouteRecord(this, undefined);
-    link.register(this);
+    link.register(this, () => {
+      const route = this.#route as RouteRecordType<
+        ActionResult,
+        never,
+        boolean
+      >;
+      return {
+        type: "normal",
+        route,
+      };
+    });
   }
 
   action(
@@ -65,16 +75,6 @@ export class RootRouteBuilder<
   }
 
   getResolver(): RouteResolver<ActionResult, unknown> {
-    return this.#link.getResolver(() => {
-      const route = this.#route as RouteRecordType<
-        ActionResult,
-        never,
-        boolean
-      >;
-      return {
-        type: "normal",
-        route,
-      };
-    });
+    return this.#link.getResolver();
   }
 }

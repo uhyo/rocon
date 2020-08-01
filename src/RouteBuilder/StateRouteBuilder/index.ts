@@ -99,7 +99,13 @@ export class StateRouteBuilder<
     this.key = key;
     this.#validator = validator;
     this.#route = new MatchingRouteRecord(this, key, validator, undefined);
-    link.register(this);
+    link.register(this, (value) => {
+      return {
+        type: "matching",
+        route: this.#route,
+        value,
+      };
+    });
   }
 
   /**
@@ -143,12 +149,6 @@ export class StateRouteBuilder<
   }
 
   getResolver(): RouteResolver<ActionResult, StateValue> {
-    return this.#link.getResolver((value) => {
-      return {
-        type: "matching",
-        route: this.#route,
-        value,
-      };
-    });
+    return this.#link.getResolver();
   }
 }

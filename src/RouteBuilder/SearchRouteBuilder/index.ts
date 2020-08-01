@@ -88,7 +88,14 @@ export class SearchRouteBuilder<
     this.#link = link;
     this.key = key;
     this.#route = new MatchingRouteRecord(this, key, isString, undefined);
-    link.register(this);
+    link.register(this, (value) => {
+      const route = this.#route;
+      return {
+        type: "matching",
+        route,
+        value,
+      };
+    });
   }
 
   /**
@@ -123,13 +130,6 @@ export class SearchRouteBuilder<
   }
 
   getResolver(): RouteResolver<ActionResult, string> {
-    return this.#link.getResolver((value) => {
-      const route = this.#route;
-      return {
-        type: "matching",
-        route,
-        value,
-      };
-    });
+    return this.#link.getResolver();
   }
 }

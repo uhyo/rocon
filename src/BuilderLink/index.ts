@@ -38,6 +38,7 @@ export class BuilderLink<ActionResult, Segment>
   #childBuilder?: AttachableRouteBuilder<ActionResult, Segment> = undefined;
   // TODO: want to remove this one
   readonly composer: LocationComposer<Segment>;
+  #resolveSegment?: SegmentResolver<ActionResult, Segment>;
   #rootLocation: Location;
 
   private constructor(options: BuilderLinkOptions<ActionResult, Segment>) {
@@ -112,8 +113,12 @@ export class BuilderLink<ActionResult, Segment>
   /**
    * TODO: rethink
    */
-  register(builder: AttachableRouteBuilder<ActionResult, Segment>): void {
+  register(
+    builder: AttachableRouteBuilder<ActionResult, Segment>,
+    resolveSegment: SegmentResolver<ActionResult, Segment>
+  ): void {
     this.#childBuilder = builder;
+    this.#resolveSegment = resolveSegment;
   }
 
   /**
@@ -149,10 +154,16 @@ export class BuilderLink<ActionResult, Segment>
     }
   }
 
-  getResolver(
-    resolveSegment: SegmentResolver<ActionResult, Segment>
-  ): RouteResolver<ActionResult, Segment> {
+  getResolver(): RouteResolver<ActionResult, Segment> {
     this.checkInvalidation();
+
+    const resolveSegment = this.#resolveSegment;
+    /* istanbul ignore if  */
+    if (resolveSegment === undefined) {
+      throw new Error(
+        "Invariant failure: 'getResolver()' called before setting resolveSegment"
+      );
+    }
     return new RouteResolver(this.composer, resolveSegment);
   }
 }

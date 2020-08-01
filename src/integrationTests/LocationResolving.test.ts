@@ -1,4 +1,5 @@
 import { Path, Rocon, Search, State } from "..";
+import { MatchingRouteRecord } from "../RouteBuilder/RouteRecord/MatchingRouteRecord";
 import { wildcardRouteKey } from "../RouteBuilder/symbols";
 import { isString } from "../validator";
 
@@ -156,6 +157,40 @@ describe("Composed Location resolving", () => {
           username: "uhyo",
         },
       });
+    });
+    it.skip("3", () => {
+      const route = Rocon.Path()
+        .routes({
+          user: {},
+        })
+        .getRoutes()
+        .user.attach(Rocon.Search("tab"))
+        .attach(Rocon.State("username", isString))
+        .action(({ tab, username }) => `hello, ${username}! tab=${tab}`);
+
+      const resolver = route.getResolver();
+      const res = resolver.resolve({
+        pathname: "/user",
+        search: "tab=123",
+        state: {
+          username: "uhyo",
+        },
+      });
+      expect(res.length).toBe(1);
+      expect(res).toEqual([
+        {
+          location: {
+            pathname: "/",
+            search: "",
+            state: {},
+          },
+          match: {
+            tab: "123",
+            username: "uhyo",
+          },
+          route: expect.any(MatchingRouteRecord),
+        },
+      ]);
     });
   });
 });

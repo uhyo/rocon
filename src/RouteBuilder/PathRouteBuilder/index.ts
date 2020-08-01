@@ -61,7 +61,24 @@ export class PathRouteBuilder<
 
   private constructor(link: BuilderLink<ActionResult, string>) {
     this.#link = link;
-    link.register(this);
+    link.register(this, (value) => {
+      const route = this.#routes[value];
+      if (route !== undefined) {
+        return {
+          type: "normal",
+          route,
+        };
+      }
+      const wildcardRoute = this.#wildcardRoute;
+      if (wildcardRoute !== undefined) {
+        return {
+          type: "matching",
+          route: wildcardRoute.route,
+          value,
+        };
+      }
+      return undefined;
+    });
   }
 
   routes<D extends RoutesDefinition<ActionResult>>(
@@ -161,23 +178,6 @@ export class PathRouteBuilder<
   }
 
   getResolver(): RouteResolver<ActionResult, string> {
-    return this.#link.getResolver((value) => {
-      const route = this.#routes[value];
-      if (route !== undefined) {
-        return {
-          type: "normal",
-          route,
-        };
-      }
-      const wildcardRoute = this.#wildcardRoute;
-      if (wildcardRoute !== undefined) {
-        return {
-          type: "matching",
-          route: wildcardRoute.route,
-          value,
-        };
-      }
-      return undefined;
-    });
+    return this.#link.getResolver();
   }
 }
