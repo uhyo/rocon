@@ -61,7 +61,7 @@ describe("StateRouteBuilder", () => {
       });
     });
   });
-  describe("resolve", () => {
+  it("resolve", () => {
     const toplevel = StateRouteBuilder.init("foo", isString).action(
       ({ foo }) => `foo is ${foo.slice(0)}`
     );
@@ -83,10 +83,7 @@ describe("StateRouteBuilder", () => {
         match: {
           foo: "I am foo",
         },
-        route: {
-          key: "foo",
-          action: expect.any(Function),
-        },
+        route: expect.any(MatchingRouteRecord),
       },
     ]);
     expect(res[0].route.action(res[0].match)).toBe("foo is I am foo");

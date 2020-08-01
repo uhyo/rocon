@@ -1,6 +1,7 @@
 import type { LocationComposer } from "../LocationComposer";
 import type { Location } from "../LocationComposer/Location";
 import type { RouteRecordType } from "../RouteBuilder/RouteRecord";
+import { routeRecordParentKey } from "../RouteBuilder/symbols";
 import { RouteResolver, SegmentResolver } from "../RouteResolver";
 import { PartiallyPartial } from "../util/types/PartiallyPartial";
 import {
@@ -30,7 +31,7 @@ export class BuilderLink<ActionResult, Segment>
   }
 
   readonly composer: LocationComposer<Segment>;
-  #resolver: RouteResolver<ActionResult, Segment>;
+  resolver: RouteResolver<ActionResult, Segment>;
 
   #state: BuilderLinkState<ActionResult, Segment> = {
     state: "unattached",
@@ -44,7 +45,7 @@ export class BuilderLink<ActionResult, Segment>
 
   private constructor(options: BuilderLinkOptions<ActionResult, Segment>) {
     this.composer = options.composer;
-    this.#resolver = new RouteResolver(this);
+    this.resolver = new RouteResolver(this);
     this.#rootLocation = options.root;
   }
 
@@ -53,7 +54,6 @@ export class BuilderLink<ActionResult, Segment>
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attachToParent(parentRoute: RouteRecordType<any, any, any>) {
-    // TODO: recover this check
     if (this.#state.state !== "unattached") {
       throw new Error("A builder cannot be attached more than once.");
     }
@@ -61,6 +61,8 @@ export class BuilderLink<ActionResult, Segment>
       state: "attached",
       parentRoute,
     };
+
+    this.resolver = parentRoute[routeRecordParentKey].resolver;
   }
 
   /**
@@ -141,7 +143,7 @@ export class BuilderLink<ActionResult, Segment>
           composer: this.composer,
           root: this.#rootLocation,
         });
-        result.#resolver = this.#resolver;
+        result.resolver = this.resolver;
 
         this.#state.parentRoute.attach(result);
 

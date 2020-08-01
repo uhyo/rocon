@@ -159,7 +159,7 @@ describe("Composed Location resolving", () => {
         },
       });
     });
-    it.skip("3", () => {
+    it("3", () => {
       const route = Rocon.Path()
         .routes({
           user: {},

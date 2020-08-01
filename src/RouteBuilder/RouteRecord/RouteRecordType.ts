@@ -1,3 +1,4 @@
+import { BuilderLink } from "../../BuilderLink";
 import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
 import type { Location } from "../../LocationComposer/Location";
 import { AddMatchToRouteBuilder } from "../AddMatchToRouteBuilder";
@@ -5,6 +6,7 @@ import { PathRouteBuilder } from "../PathRouteBuilder";
 import { RoutesDefinition } from "../RoutesDefinitionObject";
 import { SearchRouteBuilder } from "../SearchRouteBuilder";
 import { StateRouteBuilder } from "../StateRouteBuilder";
+import { routeRecordParentKey } from "../symbols";
 import {
   ExistingWildcardFlagType,
   WildcardFlagType,
@@ -49,6 +51,7 @@ export interface AttachFunction<ActionResult, Match> {
  */
 export type RouteRecordType<ActionResult, Match, HasAction extends boolean> = {
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
+  readonly [routeRecordParentKey]: BuilderLink<ActionResult, unknown>;
   readonly getLocation: (match: Match) => Location;
   readonly getAttachedBuilder: () =>
     | HasBuilderLink<ActionResult, string>

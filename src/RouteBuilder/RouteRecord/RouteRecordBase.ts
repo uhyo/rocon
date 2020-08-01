@@ -1,6 +1,8 @@
+import { BuilderLink } from "../../BuilderLink";
 import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
 import { Location } from "../../LocationComposer/Location";
 import type { ActionType } from "../RoutesDefinitionObject";
+import { routeRecordParentKey } from "../symbols";
 import { AttachFunction } from "./RouteRecordType";
 
 export type ActionTypeOfRouteRecord<
@@ -22,10 +24,18 @@ export abstract class RouteRecordBase<
    * Action of this route.
    */
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
+  readonly [routeRecordParentKey]: BuilderLink<ActionResult, unknown>;
+
   #builder?: HasBuilderLink<ActionResult, string> = undefined;
 
-  constructor(action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>) {
+  constructor(
+    parentLink: BuilderLink<ActionResult, unknown>,
+    action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
+  ) {
     this.action = action;
+    Object.defineProperty(this, routeRecordParentKey, {
+      value: parentLink,
+    });
 
     Object.defineProperty(this, "attach", {
       configurable: true,

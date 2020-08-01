@@ -28,7 +28,7 @@ export class RouteResolver<ActionResult, Segment> {
   static getFromBuilder<ActionResult, Segment>(
     builder: HasBuilderLink<ActionResult, Segment>
   ): RouteResolver<ActionResult, Segment> {
-    return new RouteResolver(builder.getBuilderLink());
+    return builder.getBuilderLink().resolver;
   }
 
   readonly link: BuilderLink<ActionResult, Segment>;

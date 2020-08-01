@@ -1,6 +1,7 @@
 import { BuilderLink } from ".";
 import { PathLocationComposer } from "../LocationComposer/PathLocationComposer";
 import { PathRouteBuilder } from "../RouteBuilder/PathRouteBuilder";
+import { SearchRouteBuilder } from "../RouteBuilder/SearchRouteBuilder";
 
 const composer = new PathLocationComposer();
 
@@ -56,6 +57,26 @@ describe("BuilderLink", () => {
       link.inherit();
 
       expect(() => link.checkInvalidation()).toThrow();
+    });
+    it("attached links have same RouteResolver", () => {
+      const parent = SearchRouteBuilder.init("foo");
+      const link1 = parent.getBuilderLink();
+
+      const link2 = BuilderLink.init({
+        composer,
+      });
+
+      link2.attachToParent(parent.getRoute());
+      expect(link1.resolver).toBe(link2.resolver);
+    });
+    it("inherited links have same RouteResolver", () => {
+      const parent = SearchRouteBuilder.init("foo");
+      const link1 = BuilderLink.init({ composer });
+      parent.attach(link1);
+
+      const link2 = link1.inherit();
+
+      expect(link1.resolver).toBe(link2.resolver);
     });
   });
   describe("getParentRoute", () => {

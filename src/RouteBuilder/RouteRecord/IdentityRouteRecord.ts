@@ -16,7 +16,7 @@ export class IdentityRouteRecord<ActionResult, Match, HasAction extends boolean>
     parent: HasBuilderLink<ActionResult, unknown>,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
-    super(action);
+    super(parent.getBuilderLink(), action);
     this.#parent = parent;
   }
 

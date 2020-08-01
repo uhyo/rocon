@@ -39,7 +39,7 @@ export class MatchingRouteRecord<
     validator: Validator<Value>,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
-    super(action);
+    super(parent.getBuilderLink(), action);
     this.#parent = parent;
     this.#validator = validator;
     this.key = key;

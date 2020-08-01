@@ -21,7 +21,7 @@ export class PathRouteRecord<ActionResult, Match, HasAction extends boolean>
     key: string,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
-    super(action);
+    super(parent.getBuilderLink(), action);
     this.#parent = parent;
     this.key = key;
   }
