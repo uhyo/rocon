@@ -1,7 +1,6 @@
 import { BuilderLink } from "../../BuilderLink";
 import { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
 import { StateLocationComposer } from "../../LocationComposer/StateLocationComposer";
-import { RouteResolver } from "../../RouteResolver";
 import type { Validator } from "../../validator";
 import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
@@ -146,9 +145,5 @@ export class StateRouteBuilder<
 
   getBuilderLink(): BuilderLink<ActionResult, StateValue> {
     return this.#link;
-  }
-
-  getResolver(): RouteResolver<ActionResult, StateValue> {
-    return this.#link.getResolver();
   }
 }

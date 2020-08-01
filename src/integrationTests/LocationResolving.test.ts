@@ -26,7 +26,7 @@ describe("Composed Location resolving", () => {
         },
       });
 
-      const resolver = builder.getResolver();
+      const resolver = builder.getBuilderLink().getResolver();
       const hogeResults = resolver.resolve({
         pathname: "/foo/hoge",
         state: null,
@@ -54,7 +54,7 @@ describe("Composed Location resolving", () => {
           action: ({ id }) => `Hello, user ${id}`,
         });
 
-      const resolver = builder.getResolver();
+      const resolver = builder.getBuilderLink().getResolver();
       const results = resolver.resolve({
         pathname: "/user/uhyo",
         state: null,
@@ -74,7 +74,7 @@ describe("Composed Location resolving", () => {
           },
         });
 
-      const resolver = builder.getResolver();
+      const resolver = builder.getBuilderLink().getResolver();
       const results = resolver.resolve({
         pathname: "/uhyo/profile",
         state: null,
@@ -89,7 +89,7 @@ describe("Composed Location resolving", () => {
       const builder = Path<string>().routes({
         foo: {},
       });
-      const resolver = builder.getResolver();
+      const resolver = builder.getBuilderLink().getResolver();
 
       builder
         .getRoutes()
@@ -168,7 +168,7 @@ describe("Composed Location resolving", () => {
         .attach(Rocon.State("username", isString))
         .action(({ tab, username }) => `hello, ${username}! tab=${tab}`);
 
-      const resolver = route.getResolver();
+      const resolver = route.getBuilderLink().getResolver();
       const res = resolver.resolve({
         pathname: "/user",
         search: "tab=123",

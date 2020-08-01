@@ -1,7 +1,6 @@
 import { BuilderLink, RouteRecordsBase } from "../../BuilderLink";
 import type { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
-import { RouteResolver } from "../../RouteResolver";
 import { isString } from "../../validator";
 import {
   PathRouteRecord,
@@ -175,9 +174,5 @@ export class PathRouteBuilder<
 
   getBuilderLink(): BuilderLink<ActionResult, string> {
     return this.#link;
-  }
-
-  getResolver(): RouteResolver<ActionResult, string> {
-    return this.#link.getResolver();
   }
 }

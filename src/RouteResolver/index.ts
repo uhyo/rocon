@@ -58,7 +58,8 @@ export class RouteResolver<ActionResult, Segment> {
         .getAttachedBuilder()
         ?.getBuilderLink()
         .getChildBuilder()
-        ?.getResolver();
+        ?.getBuilderLink()
+        .getResolver();
 
       if (childResolver === undefined || childResolver.#composer.isLeaf(next)) {
         return [

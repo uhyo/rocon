@@ -42,8 +42,8 @@ routes.noaction.attach(
   })
 );
 
-const resolver = b1.getResolver();
-const wildcardResolver = b2.getResolver();
+const resolver = b1.getBuilderLink().getResolver();
+const wildcardResolver = b2.getBuilderLink().getResolver();
 
 const emptyMatch = {} as never;
 

@@ -2,7 +2,6 @@ import { BuilderLink } from "../../BuilderLink";
 import { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
 import { identityLocationComposer } from "../../LocationComposer/IdentityLocationComposer";
 import { Location } from "../../LocationComposer/Location";
-import { RouteResolver } from "../../RouteResolver";
 import { RouteRecordType } from "../RouteRecord";
 import { IdentityRouteRecord } from "../RouteRecord/IdentityRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
@@ -72,9 +71,5 @@ export class RootRouteBuilder<
 
   getBuilderLink(): BuilderLink<ActionResult, unknown> {
     return this.#link;
-  }
-
-  getResolver(): RouteResolver<ActionResult, unknown> {
-    return this.#link.getResolver();
   }
 }

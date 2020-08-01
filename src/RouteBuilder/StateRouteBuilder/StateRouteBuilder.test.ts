@@ -64,13 +64,16 @@ describe("StateRouteBuilder", () => {
     const toplevel = StateRouteBuilder.init("foo", isString).action(
       ({ foo }) => `foo is ${foo.slice(0)}`
     );
-    const res = toplevel.getResolver().resolve({
-      pathname: "/foo",
-      state: {
-        foo: "I am foo",
-        bar: 1234,
-      },
-    });
+    const res = toplevel
+      .getBuilderLink()
+      .getResolver()
+      .resolve({
+        pathname: "/foo",
+        state: {
+          foo: "I am foo",
+          bar: 1234,
+        },
+      });
     expect(res).toEqual([
       {
         location: {
