@@ -1,27 +1,27 @@
-import { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
-import { Location } from "../../LocationComposer/Location";
-import { resolveLinkLocation } from "./resolveLinkLocation";
+import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
+import type { Location } from "../../LocationComposer/Location";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
-import { RouteRecordType } from "./RouteRecordType";
+import type { RouteRecordType } from "./RouteRecordType";
 
 /**
- * Object for non-progress route record.
+ * Object for fixed-location route record.
  */
 export class IdentityRouteRecord<ActionResult, Match, HasAction extends boolean>
   extends RouteRecordBase<ActionResult, Match, HasAction>
   implements RouteRecordType<ActionResult, Match, HasAction> {
-  #parent: HasBuilderLink<ActionResult, unknown>;
+  readonly location: Location;
 
   constructor(
     parent: HasBuilderLink<ActionResult, unknown>,
+    location: Location,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
     super(parent.getBuilderLink(), action);
-    this.#parent = parent;
+    this.location = location;
   }
 
-  getLocation(match: Match): Location {
-    const link = this.#parent.getBuilderLink();
-    return resolveLinkLocation(link, match, (loc) => loc);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getLocation(_match: unknown): Location {
+    return this.location;
   }
 }

@@ -1,6 +1,11 @@
 import { BuilderLink } from "../../BuilderLink";
 import { Location } from "../../LocationComposer/Location";
 
+const defaultRoot: Location = {
+  pathname: "/",
+  state: null,
+};
+
 export function resolveLinkLocation(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   link: BuilderLink<any, any>,
@@ -10,6 +15,6 @@ export function resolveLinkLocation(
 ): Location {
   const parentRoute = link.getParentRoute();
   const parentLocation =
-    parentRoute?.getLocation(match as never) ?? link.getRootLocation();
+    parentRoute?.getLocation(match as never) ?? defaultRoot;
   return composeLast(parentLocation);
 }

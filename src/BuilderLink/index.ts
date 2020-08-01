@@ -1,16 +1,13 @@
 import type { LocationComposer } from "../LocationComposer";
-import type { Location } from "../LocationComposer/Location";
 import type { RouteRecordType } from "../RouteBuilder/RouteRecord";
 import { routeRecordParentKey } from "../RouteBuilder/symbols";
 import { RouteResolver, SegmentResolver } from "../RouteResolver";
-import { PartiallyPartial } from "../util/types/PartiallyPartial";
 import {
   AttachableRouteBuilder,
   HasBuilderLink,
 } from "./AttachableRouteBuilder";
 import type { BuilderLinkOptions } from "./BuilderLinkOptions";
 import { BuilderLinkState } from "./BuilderLinkState";
-import { fillOptions } from "./fillOptions";
 
 export type RouteRecordsBase<ActionResult> = Record<
   string,
@@ -24,9 +21,8 @@ export type RouteRecordsBase<ActionResult> = Record<
 export class BuilderLink<ActionResult, Segment>
   implements HasBuilderLink<ActionResult, Segment> {
   static init<ActionResult, Segment>(
-    options: PartiallyPartial<BuilderLinkOptions<ActionResult, Segment>, "root">
+    options: BuilderLinkOptions<Segment>
   ): BuilderLink<ActionResult, Segment> {
-    fillOptions(options);
     return new BuilderLink<ActionResult, Segment>(options);
   }
 
@@ -41,12 +37,10 @@ export class BuilderLink<ActionResult, Segment>
    */
   #childBuilder?: AttachableRouteBuilder<ActionResult, Segment> = undefined;
   resolveSegment?: SegmentResolver<ActionResult, Segment>;
-  #rootLocation: Location;
 
-  private constructor(options: BuilderLinkOptions<ActionResult, Segment>) {
+  private constructor(options: BuilderLinkOptions<Segment>) {
     this.composer = options.composer;
     this.resolver = new RouteResolver(this);
-    this.#rootLocation = options.root;
   }
 
   /**
@@ -102,10 +96,6 @@ export class BuilderLink<ActionResult, Segment>
       .result;
   }
 
-  getRootLocation(): Location {
-    return this.followInheritanceChain((link) => link.#rootLocation).result;
-  }
-
   getBuilderLink(): this {
     return this;
   }
@@ -133,7 +123,6 @@ export class BuilderLink<ActionResult, Segment>
       case "unattached": {
         const result = new BuilderLink<ActionResult, Segment>({
           composer: this.composer,
-          root: this.#rootLocation,
         });
         result.#state = this.#state;
         return result;
@@ -141,7 +130,6 @@ export class BuilderLink<ActionResult, Segment>
       case "attached": {
         const result = new BuilderLink<ActionResult, Segment>({
           composer: this.composer,
-          root: this.#rootLocation,
         });
         result.resolver = this.resolver;
 

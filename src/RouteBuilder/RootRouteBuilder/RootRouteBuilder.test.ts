@@ -65,7 +65,7 @@ describe("RootRouteBuilder", () => {
         },
       });
     });
-    it("attaching Root has no effect", () => {
+    it("attaching Root resets location", () => {
       const toplevel = PathRouteBuilder.init().routes({
         foo: {},
       });
@@ -74,7 +74,7 @@ describe("RootRouteBuilder", () => {
         .foo.attach(RootRouteBuilder.init())
         .getRoute();
       expect(sub.getLocation({})).toEqual({
-        pathname: "/foo",
+        pathname: "/",
         state: null,
       });
     });

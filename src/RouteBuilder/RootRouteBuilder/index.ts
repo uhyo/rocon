@@ -10,6 +10,7 @@ import {
   ExistingWildcardFlagType,
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
+import { fillOptions } from "./fillOptions";
 
 export type RootRouteBuilderOptions = {
   root: Location;
@@ -26,18 +27,26 @@ export class RootRouteBuilder<
   ): RootRouteBuilder<ActionResult, "noaction", {}> {
     const link = BuilderLink.init<ActionResult, unknown>({
       composer: identityLocationComposer,
-      root: options.root,
     });
-    return new RootRouteBuilder<ActionResult, "noaction", {}>(link);
+    fillOptions(options);
+    return new RootRouteBuilder<ActionResult, "noaction", {}>(
+      link,
+      options.root
+    );
   }
 
+  #root: Location;
   #route: IdentityRouteRecord<ActionResult, Match, boolean>;
   #link: BuilderLink<ActionResult, unknown>;
 
-  private constructor(link: BuilderLink<ActionResult, unknown>) {
+  private constructor(
+    link: BuilderLink<ActionResult, unknown>,
+    root: Location
+  ) {
     super();
     this.#link = link;
-    this.#route = new IdentityRouteRecord(this, undefined);
+    this.#root = root;
+    this.#route = new IdentityRouteRecord(this, root, undefined);
     link.register(this, () => {
       const route = this.#route as RouteRecordType<
         ActionResult,
@@ -54,10 +63,12 @@ export class RootRouteBuilder<
   action(
     action: ActionType<ActionResult, Match>
   ): RootRouteBuilder<ActionResult, "hasaction", Match> {
+    const root = this.#root;
     const result = new RootRouteBuilder<ActionResult, "hasaction", Match>(
-      this.#link.inherit()
+      this.#link.inherit(),
+      root
     );
-    result.#route = new IdentityRouteRecord(result, action);
+    result.#route = new IdentityRouteRecord(result, root, action);
     return result;
   }
 
