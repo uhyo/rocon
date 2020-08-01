@@ -1,6 +1,6 @@
 import { BuilderLink } from "../../core/BuilderLink";
 import type { HasBuilderLink } from "../../core/BuilderLink/AttachableRouteBuilder";
-import { Location } from "../../LocationComposer/Location";
+import { Location } from "../../core/Location";
 import type { ActionType } from "../RoutesDefinitionObject";
 import { routeRecordParentKey } from "../symbols";
 import { AttachFunction, RouteRecordType } from "./RouteRecordType";

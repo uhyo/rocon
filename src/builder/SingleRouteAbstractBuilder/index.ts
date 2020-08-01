@@ -1,4 +1,4 @@
-import type { Location } from "../../LocationComposer/Location";
+import type { Location } from "../../core/Location";
 import type { RouteRecordType } from "../RouteRecord";
 import type { AttachFunction } from "../RouteRecord/RouteRecordType";
 

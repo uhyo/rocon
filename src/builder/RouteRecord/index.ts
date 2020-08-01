@@ -1,4 +1,4 @@
-import type { Location } from "../../LocationComposer/Location";
+import type { Location } from "../../core/Location";
 import type { RoutesDefinition } from "../RoutesDefinitionObject";
 import { wildcardRouteKey } from "../symbols";
 import type { WildcardFlagType } from "../WildcardFlagType";

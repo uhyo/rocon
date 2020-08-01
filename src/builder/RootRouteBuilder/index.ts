@@ -1,7 +1,7 @@
 import { BuilderLink } from "../../core/BuilderLink";
 import { AttachableRouteBuilder } from "../../core/BuilderLink/AttachableRouteBuilder";
+import { Location } from "../../core/Location";
 import { identityLocationComposer } from "../../LocationComposer/IdentityLocationComposer";
-import { Location } from "../../LocationComposer/Location";
 import { RouteRecordType } from "../RouteRecord";
 import { ConstRouteRecord } from "../RouteRecord/ConstRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";

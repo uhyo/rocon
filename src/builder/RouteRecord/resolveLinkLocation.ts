@@ -1,5 +1,5 @@
 import { BuilderLink } from "../../core/BuilderLink";
-import { Location } from "../../LocationComposer/Location";
+import { Location } from "../../core/Location";
 
 const defaultRoot: Location = {
   pathname: "/",

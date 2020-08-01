@@ -1,5 +1,5 @@
-import type { Location } from "../../LocationComposer/Location";
 import type { BuilderLink } from "../BuilderLink";
+import type { Location } from "../Location";
 import type { ResolvedRoute } from "./ResolvedRoute";
 
 /**

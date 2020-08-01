@@ -1,6 +1,6 @@
 import type { BuilderLink } from "../../core/BuilderLink";
 import type { HasBuilderLink } from "../../core/BuilderLink/AttachableRouteBuilder";
-import type { Location } from "../../LocationComposer/Location";
+import type { Location } from "../../core/Location";
 import type { PathRouteBuilder } from "../PathRouteBuilder";
 import type { RoutesDefinition } from "../RoutesDefinitionObject";
 import type { SearchRouteBuilder } from "../SearchRouteBuilder";

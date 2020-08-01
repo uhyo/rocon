@@ -1,6 +1,6 @@
 import type { RouteRecordType } from "../../builder/RouteRecord";
 import type { MatchingRouteRecord } from "../../builder/RouteRecord/MatchingRouteRecord";
-import type { Location } from "../../LocationComposer/Location";
+import type { Location } from "../Location";
 
 /**
  * Object that represents one resolved route.

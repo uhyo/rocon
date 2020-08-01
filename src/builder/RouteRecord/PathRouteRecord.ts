@@ -1,5 +1,5 @@
 import type { HasBuilderLink } from "../../core/BuilderLink/AttachableRouteBuilder";
-import type { Location } from "../../LocationComposer/Location";
+import type { Location } from "../../core/Location";
 import { resolveLinkLocation } from "./resolveLinkLocation";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
 import type { RouteRecordType } from "./RouteRecordType";

@@ -1,4 +1,4 @@
-import { Location } from "./Location";
+import { Location } from "../core/Location";
 
 /**
  * Interface of composer.
