@@ -10,10 +10,14 @@ export type ResolvedSegmentType<ActionResult, Segment> =
   | {
       type: "normal";
       route: RouteRecordType<ActionResult, never, boolean>;
+      // TODO: this `| undefined` could be removed?
+      link: BuilderLink<ActionResult, Segment> | undefined;
     }
   | {
       type: "matching";
       route: MatchingRouteRecord<ActionResult, Segment, never, boolean>;
+      link: BuilderLink<ActionResult, Segment> | undefined;
+      matchKey: string;
       value: Segment;
     };
 

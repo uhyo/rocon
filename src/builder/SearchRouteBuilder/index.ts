@@ -92,6 +92,8 @@ export class SearchRouteBuilder<
       return {
         type: "matching",
         route,
+        link: route.getAttachedBuilderLink(),
+        matchKey: key,
         value,
       };
     });

@@ -99,9 +99,12 @@ export class StateRouteBuilder<
     this.#validator = validator;
     this.#route = new MatchingRouteRecord(this, key, validator, undefined);
     link.register(this, (value) => {
+      const route = this.#route;
       return {
         type: "matching",
-        route: this.#route,
+        route,
+        link: route.getAttachedBuilderLink(),
+        matchKey: key,
         value,
       };
     });

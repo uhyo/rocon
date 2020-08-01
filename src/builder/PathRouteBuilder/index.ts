@@ -66,6 +66,7 @@ export class PathRouteBuilder<
         return {
           type: "normal",
           route,
+          link: route.getAttachedBuilderLink(),
         };
       }
       const wildcardRoute = this.#wildcardRoute;
@@ -73,6 +74,8 @@ export class PathRouteBuilder<
         return {
           type: "matching",
           route: wildcardRoute.route,
+          link: wildcardRoute.route.getAttachedBuilderLink(),
+          matchKey: wildcardRoute.matchKey,
           value,
         };
       }

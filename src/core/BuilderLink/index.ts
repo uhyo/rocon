@@ -61,6 +61,27 @@ export class BuilderLink<ActionResult, Segment>
       state: "attached",
       parentRoute,
     };
+    // TODO: what if it already has a child link?
+    switch (parentLink.#state.state) {
+      case "unattached": {
+        parentLink.#state = {
+          ...parentLink.#state,
+          childLink: this,
+        };
+        break;
+      }
+      case "attached": {
+        parentLink.#state = {
+          ...parentLink.#state,
+          childLink: this,
+        };
+        break;
+      }
+      case "inherited": {
+        parentLink.checkInvalidation();
+        break;
+      }
+    }
 
     this.resolver = parentLink.resolver;
   }

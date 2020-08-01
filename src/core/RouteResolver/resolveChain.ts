@@ -19,13 +19,10 @@ export function resolveChain<ActionResult>(
     const match = (nextRoute.type === "normal"
       ? {}
       : {
-          [nextRoute.route.key]: seg,
+          [nextRoute.matchKey]: seg,
         }) as never;
 
-    const childLink = nextRoute.route
-      .getAttachedBuilderLink()
-      ?.getCurrentBuilder()
-      ?.getBuilderLink();
+    const childLink = nextRoute.link?.getCurrentBuilder()?.getBuilderLink();
 
     if (childLink === undefined || childLink.composer.isLeaf(next)) {
       return [
@@ -42,7 +39,7 @@ export function resolveChain<ActionResult>(
         return result;
       }
       case "matching": {
-        const key = nextRoute.route.key;
+        const key = nextRoute.matchKey;
         const matchedValue = nextRoute.value;
         return result.map((res) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

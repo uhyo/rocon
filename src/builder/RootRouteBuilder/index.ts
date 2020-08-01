@@ -56,6 +56,7 @@ export class RootRouteBuilder<
       return {
         type: "normal",
         route,
+        link: route.getAttachedBuilderLink(),
       };
     });
   }
