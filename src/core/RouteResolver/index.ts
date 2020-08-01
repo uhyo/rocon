@@ -1,6 +1,6 @@
+import type { RouteRecordType } from "../../builder/RouteRecord";
+import { MatchingRouteRecord } from "../../builder/RouteRecord/MatchingRouteRecord";
 import type { BaseState, Location } from "../../LocationComposer/Location";
-import type { RouteRecordType } from "../../RouteBuilder/RouteRecord";
-import { MatchingRouteRecord } from "../../RouteBuilder/RouteRecord/MatchingRouteRecord";
 import { BuilderLink } from "../BuilderLink";
 import { HasBuilderLink } from "../BuilderLink/AttachableRouteBuilder";
 import { resolveChain } from "./resolveChain";

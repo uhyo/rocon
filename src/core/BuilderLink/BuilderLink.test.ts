@@ -1,7 +1,7 @@
 import { BuilderLink } from ".";
+import { PathRouteBuilder } from "../../builder/PathRouteBuilder";
+import { SearchRouteBuilder } from "../../builder/SearchRouteBuilder";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
-import { PathRouteBuilder } from "../../RouteBuilder/PathRouteBuilder";
-import { SearchRouteBuilder } from "../../RouteBuilder/SearchRouteBuilder";
 
 const composer = new PathLocationComposer();
 
