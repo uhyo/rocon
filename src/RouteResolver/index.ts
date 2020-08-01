@@ -1,4 +1,5 @@
 import { BuilderLink } from "../BuilderLink";
+import { HasBuilderLink } from "../BuilderLink/AttachableRouteBuilder";
 import type { BaseState, Location } from "../LocationComposer/Location";
 import type { RouteRecordType } from "../RouteBuilder/RouteRecord";
 import { MatchingRouteRecord } from "../RouteBuilder/RouteRecord/MatchingRouteRecord";
@@ -24,6 +25,12 @@ export type SegmentResolver<ActionResult, Segment> = (
  * Object that resolves given URL to a Route.
  */
 export class RouteResolver<ActionResult, Segment> {
+  static getFromBuilder<ActionResult, Segment>(
+    builder: HasBuilderLink<ActionResult, Segment>
+  ): RouteResolver<ActionResult, Segment> {
+    return new RouteResolver(builder.getBuilderLink());
+  }
+
   readonly link: BuilderLink<ActionResult, Segment>;
   constructor(link: BuilderLink<ActionResult, Segment>) {
     this.link = link;

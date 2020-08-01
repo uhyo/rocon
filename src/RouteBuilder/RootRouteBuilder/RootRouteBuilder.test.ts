@@ -1,4 +1,5 @@
 import { RootRouteBuilder } from ".";
+import { RouteResolver } from "../../RouteResolver";
 import { PathRouteBuilder } from "../PathRouteBuilder";
 
 const emptyMatch = {} as never;
@@ -81,7 +82,7 @@ describe("RootRouteBuilder", () => {
     describe("root resolves", () => {
       it("1", () => {
         const toplevel = RootRouteBuilder.init().action(() => "root!?");
-        const resolver = toplevel.getBuilderLink().getResolver();
+        const resolver = RouteResolver.getFromBuilder(toplevel);
         const res = resolver.resolve({
           pathname: "/",
           state: null,
@@ -102,7 +103,7 @@ describe("RootRouteBuilder", () => {
       });
       it("2", () => {
         const toplevel = RootRouteBuilder.init().action(() => "root.");
-        const resolver = toplevel.getBuilderLink().getResolver();
+        const resolver = RouteResolver.getFromBuilder(toplevel);
         const res = resolver.resolve({
           pathname: "/foo/bar",
           search: "key=value",
@@ -132,7 +133,7 @@ describe("RootRouteBuilder", () => {
         toplevel
           .getRoutes()
           .hoge.attach(RootRouteBuilder.init().action(() => "I am root"));
-        const resolver = toplevel.getBuilderLink().getResolver();
+        const resolver = RouteResolver.getFromBuilder(toplevel);
         const res = resolver.resolve({
           pathname: "/hoge",
           state: null,

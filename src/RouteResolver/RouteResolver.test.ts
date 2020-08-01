@@ -1,3 +1,4 @@
+import { RouteResolver } from ".";
 import { PathRouteBuilder } from "../RouteBuilder/PathRouteBuilder";
 import { PathRouteRecord } from "../RouteBuilder/RouteRecord";
 
@@ -42,8 +43,8 @@ routes.noaction.attach(
   })
 );
 
-const resolver = b1.getBuilderLink().getResolver();
-const wildcardResolver = b2.getBuilderLink().getResolver();
+const resolver = RouteResolver.getFromBuilder(b1);
+const wildcardResolver = RouteResolver.getFromBuilder(b2);
 
 const emptyMatch = {} as never;
 

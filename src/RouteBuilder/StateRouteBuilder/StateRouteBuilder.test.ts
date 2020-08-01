@@ -1,4 +1,5 @@
 import { StateRouteBuilder } from ".";
+import { RouteResolver } from "../../RouteResolver";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 
 const isString = (value: unknown): value is string => typeof value === "string";
@@ -64,16 +65,13 @@ describe("StateRouteBuilder", () => {
     const toplevel = StateRouteBuilder.init("foo", isString).action(
       ({ foo }) => `foo is ${foo.slice(0)}`
     );
-    const res = toplevel
-      .getBuilderLink()
-      .getResolver()
-      .resolve({
-        pathname: "/foo",
-        state: {
-          foo: "I am foo",
-          bar: 1234,
-        },
-      });
+    const res = RouteResolver.getFromBuilder(toplevel).resolve({
+      pathname: "/foo",
+      state: {
+        foo: "I am foo",
+        bar: 1234,
+      },
+    });
     expect(res).toEqual([
       {
         location: {

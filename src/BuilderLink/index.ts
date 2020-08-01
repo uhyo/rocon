@@ -156,18 +156,4 @@ export class BuilderLink<ActionResult, Segment>
       }
     }
   }
-
-  getResolver(): RouteResolver<ActionResult, Segment> {
-    this.checkInvalidation();
-    return this.#resolver;
-
-    // const resolveSegment = this.#resolveSegment;
-    // /* istanbul ignore if  */
-    // if (resolveSegment === undefined) {
-    //   throw new Error(
-    //     "Invariant failure: 'getResolver()' called before setting resolveSegment"
-    //   );
-    // }
-    // return new RouteResolver(this.composer, resolveSegment);
-  }
 }
