@@ -6,7 +6,7 @@ import type { RouteRecordType } from "./RouteRecordType";
 /**
  * Object for fixed-location route record.
  */
-export class IdentityRouteRecord<ActionResult, Match, HasAction extends boolean>
+export class ConstRouteRecord<ActionResult, Match, HasAction extends boolean>
   extends RouteRecordBase<ActionResult, Match, HasAction>
   implements RouteRecordType<ActionResult, Match, HasAction> {
   readonly location: Location;

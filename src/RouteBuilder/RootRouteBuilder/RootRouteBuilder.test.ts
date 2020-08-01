@@ -1,7 +1,7 @@
 import { RootRouteBuilder } from ".";
 import { RouteResolver } from "../../RouteResolver";
 import { PathRouteBuilder } from "../PathRouteBuilder";
-import { IdentityRouteRecord } from "../RouteRecord/IdentityRouteRecord";
+import { ConstRouteRecord } from "../RouteRecord/ConstRouteRecord";
 
 const emptyMatch = {} as never;
 
@@ -95,7 +95,7 @@ describe("RootRouteBuilder", () => {
               state: null,
             },
             match: {},
-            route: expect.any(IdentityRouteRecord),
+            route: expect.any(ConstRouteRecord),
           },
         ]);
         expect(res[0].route.action(emptyMatch)).toBe("root!?");
@@ -116,7 +116,7 @@ describe("RootRouteBuilder", () => {
               state: null,
             },
             match: {},
-            route: expect.any(IdentityRouteRecord),
+            route: expect.any(ConstRouteRecord),
           },
         ]);
         expect(res[0].route.action(emptyMatch)).toBe("root.");
@@ -142,7 +142,7 @@ describe("RootRouteBuilder", () => {
               state: null,
             },
             match: {},
-            route: expect.any(IdentityRouteRecord),
+            route: expect.any(ConstRouteRecord),
           },
         ]);
         expect(res[0].route.action(emptyMatch)).toBe("I am root");

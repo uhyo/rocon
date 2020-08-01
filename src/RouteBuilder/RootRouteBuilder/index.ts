@@ -3,7 +3,7 @@ import { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder
 import { identityLocationComposer } from "../../LocationComposer/IdentityLocationComposer";
 import { Location } from "../../LocationComposer/Location";
 import { RouteRecordType } from "../RouteRecord";
-import { IdentityRouteRecord } from "../RouteRecord/IdentityRouteRecord";
+import { ConstRouteRecord } from "../RouteRecord/ConstRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
 import { SingleRouteAbstractBuilder } from "../SingleRouteAbstractBuilder";
 import {
@@ -36,7 +36,7 @@ export class RootRouteBuilder<
   }
 
   #root: Location;
-  #route: IdentityRouteRecord<ActionResult, Match, boolean>;
+  #route: ConstRouteRecord<ActionResult, Match, boolean>;
   #link: BuilderLink<ActionResult, unknown>;
 
   private constructor(
@@ -46,7 +46,7 @@ export class RootRouteBuilder<
     super();
     this.#link = link;
     this.#root = root;
-    this.#route = new IdentityRouteRecord(this, root, undefined);
+    this.#route = new ConstRouteRecord(this, root, undefined);
     link.register(this, () => {
       const route = this.#route as RouteRecordType<
         ActionResult,
@@ -68,11 +68,11 @@ export class RootRouteBuilder<
       this.#link.inherit(),
       root
     );
-    result.#route = new IdentityRouteRecord(result, root, action);
+    result.#route = new ConstRouteRecord(result, root, action);
     return result;
   }
 
-  getRoute(): IdentityRouteRecord<
+  getRoute(): ConstRouteRecord<
     ActionResult,
     Match,
     WildcardFlagToHasAction<WildcardFlag>
