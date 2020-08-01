@@ -1,5 +1,5 @@
-import type { BaseState, Location } from "../../core/Location";
-import type { LocationComposer } from "../../core/LocationComposer";
+import type { BaseState, Location } from "../../../core/Location";
+import type { LocationComposer } from "../../../core/LocationComposer";
 
 export class SearchLocationComposer implements LocationComposer<string> {
   readonly key: string;

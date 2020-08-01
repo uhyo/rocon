@@ -1,7 +1,7 @@
 import { BuilderLink } from "../../core/BuilderLink";
 import { AttachableRouteBuilder } from "../../core/BuilderLink/AttachableRouteBuilder";
-import { StateLocationComposer } from "../../LocationComposer/StateLocationComposer";
 import type { Validator } from "../../validator";
+import { StateLocationComposer } from "../composers/StateLocationComposer";
 import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";

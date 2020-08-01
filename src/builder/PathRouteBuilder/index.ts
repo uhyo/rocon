@@ -1,7 +1,7 @@
 import { BuilderLink, RouteRecordsBase } from "../../core/BuilderLink";
 import type { AttachableRouteBuilder } from "../../core/BuilderLink/AttachableRouteBuilder";
-import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
 import { isString } from "../../validator";
+import { PathLocationComposer } from "../composers/PathLocationComposer";
 import {
   PathRouteRecord,
   RouteRecordType,

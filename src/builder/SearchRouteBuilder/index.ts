@@ -1,7 +1,7 @@
 import { BuilderLink } from "../../core/BuilderLink";
 import type { AttachableRouteBuilder } from "../../core/BuilderLink/AttachableRouteBuilder";
-import { SearchLocationComposer } from "../../LocationComposer/SearchLocationComposer";
 import { isString } from "../../validator";
+import { SearchLocationComposer } from "../composers/SearchLocationComposer";
 import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";

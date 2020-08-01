@@ -1,4 +1,4 @@
-import { PathLocationComposer } from "./";
+import { PathLocationComposer } from ".";
 
 let composer!: PathLocationComposer;
 beforeEach(() => {
