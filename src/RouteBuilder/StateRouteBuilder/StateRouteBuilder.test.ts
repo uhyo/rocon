@@ -1,5 +1,5 @@
 import { StateRouteBuilder } from ".";
-import { RouteResolver } from "../../RouteResolver";
+import { RouteResolver } from "../../core/RouteResolver";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 
 const isString = (value: unknown): value is string => typeof value === "string";

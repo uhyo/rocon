@@ -1,7 +1,7 @@
 import { RouteResolver } from ".";
-import { PathRouteBuilder } from "../RouteBuilder/PathRouteBuilder";
-import { PathRouteRecord } from "../RouteBuilder/RouteRecord";
-import { MatchingRouteRecord } from "../RouteBuilder/RouteRecord/MatchingRouteRecord";
+import { PathRouteBuilder } from "../../RouteBuilder/PathRouteBuilder";
+import { PathRouteRecord } from "../../RouteBuilder/RouteRecord";
+import { MatchingRouteRecord } from "../../RouteBuilder/RouteRecord/MatchingRouteRecord";
 
 const b1 = PathRouteBuilder.init<string>().routes({
   foo: {

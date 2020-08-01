@@ -1,5 +1,5 @@
 import { RootRouteBuilder } from ".";
-import { RouteResolver } from "../../RouteResolver";
+import { RouteResolver } from "../../core/RouteResolver";
 import { PathRouteBuilder } from "../PathRouteBuilder";
 import { ConstRouteRecord } from "../RouteRecord/ConstRouteRecord";
 

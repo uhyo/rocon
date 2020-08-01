@@ -1,7 +1,7 @@
+import { RouteResolver } from "./core/RouteResolver";
 import { PathRouteBuilder } from "./RouteBuilder/PathRouteBuilder";
 import { SearchRouteBuilder } from "./RouteBuilder/SearchRouteBuilder";
 import { StateRouteBuilder } from "./RouteBuilder/StateRouteBuilder";
-import { RouteResolver } from "./RouteResolver";
 
 /**
  * Initialize a path router.
