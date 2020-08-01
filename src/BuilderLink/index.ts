@@ -29,6 +29,9 @@ export class BuilderLink<ActionResult, Segment>
     return new BuilderLink<ActionResult, Segment>(options);
   }
 
+  readonly composer: LocationComposer<Segment>;
+  #resolver: RouteResolver<ActionResult, Segment>;
+
   #state: BuilderLinkState<ActionResult, Segment> = {
     state: "unattached",
   };
@@ -36,13 +39,12 @@ export class BuilderLink<ActionResult, Segment>
    * Registered child builder.
    */
   #childBuilder?: AttachableRouteBuilder<ActionResult, Segment> = undefined;
-  // TODO: want to remove this one
-  readonly composer: LocationComposer<Segment>;
-  #resolveSegment?: SegmentResolver<ActionResult, Segment>;
+  resolveSegment?: SegmentResolver<ActionResult, Segment>;
   #rootLocation: Location;
 
   private constructor(options: BuilderLinkOptions<ActionResult, Segment>) {
     this.composer = options.composer;
+    this.#resolver = new RouteResolver(this);
     this.#rootLocation = options.root;
   }
 
@@ -118,7 +120,7 @@ export class BuilderLink<ActionResult, Segment>
     resolveSegment: SegmentResolver<ActionResult, Segment>
   ): void {
     this.#childBuilder = builder;
-    this.#resolveSegment = resolveSegment;
+    this.resolveSegment = resolveSegment;
   }
 
   /**
@@ -139,6 +141,7 @@ export class BuilderLink<ActionResult, Segment>
           composer: this.composer,
           root: this.#rootLocation,
         });
+        result.#resolver = this.#resolver;
 
         this.#state.parentRoute.attach(result);
 
@@ -156,14 +159,15 @@ export class BuilderLink<ActionResult, Segment>
 
   getResolver(): RouteResolver<ActionResult, Segment> {
     this.checkInvalidation();
+    return this.#resolver;
 
-    const resolveSegment = this.#resolveSegment;
-    /* istanbul ignore if  */
-    if (resolveSegment === undefined) {
-      throw new Error(
-        "Invariant failure: 'getResolver()' called before setting resolveSegment"
-      );
-    }
-    return new RouteResolver(this.composer, resolveSegment);
+    // const resolveSegment = this.#resolveSegment;
+    // /* istanbul ignore if  */
+    // if (resolveSegment === undefined) {
+    //   throw new Error(
+    //     "Invariant failure: 'getResolver()' called before setting resolveSegment"
+    //   );
+    // }
+    // return new RouteResolver(this.composer, resolveSegment);
   }
 }
