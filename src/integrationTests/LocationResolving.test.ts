@@ -1,6 +1,6 @@
 import { Path, Rocon, Search, State } from "..";
-import { MatchingRouteRecord } from "../RouteBuilder/RouteRecord/MatchingRouteRecord";
-import { wildcardRouteKey } from "../RouteBuilder/symbols";
+import { MatchingRouteRecord } from "../builder/RouteRecord/MatchingRouteRecord";
+import { wildcardRouteKey } from "../builder/symbols";
 import { Resolver } from "../shorthand";
 import { isString } from "../validator";
 

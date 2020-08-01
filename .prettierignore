@@ -1,3 +1,3 @@
 # Waiting for TS 4.0 support
 src/HistoryRoutes/RouteObject.ts
-src/LocationComposer/index.ts
+src/core/LocationComposer.ts
