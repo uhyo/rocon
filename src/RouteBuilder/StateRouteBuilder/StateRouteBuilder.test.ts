@@ -36,7 +36,7 @@ describe("StateRouteBuilder", () => {
 
   describe("attach", () => {
     it("action", () => {
-      const toplevel = StateRouteBuilder.init("foo", isString, {}).getRoute();
+      const toplevel = StateRouteBuilder.init("foo", isString).getRoute();
       const sub = StateRouteBuilder.attachTo(toplevel, "bar", isNumber)
         .action(({ foo, bar }) => `foo=${foo} bar=${bar}`)
         .getRoute();
@@ -44,7 +44,7 @@ describe("StateRouteBuilder", () => {
       expect(sub.action({ foo: "bbbb", bar: -123 })).toBe("foo=bbbb bar=-123");
     });
     it("getLocation", () => {
-      const toplevel = StateRouteBuilder.init("foo", isString, {}).getRoute();
+      const toplevel = StateRouteBuilder.init("foo", isString).getRoute();
       const sub = StateRouteBuilder.attachTo(
         toplevel,
         "bar",

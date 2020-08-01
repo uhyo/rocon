@@ -1,6 +1,5 @@
 import { BuilderLink } from "../../BuilderLink";
 import type { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
-import type { BuilderLinkOptions } from "../../BuilderLink/BuilderLinkOptions";
 import { SearchLocationComposer } from "../../LocationComposer/SearchLocationComposer";
 import type { RouteResolver } from "../../RouteResolver";
 import { isString } from "../../validator";
@@ -12,11 +11,6 @@ import type {
   ExistingWildcardFlagType,
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
-
-export type SearchRouteBuilderOptions<ActionResult> = Omit<
-  BuilderLinkOptions<ActionResult, string>,
-  "composer"
->;
 
 export class SearchRouteBuilder<
   ActionResult,
@@ -30,15 +24,10 @@ export class SearchRouteBuilder<
     Match extends {
       [K in Key]: string;
     }
-  >(
-    key: Key,
-    options: Partial<SearchRouteBuilderOptions<ActionResult>> = {}
-  ): SearchRouteBuilder<ActionResult, "noaction", Match> {
-    const op = {
-      ...options,
+  >(key: Key): SearchRouteBuilder<ActionResult, "noaction", Match> {
+    const link = BuilderLink.init<ActionResult, string>({
       composer: new SearchLocationComposer(key),
-    };
-    const link = BuilderLink.init<ActionResult, string>(op);
+    });
     const result = new SearchRouteBuilder<
       ActionResult,
       "noaction",

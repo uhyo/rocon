@@ -1,6 +1,5 @@
 import { BuilderLink } from "../../BuilderLink";
 import { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
-import { BuilderLinkOptions } from "../../BuilderLink/BuilderLinkOptions";
 import { StateLocationComposer } from "../../LocationComposer/StateLocationComposer";
 import { RouteResolver } from "../../RouteResolver";
 import type { Validator } from "../../validator";
@@ -12,11 +11,6 @@ import {
   ExistingWildcardFlagType,
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
-
-export type StateRouteBuilderOptions<ActionResult, StateValue> = Omit<
-  BuilderLinkOptions<ActionResult, StateValue>,
-  "composer"
->;
 
 export class StateRouteBuilder<
   ActionResult,
@@ -34,14 +28,11 @@ export class StateRouteBuilder<
     }
   >(
     key: Key,
-    validator: Validator<StateValue>,
-    options: Partial<StateRouteBuilderOptions<ActionResult, StateValue>> = {}
+    validator: Validator<StateValue>
   ): StateRouteBuilder<ActionResult, StateValue, "noaction", Match> {
-    const op = {
-      ...options,
+    const link = BuilderLink.init<ActionResult, StateValue>({
       composer: new StateLocationComposer(key, validator),
-    };
-    const link = BuilderLink.init<ActionResult, StateValue>(op);
+    });
     const result = new StateRouteBuilder<
       ActionResult,
       StateValue,

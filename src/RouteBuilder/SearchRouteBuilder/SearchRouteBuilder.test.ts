@@ -12,7 +12,7 @@ describe("SearchRouteBuilder", () => {
     });
   });
   it("attach", () => {
-    const toplevel = SearchRouteBuilder.init("foo", {}).getRoute();
+    const toplevel = SearchRouteBuilder.init("foo").getRoute();
     const sub = SearchRouteBuilder.attachTo(toplevel, "bar").action(
       ({ foo, bar }) => `foo is ${foo}, bar is ${bar}`
     );

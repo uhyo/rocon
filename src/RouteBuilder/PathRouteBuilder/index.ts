@@ -1,6 +1,5 @@
 import { BuilderLink, RouteRecordsBase } from "../../BuilderLink";
 import type { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
-import type { BuilderLinkOptions } from "../../BuilderLink/BuilderLinkOptions";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
 import { RouteResolver } from "../../RouteResolver";
 import { isString } from "../../validator";
@@ -24,11 +23,6 @@ import type {
   WildcardFlagType,
 } from "../WildcardFlagType";
 
-export type PathRouteBuilderOptions<ActionResult> = Omit<
-  BuilderLinkOptions<ActionResult, string>,
-  "composer"
->;
-
 /**
  * Builder to define routes using pathname.
  */
@@ -38,14 +32,15 @@ export class PathRouteBuilder<
   WildcardFlag extends WildcardFlagType,
   Match
 > implements AttachableRouteBuilder<ActionResult, string> {
-  static init<ActionResult, Match = {}>(
-    options: Partial<PathRouteBuilderOptions<ActionResult>> = {}
-  ): PathRouteBuilder<ActionResult, {}, "none", Match> {
-    const op = {
-      ...options,
+  static init<ActionResult, Match = {}>(): PathRouteBuilder<
+    ActionResult,
+    {},
+    "none",
+    Match
+  > {
+    const link = BuilderLink.init<ActionResult, string>({
       composer: new PathLocationComposer(),
-    };
-    const link = BuilderLink.init<ActionResult, string>(op);
+    });
     return new PathRouteBuilder(link);
   }
 

@@ -109,7 +109,7 @@ describe("Composed Location resolving", () => {
   });
   describe("path-search-state", () => {
     it("1", () => {
-      const tab = Search("tab", {});
+      const tab = Search("tab");
       const ss = tab
         .attach(State("username", isString))
         .action(({ tab, username }) => `hello, ${username}! tab=${tab}`);
