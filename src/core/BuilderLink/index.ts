@@ -33,9 +33,9 @@ export class BuilderLink<ActionResult, Segment>
     state: "unattached",
   };
   /**
-   * Registered child builder.
+   * Registered current builder.
    */
-  #childBuilder?: AttachableRouteBuilder<ActionResult, Segment> = undefined;
+  currentBuilder?: AttachableRouteBuilder<ActionResult, Segment> = undefined;
   resolveSegment?: SegmentResolver<ActionResult, Segment>;
 
   private constructor(options: BuilderLinkOptions<Segment>) {
@@ -46,8 +46,14 @@ export class BuilderLink<ActionResult, Segment>
   /**
    * Attach this link to a parent.
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  attachToParent(parentRoute: RouteRecordType<any, any, any>) {
+  attachToParent(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    parentRoute: RouteRecordType<any, any, any>,
+    // TODO: remove parentRoute in favor of parentLink
+    parentLink: BuilderLink<ActionResult, unknown> = parentRoute[
+      routeRecordParentKey
+    ]
+  ) {
     if (this.#state.state !== "unattached") {
       throw new Error("A builder cannot be attached more than once.");
     }
@@ -56,7 +62,7 @@ export class BuilderLink<ActionResult, Segment>
       parentRoute,
     };
 
-    this.resolver = parentRoute[routeRecordParentKey].resolver;
+    this.resolver = parentLink.resolver;
   }
 
   /**
@@ -100,8 +106,10 @@ export class BuilderLink<ActionResult, Segment>
     return this;
   }
 
-  getChildBuilder(): AttachableRouteBuilder<ActionResult, Segment> | undefined {
-    return this.#childBuilder;
+  getCurrentBuilder():
+    | AttachableRouteBuilder<ActionResult, Segment>
+    | undefined {
+    return this.currentBuilder;
   }
 
   /**
@@ -111,7 +119,7 @@ export class BuilderLink<ActionResult, Segment>
     builder: AttachableRouteBuilder<ActionResult, Segment>,
     resolveSegment: SegmentResolver<ActionResult, Segment>
   ): void {
-    this.#childBuilder = builder;
+    this.currentBuilder = builder;
     this.resolveSegment = resolveSegment;
   }
 

@@ -46,7 +46,7 @@ export abstract class RouteRecordBase<
       ) {
         const link = builder.getBuilderLink();
         this.#builder = link;
-        link.attachToParent(this);
+        link.attachToParent(this, parentLink);
         return builder;
       },
     });

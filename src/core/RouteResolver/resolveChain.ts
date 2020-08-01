@@ -24,7 +24,7 @@ export function resolveChain<ActionResult>(
 
     const childLink = nextRoute.route
       .getAttachedBuilderLink()
-      ?.getChildBuilder()
+      ?.getCurrentBuilder()
       ?.getBuilderLink();
 
     if (childLink === undefined || childLink.composer.isLeaf(next)) {
