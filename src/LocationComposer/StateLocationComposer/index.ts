@@ -1,5 +1,5 @@
-import type { LocationComposer } from "..";
 import type { BaseState, Location } from "../../core/Location";
+import type { LocationComposer } from "../../core/LocationComposer";
 import type { Validator } from "../../validator";
 
 export class StateLocationComposer<Key extends string, StateValue>

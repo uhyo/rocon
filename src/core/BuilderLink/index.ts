@@ -1,6 +1,6 @@
 import type { RouteRecordType } from "../../builder/RouteRecord";
 import { routeRecordParentKey } from "../../builder/symbols";
-import type { LocationComposer } from "../../LocationComposer";
+import type { LocationComposer } from "../LocationComposer";
 import { RouteResolver, SegmentResolver } from "../RouteResolver";
 import {
   AttachableRouteBuilder,

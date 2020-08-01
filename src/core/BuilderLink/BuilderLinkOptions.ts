@@ -1,4 +1,4 @@
-import type { LocationComposer } from "../../LocationComposer";
+import type { LocationComposer } from "../LocationComposer";
 
 export type BuilderLinkOptions<Segment> = {
   /**
