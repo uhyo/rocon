@@ -52,8 +52,7 @@ export class MatchingRouteRecord<
     }
 
     const link = this.#parent.getBuilderLink();
-    return resolveLinkLocation(link, match, (parentLocation) =>
-      link.composer.compose(parentLocation, matchedValue)
-    );
+    const parentLocation = resolveLinkLocation(link, match);
+    return link.composer.compose(parentLocation, matchedValue);
   }
 }

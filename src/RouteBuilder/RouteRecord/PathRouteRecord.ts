@@ -28,8 +28,7 @@ export class PathRouteRecord<ActionResult, Match, HasAction extends boolean>
 
   getLocation(match: Match): Location {
     const link = this.#parent.getBuilderLink();
-    return resolveLinkLocation(link, match, (parentLocation) =>
-      link.composer.compose(parentLocation, this.key)
-    );
+    const parentLocation = resolveLinkLocation(link, match);
+    return link.composer.compose(parentLocation, this.key);
   }
 }

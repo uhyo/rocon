@@ -10,11 +10,8 @@ export function resolveLinkLocation(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   link: BuilderLink<any, any>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  match: any,
-  composeLast: (location: Location) => Location
+  match: any
 ): Location {
   const parentRoute = link.getParentRoute();
-  const parentLocation =
-    parentRoute?.getLocation(match as never) ?? defaultRoot;
-  return composeLast(parentLocation);
+  return parentRoute?.getLocation(match as never) ?? defaultRoot;
 }
