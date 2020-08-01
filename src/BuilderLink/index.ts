@@ -1,15 +1,13 @@
 import type { LocationComposer } from "../LocationComposer";
-import type { Location } from "../LocationComposer/Location";
 import type { RouteRecordType } from "../RouteBuilder/RouteRecord";
+import { routeRecordParentKey } from "../RouteBuilder/symbols";
 import { RouteResolver, SegmentResolver } from "../RouteResolver";
-import { PartiallyPartial } from "../util/types/PartiallyPartial";
 import {
   AttachableRouteBuilder,
   HasBuilderLink,
 } from "./AttachableRouteBuilder";
 import type { BuilderLinkOptions } from "./BuilderLinkOptions";
 import { BuilderLinkState } from "./BuilderLinkState";
-import { fillOptions } from "./fillOptions";
 
 export type RouteRecordsBase<ActionResult> = Record<
   string,
@@ -23,11 +21,13 @@ export type RouteRecordsBase<ActionResult> = Record<
 export class BuilderLink<ActionResult, Segment>
   implements HasBuilderLink<ActionResult, Segment> {
   static init<ActionResult, Segment>(
-    options: PartiallyPartial<BuilderLinkOptions<ActionResult, Segment>, "root">
+    options: BuilderLinkOptions<Segment>
   ): BuilderLink<ActionResult, Segment> {
-    fillOptions(options);
     return new BuilderLink<ActionResult, Segment>(options);
   }
+
+  readonly composer: LocationComposer<Segment>;
+  resolver: RouteResolver<ActionResult, Segment>;
 
   #state: BuilderLinkState<ActionResult, Segment> = {
     state: "unattached",
@@ -36,13 +36,11 @@ export class BuilderLink<ActionResult, Segment>
    * Registered child builder.
    */
   #childBuilder?: AttachableRouteBuilder<ActionResult, Segment> = undefined;
-  // TODO: want to remove this one
-  readonly composer: LocationComposer<Segment>;
-  #rootLocation: Location;
+  resolveSegment?: SegmentResolver<ActionResult, Segment>;
 
-  private constructor(options: BuilderLinkOptions<ActionResult, Segment>) {
+  private constructor(options: BuilderLinkOptions<Segment>) {
     this.composer = options.composer;
-    this.#rootLocation = options.root;
+    this.resolver = new RouteResolver(this);
   }
 
   /**
@@ -50,7 +48,6 @@ export class BuilderLink<ActionResult, Segment>
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attachToParent(parentRoute: RouteRecordType<any, any, any>) {
-    // TODO: recover this check
     if (this.#state.state !== "unattached") {
       throw new Error("A builder cannot be attached more than once.");
     }
@@ -58,6 +55,8 @@ export class BuilderLink<ActionResult, Segment>
       state: "attached",
       parentRoute,
     };
+
+    this.resolver = parentRoute[routeRecordParentKey].resolver;
   }
 
   /**
@@ -97,10 +96,6 @@ export class BuilderLink<ActionResult, Segment>
       .result;
   }
 
-  getRootLocation(): Location {
-    return this.followInheritanceChain((link) => link.#rootLocation).result;
-  }
-
   getBuilderLink(): this {
     return this;
   }
@@ -112,8 +107,12 @@ export class BuilderLink<ActionResult, Segment>
   /**
    * TODO: rethink
    */
-  register(builder: AttachableRouteBuilder<ActionResult, Segment>): void {
+  register(
+    builder: AttachableRouteBuilder<ActionResult, Segment>,
+    resolveSegment: SegmentResolver<ActionResult, Segment>
+  ): void {
     this.#childBuilder = builder;
+    this.resolveSegment = resolveSegment;
   }
 
   /**
@@ -124,7 +123,6 @@ export class BuilderLink<ActionResult, Segment>
       case "unattached": {
         const result = new BuilderLink<ActionResult, Segment>({
           composer: this.composer,
-          root: this.#rootLocation,
         });
         result.#state = this.#state;
         return result;
@@ -132,8 +130,8 @@ export class BuilderLink<ActionResult, Segment>
       case "attached": {
         const result = new BuilderLink<ActionResult, Segment>({
           composer: this.composer,
-          root: this.#rootLocation,
         });
+        result.resolver = this.resolver;
 
         this.#state.parentRoute.attach(result);
 
@@ -147,12 +145,5 @@ export class BuilderLink<ActionResult, Segment>
         throw new Error("Cannot inherit already invalidated link");
       }
     }
-  }
-
-  getResolver(
-    resolveSegment: SegmentResolver<ActionResult, Segment>
-  ): RouteResolver<ActionResult, Segment> {
-    this.checkInvalidation();
-    return new RouteResolver(this.composer, resolveSegment);
   }
 }

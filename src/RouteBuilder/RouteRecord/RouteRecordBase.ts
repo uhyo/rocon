@@ -1,7 +1,9 @@
+import { BuilderLink } from "../../BuilderLink";
 import type { HasBuilderLink } from "../../BuilderLink/AttachableRouteBuilder";
 import { Location } from "../../LocationComposer/Location";
 import type { ActionType } from "../RoutesDefinitionObject";
-import { AttachFunction } from "./RouteRecordType";
+import { routeRecordParentKey } from "../symbols";
+import { AttachFunction, RouteRecordType } from "./RouteRecordType";
 
 export type ActionTypeOfRouteRecord<
   ActionResult,
@@ -17,26 +19,34 @@ export abstract class RouteRecordBase<
   ActionResult,
   Match,
   HasAction extends boolean
-> {
+> implements RouteRecordType<ActionResult, Match, HasAction> {
   /**
    * Action of this route.
    */
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
-  #builder?: HasBuilderLink<ActionResult, string> = undefined;
+  readonly [routeRecordParentKey]: BuilderLink<ActionResult, unknown>;
 
-  constructor(action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>) {
+  #builder?: BuilderLink<ActionResult, unknown> = undefined;
+
+  constructor(
+    parentLink: BuilderLink<ActionResult, unknown>,
+    action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
+  ) {
     this.action = action;
+    Object.defineProperty(this, routeRecordParentKey, {
+      value: parentLink,
+    });
 
     Object.defineProperty(this, "attach", {
       configurable: true,
       writable: true,
       value(
         this: RouteRecordBase<ActionResult, Match, HasAction>,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        builder: any
+        builder: HasBuilderLink<ActionResult, unknown>
       ) {
-        this.#builder = builder;
-        builder.getBuilderLink().attachToParent(this);
+        const link = builder.getBuilderLink();
+        this.#builder = link;
+        link.attachToParent(this);
         return builder;
       },
     });
@@ -45,9 +55,9 @@ export abstract class RouteRecordBase<
   abstract getLocation(match: Match): Location;
 
   /**
-   * Get the builder attached to this Route.
+   * Get the link attached to this Route.
    */
-  getAttachedBuilder(): HasBuilderLink<ActionResult, string> | undefined {
+  getAttachedBuilderLink(): BuilderLink<ActionResult, unknown> | undefined {
     return this.#builder;
   }
 

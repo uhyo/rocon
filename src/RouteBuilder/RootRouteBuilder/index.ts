@@ -2,15 +2,15 @@ import { BuilderLink } from "../../BuilderLink";
 import { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
 import { identityLocationComposer } from "../../LocationComposer/IdentityLocationComposer";
 import { Location } from "../../LocationComposer/Location";
-import { RouteResolver } from "../../RouteResolver";
 import { RouteRecordType } from "../RouteRecord";
-import { IdentityRouteRecord } from "../RouteRecord/IdentityRouteRecord";
+import { ConstRouteRecord } from "../RouteRecord/ConstRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
 import { SingleRouteAbstractBuilder } from "../SingleRouteAbstractBuilder";
 import {
   ExistingWildcardFlagType,
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
+import { fillOptions } from "./fillOptions";
 
 export type RootRouteBuilderOptions = {
   root: Location;
@@ -27,45 +27,27 @@ export class RootRouteBuilder<
   ): RootRouteBuilder<ActionResult, "noaction", {}> {
     const link = BuilderLink.init<ActionResult, unknown>({
       composer: identityLocationComposer,
-      root: options.root,
     });
-    return new RootRouteBuilder<ActionResult, "noaction", {}>(link);
+    fillOptions(options);
+    return new RootRouteBuilder<ActionResult, "noaction", {}>(
+      link,
+      options.root
+    );
   }
 
-  #route: IdentityRouteRecord<ActionResult, Match, boolean>;
+  #root: Location;
+  #route: ConstRouteRecord<ActionResult, Match, boolean>;
   #link: BuilderLink<ActionResult, unknown>;
 
-  private constructor(link: BuilderLink<ActionResult, unknown>) {
+  private constructor(
+    link: BuilderLink<ActionResult, unknown>,
+    root: Location
+  ) {
     super();
     this.#link = link;
-    this.#route = new IdentityRouteRecord(this, undefined);
-    link.register(this);
-  }
-
-  action(
-    action: ActionType<ActionResult, Match>
-  ): RootRouteBuilder<ActionResult, "hasaction", Match> {
-    const result = new RootRouteBuilder<ActionResult, "hasaction", Match>(
-      this.#link.inherit()
-    );
-    result.#route = new IdentityRouteRecord(result, action);
-    return result;
-  }
-
-  getRoute(): IdentityRouteRecord<
-    ActionResult,
-    Match,
-    WildcardFlagToHasAction<WildcardFlag>
-  > {
-    return this.#route;
-  }
-
-  getBuilderLink(): BuilderLink<ActionResult, unknown> {
-    return this.#link;
-  }
-
-  getResolver(): RouteResolver<ActionResult, unknown> {
-    return this.#link.getResolver(() => {
+    this.#root = root;
+    this.#route = new ConstRouteRecord(this, root, undefined);
+    link.register(this, () => {
       const route = this.#route as RouteRecordType<
         ActionResult,
         never,
@@ -76,5 +58,29 @@ export class RootRouteBuilder<
         route,
       };
     });
+  }
+
+  action(
+    action: ActionType<ActionResult, Match>
+  ): RootRouteBuilder<ActionResult, "hasaction", Match> {
+    const root = this.#root;
+    const result = new RootRouteBuilder<ActionResult, "hasaction", Match>(
+      this.#link.inherit(),
+      root
+    );
+    result.#route = new ConstRouteRecord(result, root, action);
+    return result;
+  }
+
+  getRoute(): ConstRouteRecord<
+    ActionResult,
+    Match,
+    WildcardFlagToHasAction<WildcardFlag>
+  > {
+    return this.#route;
+  }
+
+  getBuilderLink(): BuilderLink<ActionResult, unknown> {
+    return this.#link;
   }
 }

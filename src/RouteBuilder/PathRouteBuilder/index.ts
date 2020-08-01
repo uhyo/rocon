@@ -1,7 +1,6 @@
 import { BuilderLink, RouteRecordsBase } from "../../BuilderLink";
 import type { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
 import { PathLocationComposer } from "../../LocationComposer/PathLocationComposer";
-import { RouteResolver } from "../../RouteResolver";
 import { isString } from "../../validator";
 import {
   PathRouteRecord,
@@ -61,7 +60,24 @@ export class PathRouteBuilder<
 
   private constructor(link: BuilderLink<ActionResult, string>) {
     this.#link = link;
-    link.register(this);
+    link.register(this, (value) => {
+      const route = this.#routes[value];
+      if (route !== undefined) {
+        return {
+          type: "normal",
+          route,
+        };
+      }
+      const wildcardRoute = this.#wildcardRoute;
+      if (wildcardRoute !== undefined) {
+        return {
+          type: "matching",
+          route: wildcardRoute.route,
+          value,
+        };
+      }
+      return undefined;
+    });
   }
 
   routes<D extends RoutesDefinition<ActionResult>>(
@@ -158,26 +174,5 @@ export class PathRouteBuilder<
 
   getBuilderLink(): BuilderLink<ActionResult, string> {
     return this.#link;
-  }
-
-  getResolver(): RouteResolver<ActionResult, string> {
-    return this.#link.getResolver((value) => {
-      const route = this.#routes[value];
-      if (route !== undefined) {
-        return {
-          type: "normal",
-          route,
-        };
-      }
-      const wildcardRoute = this.#wildcardRoute;
-      if (wildcardRoute !== undefined) {
-        return {
-          type: "matching",
-          route: wildcardRoute.route,
-          value,
-        };
-      }
-      return undefined;
-    });
   }
 }

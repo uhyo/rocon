@@ -1,5 +1,7 @@
+import { RouteResolver } from ".";
 import { PathRouteBuilder } from "../RouteBuilder/PathRouteBuilder";
 import { PathRouteRecord } from "../RouteBuilder/RouteRecord";
+import { MatchingRouteRecord } from "../RouteBuilder/RouteRecord/MatchingRouteRecord";
 
 const b1 = PathRouteBuilder.init<string>().routes({
   foo: {
@@ -42,8 +44,8 @@ routes.noaction.attach(
   })
 );
 
-const resolver = b1.getResolver();
-const wildcardResolver = b2.getResolver();
+const resolver = RouteResolver.getFromBuilder(b1);
+const wildcardResolver = RouteResolver.getFromBuilder(b2);
 
 const emptyMatch = {} as never;
 
@@ -215,12 +217,11 @@ describe("RouteResolver", () => {
           match: {
             id: "nonexistent",
           },
-          route: {
-            action: expect.any(Function),
-            key: "id",
-          },
+          route: expect.any(MatchingRouteRecord),
         },
       ]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((resolved[0].route as any).key).toBe("id");
     });
   });
 

@@ -1,5 +1,7 @@
 import { Path, Rocon, Search, State } from "..";
+import { MatchingRouteRecord } from "../RouteBuilder/RouteRecord/MatchingRouteRecord";
 import { wildcardRouteKey } from "../RouteBuilder/symbols";
+import { Resolver } from "../shorthand";
 import { isString } from "../validator";
 
 describe("Composed Location resolving", () => {
@@ -25,7 +27,7 @@ describe("Composed Location resolving", () => {
         },
       });
 
-      const resolver = builder.getResolver();
+      const resolver = Resolver(builder);
       const hogeResults = resolver.resolve({
         pathname: "/foo/hoge",
         state: null,
@@ -53,7 +55,7 @@ describe("Composed Location resolving", () => {
           action: ({ id }) => `Hello, user ${id}`,
         });
 
-      const resolver = builder.getResolver();
+      const resolver = Resolver(builder);
       const results = resolver.resolve({
         pathname: "/user/uhyo",
         state: null,
@@ -73,7 +75,7 @@ describe("Composed Location resolving", () => {
           },
         });
 
-      const resolver = builder.getResolver();
+      const resolver = Resolver(builder);
       const results = resolver.resolve({
         pathname: "/uhyo/profile",
         state: null,
@@ -88,7 +90,7 @@ describe("Composed Location resolving", () => {
       const builder = Path<string>().routes({
         foo: {},
       });
-      const resolver = builder.getResolver();
+      const resolver = Resolver(builder);
 
       builder
         .getRoutes()
@@ -156,6 +158,40 @@ describe("Composed Location resolving", () => {
           username: "uhyo",
         },
       });
+    });
+    it("3", () => {
+      const route = Rocon.Path()
+        .routes({
+          user: {},
+        })
+        .getRoutes()
+        .user.attach(Rocon.Search("tab"))
+        .attach(Rocon.State("username", isString))
+        .action(({ tab, username }) => `hello, ${username}! tab=${tab}`);
+
+      const resolver = Resolver(route);
+      const res = resolver.resolve({
+        pathname: "/user",
+        search: "tab=123",
+        state: {
+          username: "uhyo",
+        },
+      });
+      expect(res.length).toBe(1);
+      expect(res).toEqual([
+        {
+          location: {
+            pathname: "/",
+            search: "",
+            state: {},
+          },
+          match: {
+            tab: "123",
+            username: "uhyo",
+          },
+          route: expect.any(MatchingRouteRecord),
+        },
+      ]);
     });
   });
 });

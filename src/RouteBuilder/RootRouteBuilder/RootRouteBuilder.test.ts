@@ -1,5 +1,7 @@
 import { RootRouteBuilder } from ".";
+import { RouteResolver } from "../../RouteResolver";
 import { PathRouteBuilder } from "../PathRouteBuilder";
+import { ConstRouteRecord } from "../RouteRecord/ConstRouteRecord";
 
 const emptyMatch = {} as never;
 
@@ -63,7 +65,7 @@ describe("RootRouteBuilder", () => {
         },
       });
     });
-    it("attaching Root has no effect", () => {
+    it("attaching Root resets location", () => {
       const toplevel = PathRouteBuilder.init().routes({
         foo: {},
       });
@@ -72,7 +74,7 @@ describe("RootRouteBuilder", () => {
         .foo.attach(RootRouteBuilder.init())
         .getRoute();
       expect(sub.getLocation({})).toEqual({
-        pathname: "/foo",
+        pathname: "/",
         state: null,
       });
     });
@@ -81,7 +83,7 @@ describe("RootRouteBuilder", () => {
     describe("root resolves", () => {
       it("1", () => {
         const toplevel = RootRouteBuilder.init().action(() => "root!?");
-        const resolver = toplevel.getResolver();
+        const resolver = RouteResolver.getFromBuilder(toplevel);
         const res = resolver.resolve({
           pathname: "/",
           state: null,
@@ -93,16 +95,14 @@ describe("RootRouteBuilder", () => {
               state: null,
             },
             match: {},
-            route: {
-              action: expect.any(Function),
-            },
+            route: expect.any(ConstRouteRecord),
           },
         ]);
         expect(res[0].route.action(emptyMatch)).toBe("root!?");
       });
       it("2", () => {
         const toplevel = RootRouteBuilder.init().action(() => "root.");
-        const resolver = toplevel.getResolver();
+        const resolver = RouteResolver.getFromBuilder(toplevel);
         const res = resolver.resolve({
           pathname: "/foo/bar",
           search: "key=value",
@@ -116,9 +116,7 @@ describe("RootRouteBuilder", () => {
               state: null,
             },
             match: {},
-            route: {
-              action: expect.any(Function),
-            },
+            route: expect.any(ConstRouteRecord),
           },
         ]);
         expect(res[0].route.action(emptyMatch)).toBe("root.");
@@ -132,7 +130,7 @@ describe("RootRouteBuilder", () => {
         toplevel
           .getRoutes()
           .hoge.attach(RootRouteBuilder.init().action(() => "I am root"));
-        const resolver = toplevel.getResolver();
+        const resolver = RouteResolver.getFromBuilder(toplevel);
         const res = resolver.resolve({
           pathname: "/hoge",
           state: null,
@@ -144,9 +142,7 @@ describe("RootRouteBuilder", () => {
               state: null,
             },
             match: {},
-            route: {
-              action: expect.any(Function),
-            },
+            route: expect.any(ConstRouteRecord),
           },
         ]);
         expect(res[0].route.action(emptyMatch)).toBe("I am root");

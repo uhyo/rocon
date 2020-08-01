@@ -1,7 +1,6 @@
 import { BuilderLink } from "../../BuilderLink";
 import type { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
 import { SearchLocationComposer } from "../../LocationComposer/SearchLocationComposer";
-import type { RouteResolver } from "../../RouteResolver";
 import { isString } from "../../validator";
 import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
@@ -88,7 +87,14 @@ export class SearchRouteBuilder<
     this.#link = link;
     this.key = key;
     this.#route = new MatchingRouteRecord(this, key, isString, undefined);
-    link.register(this);
+    link.register(this, (value) => {
+      const route = this.#route;
+      return {
+        type: "matching",
+        route,
+        value,
+      };
+    });
   }
 
   /**
@@ -120,16 +126,5 @@ export class SearchRouteBuilder<
 
   getBuilderLink(): BuilderLink<ActionResult, string> {
     return this.#link;
-  }
-
-  getResolver(): RouteResolver<ActionResult, string> {
-    return this.#link.getResolver((value) => {
-      const route = this.#route;
-      return {
-        type: "matching",
-        route,
-        value,
-      };
-    });
   }
 }

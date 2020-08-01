@@ -1,7 +1,6 @@
 import { BuilderLink } from "../../BuilderLink";
 import { AttachableRouteBuilder } from "../../BuilderLink/AttachableRouteBuilder";
 import { StateLocationComposer } from "../../LocationComposer/StateLocationComposer";
-import { RouteResolver } from "../../RouteResolver";
 import type { Validator } from "../../validator";
 import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
@@ -99,7 +98,13 @@ export class StateRouteBuilder<
     this.key = key;
     this.#validator = validator;
     this.#route = new MatchingRouteRecord(this, key, validator, undefined);
-    link.register(this);
+    link.register(this, (value) => {
+      return {
+        type: "matching",
+        route: this.#route,
+        value,
+      };
+    });
   }
 
   /**
@@ -140,15 +145,5 @@ export class StateRouteBuilder<
 
   getBuilderLink(): BuilderLink<ActionResult, StateValue> {
     return this.#link;
-  }
-
-  getResolver(): RouteResolver<ActionResult, StateValue> {
-    return this.#link.getResolver((value) => {
-      return {
-        type: "matching",
-        route: this.#route,
-        value,
-      };
-    });
   }
 }
