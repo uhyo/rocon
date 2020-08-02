@@ -3,6 +3,7 @@ import { PathLocationComposer } from "../../builder/composers/PathLocationCompos
 import { PathRouteBuilder } from "../../builder/PathRouteBuilder";
 import { SearchRouteBuilder } from "../../builder/SearchRouteBuilder";
 
+// TODO: rewrite this test
 const composer = new PathLocationComposer();
 
 describe("BuilderLink", () => {
@@ -12,32 +13,28 @@ describe("BuilderLink", () => {
         composer,
       });
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
-      const parent2 = PathRouteBuilder.init()
-        .routes({
-          bar: { action: () => "bar" },
-        })
-        .getRoutes();
+      const b1 = PathRouteBuilder.init().routes({
+        foo: { action: () => "foo" },
+      });
+      const b2 = PathRouteBuilder.init().routes({
+        bar: { action: () => "bar" },
+      });
 
-      link.attachToParent(parent1.foo);
-      expect(() => link.attachToParent(parent2.bar)).toThrow();
+      link.attachToParent(b1.getBuilderLink(), () => "bar");
+      expect(() =>
+        link.attachToParent(b2.getBuilderLink(), () => "bar")
+      ).toThrow();
     });
     it("cannot inherit twice", () => {
       const link = new BuilderLink({
         composer,
       });
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
+      const b1 = PathRouteBuilder.init().routes({
+        foo: { action: () => "foo" },
+      });
       // attach
-      link.attachToParent(parent1.foo);
+      link.attachToParent(b1.getBuilderLink(), () => "foo");
       link.inherit();
 
       expect(() => link.inherit()).toThrow();
@@ -47,13 +44,12 @@ describe("BuilderLink", () => {
         composer,
       });
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
+      const b1 = PathRouteBuilder.init().routes({
+        foo: { action: () => "foo" },
+      });
+
       // attach
-      link.attachToParent(parent1.foo);
+      link.attachToParent(b1.getBuilderLink(), () => "foo");
       link.inherit();
 
       expect(() => link.checkInvalidation()).toThrow();
@@ -76,65 +72,75 @@ describe("BuilderLink", () => {
           composer,
         });
 
-        link2.attachToParent(parent.getRoute());
+        link2.attachToParent(
+          parent.getBuilderLink(),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (match) => (match as any).foo
+        );
         expect(link1.resolver).toBe(link2.resolver);
       });
     });
   });
-  describe("getParentRoute", () => {
+  describe("getParentLinkAndSegmentGetter", () => {
     it("unattached", () => {
       const link = new BuilderLink({
         composer,
       });
 
-      expect(link.getParentRoute()).toBeUndefined();
+      expect(link.getParentLinkAndSegmentGetter()).toBeUndefined();
     });
     it("attached", () => {
       const link = new BuilderLink({
         composer,
       });
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
+      const b1 = PathRouteBuilder.init().routes({
+        foo: { action: () => "foo" },
+      });
 
-      link.attachToParent(parent1.foo);
+      const getter = () => "foo";
+      link.attachToParent(b1.getBuilderLink(), getter);
 
-      expect(link.getParentRoute()).toBe(parent1.foo);
+      expect(link.getParentLinkAndSegmentGetter()).toEqual([
+        getter,
+        b1.getBuilderLink(),
+      ]);
     });
     it("inherited", () => {
       const link = new BuilderLink({
         composer,
       });
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
+      const b1 = PathRouteBuilder.init().routes({
+        foo: { action: () => "foo" },
+      });
 
-      link.attachToParent(parent1.foo);
+      const getter = () => "foo";
+      link.attachToParent(b1.getBuilderLink(), getter);
       link.inherit();
 
-      expect(link.getParentRoute()).toBe(parent1.foo);
+      expect(link.getParentLinkAndSegmentGetter()).toEqual([
+        getter,
+        b1.getBuilderLink(),
+      ]);
     });
     it("attach-inherit", () => {
       const link = new BuilderLink({
         composer,
       });
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
+      const b1 = PathRouteBuilder.init().routes({
+        foo: { action: () => "foo" },
+      });
 
-      link.attachToParent(parent1.foo);
+      const getter = () => "foo";
+      link.attachToParent(b1.getBuilderLink(), getter);
       const link2 = link.inherit();
 
-      expect(link2.getParentRoute()).toBe(parent1.foo);
+      expect(link2.getParentLinkAndSegmentGetter()).toEqual([
+        getter,
+        b1.getBuilderLink(),
+      ]);
     });
     it("unattached-inherited", () => {
       const link = new BuilderLink({
@@ -143,15 +149,15 @@ describe("BuilderLink", () => {
 
       const link2 = link.inherit();
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
+      const b1 = PathRouteBuilder.init().routes({
+        foo: { action: () => "foo" },
+      });
 
-      link2.attachToParent(parent1.foo);
+      const getter = () => "foo";
 
-      expect(link.getParentRoute()).toBeUndefined();
+      link2.attachToParent(b1.getBuilderLink(), getter);
+
+      expect(link.getParentLinkAndSegmentGetter()).toBeUndefined();
     });
   });
 });
