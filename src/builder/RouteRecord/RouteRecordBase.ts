@@ -1,6 +1,6 @@
-import { BuilderLink } from "../../core/BuilderLink";
-import type { HasBuilderLink } from "../../core/BuilderLink/AttachableRouteBuilder";
+import type { HasBuilderLink } from "../../core/BuilderLink/HasBuilderLink";
 import { Location } from "../../core/Location";
+import { RouteBuilderLink, RouteBuilderLinkValue } from "../RouteBuilderLink";
 import type { ActionType } from "../RoutesDefinitionObject";
 import { routeRecordParentKey } from "../symbols";
 import { AttachFunction, RouteRecordType } from "./RouteRecordType";
@@ -10,6 +10,11 @@ export type ActionTypeOfRouteRecord<
   Match,
   HasAction extends boolean
 > = HasAction extends true ? ActionType<ActionResult, Match> : undefined;
+
+const defaultRoot: Location = {
+  pathname: "/",
+  state: null,
+};
 
 /**
  * Object for each route provided by RouteBuilder.
@@ -24,15 +29,18 @@ export abstract class RouteRecordBase<
    * Action of this route.
    */
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
-  readonly [routeRecordParentKey]: BuilderLink<ActionResult, unknown>;
+  readonly [routeRecordParentKey]: RouteBuilderLink<ActionResult, unknown>;
 
-  #builder?: BuilderLink<ActionResult, unknown> = undefined;
+  #builder?: RouteBuilderLink<ActionResult, unknown> = undefined;
+  #segmentGetter: (match: Match) => unknown;
 
   constructor(
-    parentLink: BuilderLink<ActionResult, unknown>,
-    action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
+    parentLink: RouteBuilderLink<ActionResult, unknown>,
+    action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>,
+    segmentGetter: (match: Match) => unknown
   ) {
     this.action = action;
+    this.#segmentGetter = segmentGetter;
     Object.defineProperty(this, routeRecordParentKey, {
       value: parentLink,
     });
@@ -42,22 +50,40 @@ export abstract class RouteRecordBase<
       writable: true,
       value(
         this: RouteRecordBase<ActionResult, Match, HasAction>,
-        builder: HasBuilderLink<ActionResult, unknown>
+        builder: HasBuilderLink<
+          ActionResult,
+          unknown,
+          RouteBuilderLinkValue<ActionResult>
+        >
       ) {
         const link = builder.getBuilderLink();
         this.#builder = link;
-        link.attachToParent(this);
+        link.attachToParent(
+          parentLink,
+          segmentGetter as (match: unknown) => unknown
+        );
         return builder;
       },
     });
   }
 
-  abstract getLocation(match: Match): Location;
+  getLocation(match: Match): Location {
+    const parentLocation = this[routeRecordParentKey].composeFromTop(
+      defaultRoot,
+      match
+    );
+    return this[routeRecordParentKey].composer.compose(
+      parentLocation,
+      this.#segmentGetter(match)
+    );
+  }
 
   /**
    * Get the link attached to this Route.
    */
-  getAttachedBuilderLink(): BuilderLink<ActionResult, unknown> | undefined {
+  getAttachedBuilderLink():
+    | RouteBuilderLink<ActionResult, unknown>
+    | undefined {
     return this.#builder;
   }
 

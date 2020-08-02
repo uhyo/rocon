@@ -1,7 +1,11 @@
 import { BuilderLink } from "../../core/BuilderLink";
-import type { AttachableRouteBuilder } from "../../core/BuilderLink/AttachableRouteBuilder";
 import { isString } from "../../validator";
 import { SearchLocationComposer } from "../composers/SearchLocationComposer";
+import {
+  AttachableRouteBuilder,
+  RouteBuilderLink,
+  RouteBuilderLinkValue,
+} from "../RouteBuilderLink";
 import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
@@ -24,7 +28,11 @@ export class SearchRouteBuilder<
       [K in Key]: string;
     }
   >(key: Key): SearchRouteBuilder<ActionResult, "noaction", Match> {
-    const link = BuilderLink.init<ActionResult, string>({
+    const link = new BuilderLink<
+      ActionResult,
+      string,
+      RouteBuilderLinkValue<ActionResult>
+    >({
       composer: new SearchLocationComposer(key),
     });
     const result = new SearchRouteBuilder<
@@ -76,11 +84,11 @@ export class SearchRouteBuilder<
 
   readonly key: Extract<keyof Match, string>;
 
-  #link: BuilderLink<ActionResult, string>;
+  #link: RouteBuilderLink<ActionResult, string>;
   #route: MatchingRouteRecord<ActionResult, string, Match, boolean>;
 
   private constructor(
-    link: BuilderLink<ActionResult, string>,
+    link: RouteBuilderLink<ActionResult, string>,
     key: Extract<keyof Match, string>
   ) {
     super();
@@ -91,8 +99,10 @@ export class SearchRouteBuilder<
       const route = this.#route;
       return {
         type: "matching",
-        route,
-        value,
+        value: route,
+        link: route.getAttachedBuilderLink(),
+        matchKey: key,
+        matchValue: value,
       };
     });
   }
@@ -124,7 +134,7 @@ export class SearchRouteBuilder<
     return this.#route;
   }
 
-  getBuilderLink(): BuilderLink<ActionResult, string> {
+  getBuilderLink(): RouteBuilderLink<ActionResult, string> {
     return this.#link;
   }
 }

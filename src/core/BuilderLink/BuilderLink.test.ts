@@ -1,67 +1,50 @@
 import { BuilderLink } from ".";
 import { PathLocationComposer } from "../../builder/composers/PathLocationComposer";
-import { PathRouteBuilder } from "../../builder/PathRouteBuilder";
-import { SearchRouteBuilder } from "../../builder/SearchRouteBuilder";
 
 const composer = new PathLocationComposer();
 
 describe("BuilderLink", () => {
   describe("attachToParent", () => {
     it("cannot attach twice", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
-      const parent2 = PathRouteBuilder.init()
-        .routes({
-          bar: { action: () => "bar" },
-        })
-        .getRoutes();
+      const link2 = new BuilderLink({ composer });
+      const link3 = new BuilderLink({ composer });
 
-      link.attachToParent(parent1.foo);
-      expect(() => link.attachToParent(parent2.bar)).toThrow();
+      link.attachToParent(link2, () => "bar");
+      expect(() => link.attachToParent(link3, () => "bar")).toThrow();
     });
     it("cannot inherit twice", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
+      const childLink = new BuilderLink({ composer });
       // attach
-      link.attachToParent(parent1.foo);
+      link.attachToParent(childLink, () => "foo");
       link.inherit();
 
       expect(() => link.inherit()).toThrow();
     });
     it("checkInvalidation", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
+      const parent = new BuilderLink({ composer });
+
       // attach
-      link.attachToParent(parent1.foo);
+      link.attachToParent(parent, () => "foo");
       link.inherit();
 
       expect(() => link.checkInvalidation()).toThrow();
     });
     it("inherited links have same RouteResolver", () => {
-      const parent = SearchRouteBuilder.init("foo");
-      const link1 = BuilderLink.init({ composer });
-      parent.attach(link1);
+      const parent = new BuilderLink({ composer });
+      const link1 = new BuilderLink({ composer });
+      link1.attachToParent(parent, () => "foo");
 
       const link2 = link1.inherit();
 
@@ -69,89 +52,81 @@ describe("BuilderLink", () => {
     });
     describe("attached links have same RouteResolver", () => {
       it("simple", () => {
-        const parent = SearchRouteBuilder.init("foo");
-        const link1 = parent.getBuilderLink();
+        const link1 = new BuilderLink({ composer });
 
-        const link2 = BuilderLink.init({
+        const link2 = new BuilderLink({
           composer,
         });
 
-        link2.attachToParent(parent.getRoute());
+        link2.attachToParent(
+          link1,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (match) => (match as any).foo
+        );
         expect(link1.resolver).toBe(link2.resolver);
       });
     });
   });
-  describe("getParentRoute", () => {
+  describe("getParentLinkAndSegmentGetter", () => {
     it("unattached", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
-      expect(link.getParentRoute()).toBeUndefined();
+      expect(link.getParentLinkAndSegmentGetter()).toBeUndefined();
     });
     it("attached", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
+      const parent = new BuilderLink({ composer });
 
-      link.attachToParent(parent1.foo);
+      const getter = () => "foo";
+      link.attachToParent(parent, getter);
 
-      expect(link.getParentRoute()).toBe(parent1.foo);
+      expect(link.getParentLinkAndSegmentGetter()).toEqual([getter, parent]);
     });
     it("inherited", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
+      const parent = new BuilderLink({ composer });
 
-      link.attachToParent(parent1.foo);
+      const getter = () => "foo";
+      link.attachToParent(parent, getter);
       link.inherit();
 
-      expect(link.getParentRoute()).toBe(parent1.foo);
+      expect(link.getParentLinkAndSegmentGetter()).toEqual([getter, parent]);
     });
     it("attach-inherit", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
+      const parent = new BuilderLink({ composer });
 
-      link.attachToParent(parent1.foo);
+      const getter = () => "foo";
+      link.attachToParent(parent, getter);
       const link2 = link.inherit();
 
-      expect(link2.getParentRoute()).toBe(parent1.foo);
+      expect(link2.getParentLinkAndSegmentGetter()).toEqual([getter, parent]);
     });
     it("unattached-inherited", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
       const link2 = link.inherit();
 
-      const parent1 = PathRouteBuilder.init()
-        .routes({
-          foo: { action: () => "foo" },
-        })
-        .getRoutes();
+      const parent = new BuilderLink({ composer });
 
-      link2.attachToParent(parent1.foo);
+      const getter = () => "foo";
 
-      expect(link.getParentRoute()).toBeUndefined();
+      link2.attachToParent(parent, getter);
+
+      expect(link.getParentLinkAndSegmentGetter()).toBeUndefined();
     });
   });
 });

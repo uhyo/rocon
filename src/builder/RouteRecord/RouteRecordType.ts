@@ -1,7 +1,7 @@
-import type { BuilderLink } from "../../core/BuilderLink";
-import type { HasBuilderLink } from "../../core/BuilderLink/AttachableRouteBuilder";
+import type { HasBuilderLink } from "../../core/BuilderLink/HasBuilderLink";
 import type { Location } from "../../core/Location";
 import type { PathRouteBuilder } from "../PathRouteBuilder";
+import { RouteBuilderLink } from "../RouteBuilderLink";
 import type { RoutesDefinition } from "../RoutesDefinitionObject";
 import type { SearchRouteBuilder } from "../SearchRouteBuilder";
 import type { StateRouteBuilder } from "../StateRouteBuilder";
@@ -40,7 +40,7 @@ export interface AttachFunction<ActionResult, Match> {
     IntrinsicMatch & Match
   >;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  <B extends HasBuilderLink<ActionResult, any>>(builder: B): B;
+  <B extends HasBuilderLink<ActionResult, any, any>>(builder: B): B;
 }
 
 /**
@@ -48,10 +48,10 @@ export interface AttachFunction<ActionResult, Match> {
  */
 export type RouteRecordType<ActionResult, Match, HasAction extends boolean> = {
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
-  readonly [routeRecordParentKey]: BuilderLink<ActionResult, unknown>;
+  readonly [routeRecordParentKey]: RouteBuilderLink<ActionResult, unknown>;
   readonly getLocation: (match: Match) => Location;
   readonly getAttachedBuilderLink: () =>
-    | BuilderLink<ActionResult, unknown>
+    | RouteBuilderLink<ActionResult, unknown>
     | undefined;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly attach: AttachFunction<ActionResult, Match>;

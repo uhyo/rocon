@@ -1,8 +1,9 @@
-import { RouteResolver } from ".";
 import { PathRouteBuilder } from "../../builder/PathRouteBuilder";
+import { RoutePathResolver } from "../../builder/RoutePathResolver";
 import { PathRouteRecord } from "../../builder/RouteRecord";
 import { MatchingRouteRecord } from "../../builder/RouteRecord/MatchingRouteRecord";
 
+// TODO: rewrite the test to not depend on builder
 const b1 = PathRouteBuilder.init<string>().routes({
   foo: {
     action: () => "foo!",
@@ -44,8 +45,8 @@ routes.noaction.attach(
   })
 );
 
-const resolver = RouteResolver.getFromBuilder(b1);
-const wildcardResolver = RouteResolver.getFromBuilder(b2);
+const resolver = RoutePathResolver.getFromBuilder(b1);
+const wildcardResolver = RoutePathResolver.getFromBuilder(b2);
 
 const emptyMatch = {} as never;
 

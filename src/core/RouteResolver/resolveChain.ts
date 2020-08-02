@@ -6,44 +6,44 @@ import type { ResolvedRoute } from "./ResolvedRoute";
  * Resolve location from given link and location
  * @package
  */
-export function resolveChain<ActionResult>(
-  link: BuilderLink<ActionResult, unknown>,
+export function resolveChain<ActionResult, Value>(
+  link: BuilderLink<ActionResult, unknown, Value>,
   location: Location
-): Array<ResolvedRoute<ActionResult, never>> {
+): Array<ResolvedRoute<Value>> {
   const decomposed = link.composer.decompose(location);
   return decomposed.flatMap(([seg, next]) => {
-    const nextRoute = link.resolveSegment?.(seg);
-    if (nextRoute === undefined) {
+    const resolved = link.followInheritanceChain((link) =>
+      link.resolveSegment?.(seg)
+    ).result;
+    if (resolved === undefined) {
       return [];
     }
-    const match = (nextRoute.type === "normal"
+    const match = (resolved.type === "normal"
       ? {}
       : {
-          [nextRoute.route.key]: seg,
+          [resolved.matchKey]: seg,
         }) as never;
 
-    const childLink = nextRoute.route
-      .getAttachedBuilderLink()
-      ?.getChildBuilder()
-      ?.getBuilderLink();
+    const childLink = resolved.link;
 
     if (childLink === undefined || childLink.composer.isLeaf(next)) {
       return [
         {
-          route: nextRoute.route,
+          route: resolved.value,
+          link: childLink,
           match,
           location: next,
         },
       ];
     }
-    const result = resolveChain<ActionResult>(childLink, next);
-    switch (nextRoute.type) {
+    const result = resolveChain<ActionResult, Value>(childLink, next);
+    switch (resolved.type) {
       case "normal": {
         return result;
       }
       case "matching": {
-        const key = nextRoute.route.key;
-        const matchedValue = nextRoute.value;
+        const key = resolved.matchKey;
+        const matchedValue = resolved.matchValue;
         return result.map((res) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (res.match as any)[key] = matchedValue;

@@ -1,7 +1,7 @@
 import { PathRouteBuilder } from "./builder/PathRouteBuilder";
+import { RoutePathResolver } from "./builder/RoutePathResolver";
 import { SearchRouteBuilder } from "./builder/SearchRouteBuilder";
 import { StateRouteBuilder } from "./builder/StateRouteBuilder";
-import { RouteResolver } from "./core/RouteResolver";
 
 /**
  * Initialize a path router.
@@ -21,4 +21,4 @@ export const State = StateRouteBuilder.init;
 /**
  * Get a resolver of given router.
  */
-export const Resolver = RouteResolver.getFromBuilder;
+export const Resolver = RoutePathResolver.getFromBuilder;

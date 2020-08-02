@@ -1,7 +1,11 @@
 import { BuilderLink } from "../../core/BuilderLink";
-import { AttachableRouteBuilder } from "../../core/BuilderLink/AttachableRouteBuilder";
 import type { Validator } from "../../validator";
 import { StateLocationComposer } from "../composers/StateLocationComposer";
+import {
+  AttachableRouteBuilder,
+  RouteBuilderLink,
+  RouteBuilderLinkValue,
+} from "../RouteBuilderLink";
 import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
@@ -29,7 +33,11 @@ export class StateRouteBuilder<
     key: Key,
     validator: Validator<StateValue>
   ): StateRouteBuilder<ActionResult, StateValue, "noaction", Match> {
-    const link = BuilderLink.init<ActionResult, StateValue>({
+    const link = new BuilderLink<
+      ActionResult,
+      StateValue,
+      RouteBuilderLinkValue<ActionResult>
+    >({
       composer: new StateLocationComposer(key, validator),
     });
     const result = new StateRouteBuilder<
@@ -84,12 +92,12 @@ export class StateRouteBuilder<
 
   readonly key: Extract<keyof Match, string>;
 
-  #link: BuilderLink<ActionResult, StateValue>;
+  #link: RouteBuilderLink<ActionResult, StateValue>;
   #validator: Validator<StateValue>;
   #route: MatchingRouteRecord<ActionResult, StateValue, Match, boolean>;
 
   private constructor(
-    link: BuilderLink<ActionResult, StateValue>,
+    link: RouteBuilderLink<ActionResult, StateValue>,
     key: Extract<keyof Match, string>,
     validator: Validator<StateValue>
   ) {
@@ -99,10 +107,13 @@ export class StateRouteBuilder<
     this.#validator = validator;
     this.#route = new MatchingRouteRecord(this, key, validator, undefined);
     link.register(this, (value) => {
+      const route = this.#route;
       return {
         type: "matching",
-        route: this.#route,
-        value,
+        value: route,
+        link: route.getAttachedBuilderLink(),
+        matchKey: key,
+        matchValue: value,
       };
     });
   }
@@ -143,7 +154,7 @@ export class StateRouteBuilder<
     return this.#route as any;
   }
 
-  getBuilderLink(): BuilderLink<ActionResult, StateValue> {
+  getBuilderLink(): RouteBuilderLink<ActionResult, StateValue> {
     return this.#link;
   }
 }

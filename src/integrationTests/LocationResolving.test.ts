@@ -4,6 +4,8 @@ import { wildcardRouteKey } from "../builder/symbols";
 import { Resolver } from "../shorthand";
 import { isString } from "../validator";
 
+// TODO: remove `as never` by introducing better API
+
 describe("Composed Location resolving", () => {
   describe("path-path", () => {
     it("1", () => {
@@ -34,7 +36,7 @@ describe("Composed Location resolving", () => {
       });
       expect(hogeResults.length).toBe(1);
       const [hogeRoute] = hogeResults;
-      expect(hogeRoute.route.action(hogeRoute.match)).toBe("hoge.");
+      expect(hogeRoute.route.action(hogeRoute.match as never)).toBe("hoge.");
 
       const fugaResults = resolver.resolve({
         pathname: "/bar/fuga",
@@ -42,7 +44,7 @@ describe("Composed Location resolving", () => {
       });
       expect(fugaResults.length).toBe(1);
       const [fugaRoute] = fugaResults;
-      expect(fugaRoute.route.action(fugaRoute.match)).toBe("fuga!");
+      expect(fugaRoute.route.action(fugaRoute.match as never)).toBe("fuga!");
     });
     it("2", () => {
       const builder = Path<string>().routes({
@@ -62,7 +64,7 @@ describe("Composed Location resolving", () => {
       });
       expect(results.length).toBe(1);
       const [res] = results;
-      expect(res.route.action(res.match)).toBe("Hello, user uhyo");
+      expect(res.route.action(res.match as never)).toBe("Hello, user uhyo");
     });
     it("3", () => {
       const builder = Path<string>().any("user", {});
@@ -82,7 +84,7 @@ describe("Composed Location resolving", () => {
       });
       expect(results.length).toBe(1);
       const [res] = results;
-      expect(res.route.action(res.match)).toBe("Hello, user uhyo");
+      expect(res.route.action(res.match as never)).toBe("Hello, user uhyo");
     });
   });
   describe("path-search", () => {
@@ -106,7 +108,7 @@ describe("Composed Location resolving", () => {
       expect(result.length).toBe(1);
       const res = result[0];
       expect(res.match).toEqual({ key: "value" });
-      expect(res.route.action(res.match)).toBe("key is value");
+      expect(res.route.action(res.match as never)).toBe("key is value");
     });
   });
   describe("path-search-state", () => {

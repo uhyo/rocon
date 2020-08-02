@@ -2,14 +2,20 @@ import type { BaseState, Location } from "../../../core/Location";
 import type { LocationComposer } from "../../../core/LocationComposer";
 
 /**
- * LocationComposer that does nothing.
+ * LocationComposer that composes to a constant location.
  */
-class IdentityLocationComposer implements LocationComposer<unknown> {
+export class ConstLocationComposer implements LocationComposer<unknown> {
+  private location: Location;
+
+  constructor(location: Location) {
+    this.location = location;
+  }
+
   isLeaf(): boolean {
     return false;
   }
-  compose<S extends BaseState>(base: Location<S>): Location<S> {
-    return base;
+  compose(): Location {
+    return this.location;
   }
 
   decompose<S extends BaseState>(
@@ -18,5 +24,3 @@ class IdentityLocationComposer implements LocationComposer<unknown> {
     return [[undefined, base]];
   }
 }
-
-export const identityLocationComposer = new IdentityLocationComposer();
