@@ -49,7 +49,7 @@ export class BuilderLink<ActionResult, Segment, Value>
   /**
    * Follow inheritance chain and run a function at the end.
    */
-  private followInheritanceChain<Result>(
+  followInheritanceChain<Result>(
     callback: (link: BuilderLink<ActionResult, Segment, Value>) => Result
   ): {
     result: Result;
