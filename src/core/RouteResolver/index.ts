@@ -1,5 +1,5 @@
 import { BuilderLink } from "../BuilderLink";
-import { HasBuilderLink } from "../BuilderLink/AttachableRouteBuilder";
+import { HasBuilderLink } from "../BuilderLink/HasBuilderLink";
 import type { BaseState, Location } from "../Location";
 import { resolveChain } from "./resolveChain";
 import { ResolvedRoute } from "./ResolvedRoute";

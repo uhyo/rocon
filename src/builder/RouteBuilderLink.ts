@@ -1,5 +1,5 @@
 import type { BuilderLink } from "../core/BuilderLink";
-import { HasBuilderLink } from "../core/BuilderLink/AttachableRouteBuilder";
+import { HasBuilderLink } from "../core/BuilderLink/HasBuilderLink";
 import type { RouteRecordType } from "./RouteRecord";
 
 export type RouteBuilderLinkValue<ActionResult> = RouteRecordType<

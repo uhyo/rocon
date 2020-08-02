@@ -1,9 +1,9 @@
 import { Location } from "../Location";
 import type { LocationComposer } from "../LocationComposer";
 import { RouteResolver, SegmentResolver } from "../RouteResolver";
-import { HasBuilderLink } from "./AttachableRouteBuilder";
 import type { BuilderLinkOptions } from "./BuilderLinkOptions";
 import { BuilderLinkState } from "./BuilderLinkState";
+import { HasBuilderLink } from "./HasBuilderLink";
 
 /**
  * Link between parent and child builders.
