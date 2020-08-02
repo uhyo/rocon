@@ -9,7 +9,7 @@ import type { ResolvedRoute } from "./ResolvedRoute";
 export function resolveChain<ActionResult>(
   link: BuilderLink<ActionResult, unknown>,
   location: Location
-): Array<ResolvedRoute<ActionResult, never>> {
+): Array<ResolvedRoute<ActionResult>> {
   const decomposed = link.composer.decompose(location);
   return decomposed.flatMap(([seg, next]) => {
     const nextRoute = link.resolveSegment?.(seg);
@@ -22,12 +22,13 @@ export function resolveChain<ActionResult>(
           [nextRoute.matchKey]: seg,
         }) as never;
 
-    const childLink = nextRoute.link?.getCurrentBuilder()?.getBuilderLink();
+    const childLink = nextRoute.link;
 
     if (childLink === undefined || childLink.composer.isLeaf(next)) {
       return [
         {
           route: nextRoute.route,
+          link: childLink,
           match,
           location: next,
         },

@@ -1,4 +1,4 @@
-import { BuilderLink, RouteRecordsBase } from "../../core/BuilderLink";
+import { BuilderLink } from "../../core/BuilderLink";
 import type { AttachableRouteBuilder } from "../../core/BuilderLink/AttachableRouteBuilder";
 import { isString } from "../../validator";
 import { PathLocationComposer } from "../composers/PathLocationComposer";
@@ -21,6 +21,12 @@ import type {
   ActionTypeToWildcardFlag,
   WildcardFlagType,
 } from "../WildcardFlagType";
+
+type RouteRecordsBase<ActionResult> = Record<
+  string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  RouteRecordType<ActionResult, any, any>
+>;
 
 /**
  * Builder to define routes using pathname.

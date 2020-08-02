@@ -11,12 +11,10 @@ export type BuilderLinkState<ActionResult, Segment> =
   | {
       state: "unattached";
       parentRoute?: undefined;
-      childLink?: BuilderLink<ActionResult, unknown>;
     }
   | {
       state: "attached";
       parentRoute: RouteRecordType<ActionResult, never, boolean>;
-      childLink?: BuilderLink<ActionResult, unknown>;
     }
   | {
       state: "inherited";

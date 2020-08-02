@@ -9,12 +9,6 @@ import {
 import type { BuilderLinkOptions } from "./BuilderLinkOptions";
 import { BuilderLinkState } from "./BuilderLinkState";
 
-export type RouteRecordsBase<ActionResult> = Record<
-  string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  RouteRecordType<ActionResult, any, any>
->;
-
 /**
  * Link between parent and child builders.
  */
@@ -66,14 +60,12 @@ export class BuilderLink<ActionResult, Segment>
       case "unattached": {
         parentLink.#state = {
           ...parentLink.#state,
-          childLink: this,
         };
         break;
       }
       case "attached": {
         parentLink.#state = {
           ...parentLink.#state,
-          childLink: this,
         };
         break;
       }
@@ -127,11 +119,11 @@ export class BuilderLink<ActionResult, Segment>
     return this;
   }
 
-  getCurrentBuilder():
-    | AttachableRouteBuilder<ActionResult, Segment>
-    | undefined {
-    return this.currentBuilder;
-  }
+  // getCurrentBuilder():
+  //   | AttachableRouteBuilder<ActionResult, Segment>
+  //   | undefined {
+  //   return this.currentBuilder;
+  // }
 
   /**
    * TODO: rethink
