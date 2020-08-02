@@ -1,4 +1,5 @@
 import { SearchRouteBuilder } from ".";
+import { RoutePathResolver } from "../RoutePathResolver";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 
 describe("SearchRouteBuilder", () => {
@@ -23,5 +24,55 @@ describe("SearchRouteBuilder", () => {
         bar: "456",
       })
     ).toBe("foo is 123, bar is 456");
+  });
+  describe("resolve", () => {
+    it("matchKey = seacrhKey", () => {
+      const toplevel = SearchRouteBuilder.init("foo").action(
+        ({ foo }) => `foo is ${foo.slice(0)}`
+      );
+      const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
+        pathname: "/",
+        search: "foo=aiueo",
+        state: null,
+      });
+      expect(res).toEqual([
+        {
+          location: {
+            pathname: "/",
+            search: "",
+            state: null,
+          },
+          match: {
+            foo: "aiueo",
+          },
+          route: expect.any(MatchingRouteRecord),
+        },
+      ]);
+      expect(res[0].route.action(res[0].match as never)).toBe("foo is aiueo");
+    });
+  });
+  it("matchKey != seacrhKey", () => {
+    const toplevel = SearchRouteBuilder.init("foo", {
+      searchKey: "boom",
+    }).action(({ foo }) => `foo is ${foo.slice(0)}`);
+    const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
+      pathname: "/",
+      search: "boom=wow&foo=123",
+      state: null,
+    });
+    expect(res).toEqual([
+      {
+        location: {
+          pathname: "/",
+          search: "foo=123",
+          state: null,
+        },
+        match: {
+          foo: "wow",
+        },
+        route: expect.any(MatchingRouteRecord),
+      },
+    ]);
+    expect(res[0].route.action(res[0].match as never)).toBe("foo is wow");
   });
 });

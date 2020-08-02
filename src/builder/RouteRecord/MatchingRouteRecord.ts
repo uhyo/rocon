@@ -33,7 +33,7 @@ export class MatchingRouteRecord<
 
   constructor(
     parent: AttachableRouteBuilder<ActionResult, Value>,
-    key: Extract<keyof Match, string>,
+    matchKey: Extract<keyof Match, string>,
     validator: Validator<Value>,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
@@ -48,6 +48,6 @@ export class MatchingRouteRecord<
     });
     this.#parent = parent;
     this.#validator = validator;
-    this.key = key;
+    this.key = matchKey;
   }
 }

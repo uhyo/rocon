@@ -15,6 +15,10 @@ import type {
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
 
+type SearchOptions = {
+  searchKey?: string;
+};
+
 export class SearchRouteBuilder<
   ActionResult,
   WildcardFlag extends ExistingWildcardFlagType,
@@ -27,13 +31,17 @@ export class SearchRouteBuilder<
     Match extends {
       [K in Key]: string;
     }
-  >(key: Key): SearchRouteBuilder<ActionResult, "noaction", Match> {
+  >(
+    matchKey: Key,
+    options: SearchOptions = {}
+  ): SearchRouteBuilder<ActionResult, "noaction", Match> {
+    const searchKey = options.searchKey ?? matchKey;
     const link = new BuilderLink<
       ActionResult,
       string,
       RouteBuilderLinkValue<ActionResult>
     >({
-      composer: new SearchLocationComposer(key),
+      composer: new SearchLocationComposer(searchKey),
     });
     const result = new SearchRouteBuilder<
       ActionResult,
@@ -43,7 +51,7 @@ export class SearchRouteBuilder<
           [K in Key]: string;
         }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    >(link, key as any);
+    >(link, matchKey as any);
     return result;
   }
 
@@ -82,26 +90,26 @@ export class SearchRouteBuilder<
     return r.attach(b);
   }
 
-  readonly key: Extract<keyof Match, string>;
+  readonly matchKey: Extract<keyof Match, string>;
 
   #link: RouteBuilderLink<ActionResult, string>;
   #route: MatchingRouteRecord<ActionResult, string, Match, boolean>;
 
   private constructor(
     link: RouteBuilderLink<ActionResult, string>,
-    key: Extract<keyof Match, string>
+    matchKey: Extract<keyof Match, string>
   ) {
     super();
     this.#link = link;
-    this.key = key;
-    this.#route = new MatchingRouteRecord(this, key, isString, undefined);
+    this.matchKey = matchKey;
+    this.#route = new MatchingRouteRecord(this, matchKey, isString, undefined);
     link.register(this, (value) => {
       const route = this.#route;
       return {
         type: "matching",
         value: route,
         link: route.getAttachedBuilderLink(),
-        matchKey: key,
+        matchKey: matchKey,
         matchValue: value,
       };
     });
@@ -115,10 +123,15 @@ export class SearchRouteBuilder<
   ): SearchRouteBuilder<ActionResult, "hasaction", Match> {
     const result = new SearchRouteBuilder<ActionResult, "hasaction", Match>(
       this.#link.inherit(),
-      this.key
+      this.matchKey
     );
 
-    result.#route = new MatchingRouteRecord(result, this.key, isString, action);
+    result.#route = new MatchingRouteRecord(
+      result,
+      this.matchKey,
+      isString,
+      action
+    );
     return result;
   }
 
