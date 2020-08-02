@@ -1,5 +1,4 @@
 import type { BuilderLink } from ".";
-import type { RouteRecordType } from "../../builder/RouteRecord";
 
 /**
  * State of BuilderLink.
@@ -10,14 +9,15 @@ import type { RouteRecordType } from "../../builder/RouteRecord";
 export type BuilderLinkState<ActionResult, Segment, Value> =
   | {
       state: "unattached";
-      parentRoute?: undefined;
+      parentLink?: undefined;
     }
   | {
       state: "attached";
-      parentRoute: RouteRecordType<ActionResult, never, boolean>;
+      parentLink: BuilderLink<ActionResult, Segment, Value>;
+      segmentGetter: (match: unknown) => Segment;
     }
   | {
       state: "inherited";
-      parentRoute?: undefined;
+      parentLink?: undefined;
       inheritor: BuilderLink<ActionResult, Segment, Value>;
     };

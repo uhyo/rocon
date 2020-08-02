@@ -1,8 +1,6 @@
 import { RouteRecordType } from ".";
-import { Location } from "../../core/Location";
 import { Validator } from "../../validator";
 import { AttachableRouteBuilder } from "../RouteBuilderLink";
-import { resolveLinkLocation } from "./resolveLinkLocation";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
 
 /**
@@ -39,20 +37,17 @@ export class MatchingRouteRecord<
     validator: Validator<Value>,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
-    super(parent.getBuilderLink(), action);
+    super(parent.getBuilderLink(), action, (match) => {
+      const matchedValue = match[this.key];
+      if (!this.#validator(matchedValue)) {
+        throw new Error(
+          `Invariant failure: type of '${matchedValue}' is wrong`
+        );
+      }
+      return matchedValue;
+    });
     this.#parent = parent;
     this.#validator = validator;
     this.key = key;
-  }
-
-  getLocation(match: Match): Location {
-    const matchedValue = match[this.key];
-    if (!this.#validator(matchedValue)) {
-      throw new Error(`Invariant failure: type of '${matchedValue}' is wrong`);
-    }
-
-    const link = this.#parent.getBuilderLink();
-    const parentLocation = resolveLinkLocation(link, match);
-    return link.composer.compose(parentLocation, matchedValue);
   }
 }

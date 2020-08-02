@@ -1,5 +1,4 @@
-import type { RouteRecordType } from "../../builder/RouteRecord";
-import { routeRecordParentKey } from "../../builder/symbols";
+import { Location } from "../Location";
 import type { LocationComposer } from "../LocationComposer";
 import { RouteResolver, SegmentResolver } from "../RouteResolver";
 import { HasBuilderLink } from "./AttachableRouteBuilder";
@@ -32,39 +31,17 @@ export class BuilderLink<ActionResult, Segment, Value>
    * Attach this link to a parent.
    */
   attachToParent(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    parentRoute: RouteRecordType<any, any, any>,
-    // TODO: remove parentRoute in favor of parentLink
-    parentLink: BuilderLink<ActionResult, unknown, Value> = parentRoute[
-      routeRecordParentKey
-    ]
+    parentLink: BuilderLink<ActionResult, unknown, Value>,
+    segmentGetter: (match: unknown) => Segment
   ) {
     if (this.#state.state !== "unattached") {
       throw new Error("A builder cannot be attached more than once.");
     }
     this.#state = {
       state: "attached",
-      parentRoute,
+      parentLink,
+      segmentGetter,
     };
-    // TODO: what if it already has a child link?
-    switch (parentLink.#state.state) {
-      case "unattached": {
-        parentLink.#state = {
-          ...parentLink.#state,
-        };
-        break;
-      }
-      case "attached": {
-        parentLink.#state = {
-          ...parentLink.#state,
-        };
-        break;
-      }
-      case "inherited": {
-        parentLink.checkInvalidation();
-        break;
-      }
-    }
 
     this.resolver = parentLink.resolver;
   }
@@ -95,15 +72,59 @@ export class BuilderLink<ActionResult, Segment, Value>
     }
   }
 
+  /**
+   * Collect pairs of link and segment between its parent.
+   */
+  private collectUpToTop(): Array<{
+    link: BuilderLink<ActionResult, unknown, Value>;
+    segmentGetter: (match: unknown) => unknown;
+  }> {
+    const result: Array<{
+      link: BuilderLink<ActionResult, unknown, Value>;
+      segmentGetter: (match: unknown) => unknown;
+    }> = [];
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let current: BuilderLink<ActionResult, unknown, Value> = this;
+    let parent:
+      | [(match: unknown) => unknown, BuilderLink<ActionResult, unknown, Value>]
+      | undefined = current.getParentLinkAndSegmentGetter();
+    while (parent !== undefined) {
+      result.push({
+        link: parent[1],
+        segmentGetter: parent[0],
+      });
+      current = parent[1];
+      parent = current.getParentLinkAndSegmentGetter();
+    }
+    return result;
+  }
+
+  composeFromTop(defaultRoot: Location, match: unknown): Location {
+    const links = this.collectUpToTop().reverse();
+    return links.reduce((loc, { link, segmentGetter: segment }) => {
+      return link.composer.compose(loc, segment(match));
+    }, defaultRoot);
+  }
+
   checkInvalidation() {
     if (this.#state.state === "inherited") {
       throw new Error("This BuilderLink is already invalidated.");
     }
   }
 
-  getParentRoute(): RouteRecordType<ActionResult, never, boolean> | undefined {
-    return this.followInheritanceChain((link) => link.#state.parentRoute)
-      .result;
+  getParentLinkAndSegmentGetter():
+    | [(match: unknown) => Segment, BuilderLink<ActionResult, Segment, Value>]
+    | undefined {
+    return this.followInheritanceChain<
+      | [(match: unknown) => Segment, BuilderLink<ActionResult, Segment, Value>]
+      | undefined
+    >((link) => {
+      const state = link.#state;
+      if (state.state === "attached") {
+        return [state.segmentGetter, state.parentLink];
+      }
+      return undefined;
+    }).result;
   }
 
   getBuilderLink(): this {
@@ -145,7 +166,11 @@ export class BuilderLink<ActionResult, Segment, Value>
         });
         result.resolver = this.resolver;
 
-        this.#state.parentRoute.attach(result);
+        // this.#state.parentLink.attach(result);
+        result.attachToParent(
+          this.#state.parentLink,
+          this.#state.segmentGetter
+        );
 
         this.#state = {
           state: "inherited",

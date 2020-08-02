@@ -12,22 +12,22 @@ export function resolveChain<ActionResult, Value>(
 ): Array<ResolvedRoute<Value>> {
   const decomposed = link.composer.decompose(location);
   return decomposed.flatMap(([seg, next]) => {
-    const nextRoute = link.resolveSegment?.(seg);
-    if (nextRoute === undefined) {
+    const resolved = link.resolveSegment?.(seg);
+    if (resolved === undefined) {
       return [];
     }
-    const match = (nextRoute.type === "normal"
+    const match = (resolved.type === "normal"
       ? {}
       : {
-          [nextRoute.matchKey]: seg,
+          [resolved.matchKey]: seg,
         }) as never;
 
-    const childLink = nextRoute.link;
+    const childLink = resolved.link;
 
     if (childLink === undefined || childLink.composer.isLeaf(next)) {
       return [
         {
-          route: nextRoute.value,
+          route: resolved.value,
           link: childLink,
           match,
           location: next,
@@ -35,13 +35,13 @@ export function resolveChain<ActionResult, Value>(
       ];
     }
     const result = resolveChain<ActionResult, Value>(childLink, next);
-    switch (nextRoute.type) {
+    switch (resolved.type) {
       case "normal": {
         return result;
       }
       case "matching": {
-        const key = nextRoute.matchKey;
-        const matchedValue = nextRoute.matchValue;
+        const key = resolved.matchKey;
+        const matchedValue = resolved.matchValue;
         return result.map((res) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (res.match as any)[key] = matchedValue;

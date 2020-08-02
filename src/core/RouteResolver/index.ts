@@ -40,7 +40,6 @@ export class RouteResolver<ActionResult, Segment, Value> {
   }
 
   resolve(location: Location<BaseState>): Array<ResolvedRoute<Value>> {
-    // return resolveChain(this.link, location).filter((res) => res.route.action);
     return resolveChain(this.link, location);
   }
 }

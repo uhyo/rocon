@@ -1,6 +1,4 @@
-import type { Location } from "../../core/Location";
 import { AttachableRouteBuilder } from "../RouteBuilderLink";
-import { resolveLinkLocation } from "./resolveLinkLocation";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
 import type { RouteRecordType } from "./RouteRecordType";
 
@@ -21,14 +19,8 @@ export class PathRouteRecord<ActionResult, Match, HasAction extends boolean>
     key: string,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
-    super(parent.getBuilderLink(), action);
+    super(parent.getBuilderLink(), action, () => key);
     this.#parent = parent;
     this.key = key;
-  }
-
-  getLocation(match: Match): Location {
-    const link = this.#parent.getBuilderLink();
-    const parentLocation = resolveLinkLocation(link, match);
-    return link.composer.compose(parentLocation, this.key);
   }
 }

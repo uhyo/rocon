@@ -11,6 +11,11 @@ export type ActionTypeOfRouteRecord<
   HasAction extends boolean
 > = HasAction extends true ? ActionType<ActionResult, Match> : undefined;
 
+const defaultRoot: Location = {
+  pathname: "/",
+  state: null,
+};
+
 /**
  * Object for each route provided by RouteBuilder.
  * Should implement RouteRecordType.
@@ -27,12 +32,15 @@ export abstract class RouteRecordBase<
   readonly [routeRecordParentKey]: RouteBuilderLink<ActionResult, unknown>;
 
   #builder?: RouteBuilderLink<ActionResult, unknown> = undefined;
+  #segmentGetter: (match: Match) => unknown;
 
   constructor(
     parentLink: RouteBuilderLink<ActionResult, unknown>,
-    action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
+    action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>,
+    segmentGetter: (match: Match) => unknown
   ) {
     this.action = action;
+    this.#segmentGetter = segmentGetter;
     Object.defineProperty(this, routeRecordParentKey, {
       value: parentLink,
     });
@@ -50,13 +58,25 @@ export abstract class RouteRecordBase<
       ) {
         const link = builder.getBuilderLink();
         this.#builder = link;
-        link.attachToParent(this, parentLink);
+        link.attachToParent(
+          parentLink,
+          segmentGetter as (match: unknown) => unknown
+        );
         return builder;
       },
     });
   }
 
-  abstract getLocation(match: Match): Location;
+  getLocation(match: Match): Location {
+    const parentLocation = this[routeRecordParentKey].composeFromTop(
+      defaultRoot,
+      match
+    );
+    return this[routeRecordParentKey].composer.compose(
+      parentLocation,
+      this.#segmentGetter(match)
+    );
+  }
 
   /**
    * Get the link attached to this Route.
