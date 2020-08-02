@@ -1,5 +1,5 @@
-import type { HasBuilderLink } from "../../core/BuilderLink/AttachableRouteBuilder";
 import type { Location } from "../../core/Location";
+import { AttachableRouteBuilder } from "../RouteBuilderLink";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
 import type { RouteRecordType } from "./RouteRecordType";
 
@@ -12,7 +12,7 @@ export class ConstRouteRecord<ActionResult, Match, HasAction extends boolean>
   readonly location: Location;
 
   constructor(
-    parent: HasBuilderLink<ActionResult, unknown>,
+    parent: AttachableRouteBuilder<ActionResult, unknown>,
     location: Location,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {

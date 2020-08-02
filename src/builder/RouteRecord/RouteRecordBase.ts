@@ -1,6 +1,6 @@
-import { BuilderLink } from "../../core/BuilderLink";
 import type { HasBuilderLink } from "../../core/BuilderLink/AttachableRouteBuilder";
 import { Location } from "../../core/Location";
+import { RouteBuilderLink, RouteBuilderLinkValue } from "../RouteBuilderLink";
 import type { ActionType } from "../RoutesDefinitionObject";
 import { routeRecordParentKey } from "../symbols";
 import { AttachFunction, RouteRecordType } from "./RouteRecordType";
@@ -24,12 +24,12 @@ export abstract class RouteRecordBase<
    * Action of this route.
    */
   readonly action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>;
-  readonly [routeRecordParentKey]: BuilderLink<ActionResult, unknown>;
+  readonly [routeRecordParentKey]: RouteBuilderLink<ActionResult, unknown>;
 
-  #builder?: BuilderLink<ActionResult, unknown> = undefined;
+  #builder?: RouteBuilderLink<ActionResult, unknown> = undefined;
 
   constructor(
-    parentLink: BuilderLink<ActionResult, unknown>,
+    parentLink: RouteBuilderLink<ActionResult, unknown>,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
     this.action = action;
@@ -42,7 +42,11 @@ export abstract class RouteRecordBase<
       writable: true,
       value(
         this: RouteRecordBase<ActionResult, Match, HasAction>,
-        builder: HasBuilderLink<ActionResult, unknown>
+        builder: HasBuilderLink<
+          ActionResult,
+          unknown,
+          RouteBuilderLinkValue<ActionResult>
+        >
       ) {
         const link = builder.getBuilderLink();
         this.#builder = link;
@@ -57,7 +61,9 @@ export abstract class RouteRecordBase<
   /**
    * Get the link attached to this Route.
    */
-  getAttachedBuilderLink(): BuilderLink<ActionResult, unknown> | undefined {
+  getAttachedBuilderLink():
+    | RouteBuilderLink<ActionResult, unknown>
+    | undefined {
     return this.#builder;
   }
 

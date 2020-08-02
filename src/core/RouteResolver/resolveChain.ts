@@ -6,8 +6,8 @@ import type { ResolvedRoute } from "./ResolvedRoute";
  * Resolve location from given link and location
  * @package
  */
-export function resolveChain<ActionResult>(
-  link: BuilderLink<ActionResult, unknown>,
+export function resolveChain<ActionResult, Value>(
+  link: BuilderLink<ActionResult, unknown, Value>,
   location: Location
 ): Array<ResolvedRoute<ActionResult>> {
   const decomposed = link.composer.decompose(location);
@@ -27,14 +27,14 @@ export function resolveChain<ActionResult>(
     if (childLink === undefined || childLink.composer.isLeaf(next)) {
       return [
         {
-          route: nextRoute.route,
+          route: nextRoute.value,
           link: childLink,
           match,
           location: next,
         },
       ];
     }
-    const result = resolveChain<ActionResult>(childLink, next);
+    const result = resolveChain<ActionResult, Value>(childLink, next);
     switch (nextRoute.type) {
       case "normal": {
         return result;

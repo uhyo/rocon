@@ -1,7 +1,7 @@
 import { RouteRecordType } from ".";
-import { HasBuilderLink } from "../../core/BuilderLink/AttachableRouteBuilder";
 import { Location } from "../../core/Location";
 import { Validator } from "../../validator";
+import { AttachableRouteBuilder } from "../RouteBuilderLink";
 import { resolveLinkLocation } from "./resolveLinkLocation";
 import { ActionTypeOfRouteRecord, RouteRecordBase } from "./RouteRecordBase";
 
@@ -30,11 +30,11 @@ export class MatchingRouteRecord<
   implements RouteRecordType<ActionResult, Match, HasAction> {
   readonly key: Extract<keyof Match, string>;
 
-  #parent: HasBuilderLink<ActionResult, Value>;
+  #parent: AttachableRouteBuilder<ActionResult, Value>;
   #validator: Validator<Value>;
 
   constructor(
-    parent: HasBuilderLink<ActionResult, Value>,
+    parent: AttachableRouteBuilder<ActionResult, Value>,
     key: Extract<keyof Match, string>,
     validator: Validator<Value>,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>

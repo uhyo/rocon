@@ -8,7 +8,7 @@ const defaultRoot: Location = {
 
 export function resolveLinkLocation(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  link: BuilderLink<any, any>,
+  link: BuilderLink<any, any, any>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   match: any
 ): Location {

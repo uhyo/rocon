@@ -7,7 +7,7 @@ import type { RouteRecordType } from "../../builder/RouteRecord";
  * - attached: this link is attached to a parent.
  * - inherited: another link inherited this one.
  */
-export type BuilderLinkState<ActionResult, Segment> =
+export type BuilderLinkState<ActionResult, Segment, Value> =
   | {
       state: "unattached";
       parentRoute?: undefined;
@@ -19,5 +19,5 @@ export type BuilderLinkState<ActionResult, Segment> =
   | {
       state: "inherited";
       parentRoute?: undefined;
-      inheritor: BuilderLink<ActionResult, Segment>;
+      inheritor: BuilderLink<ActionResult, Segment, Value>;
     };

@@ -8,7 +8,7 @@ const composer = new PathLocationComposer();
 describe("BuilderLink", () => {
   describe("attachToParent", () => {
     it("cannot attach twice", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
@@ -27,7 +27,7 @@ describe("BuilderLink", () => {
       expect(() => link.attachToParent(parent2.bar)).toThrow();
     });
     it("cannot inherit twice", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
@@ -43,7 +43,7 @@ describe("BuilderLink", () => {
       expect(() => link.inherit()).toThrow();
     });
     it("checkInvalidation", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
@@ -60,7 +60,7 @@ describe("BuilderLink", () => {
     });
     it("inherited links have same RouteResolver", () => {
       const parent = SearchRouteBuilder.init("foo");
-      const link1 = BuilderLink.init({ composer });
+      const link1 = new BuilderLink({ composer });
       parent.attach(link1);
 
       const link2 = link1.inherit();
@@ -72,7 +72,7 @@ describe("BuilderLink", () => {
         const parent = SearchRouteBuilder.init("foo");
         const link1 = parent.getBuilderLink();
 
-        const link2 = BuilderLink.init({
+        const link2 = new BuilderLink({
           composer,
         });
 
@@ -83,14 +83,14 @@ describe("BuilderLink", () => {
   });
   describe("getParentRoute", () => {
     it("unattached", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
       expect(link.getParentRoute()).toBeUndefined();
     });
     it("attached", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
@@ -105,7 +105,7 @@ describe("BuilderLink", () => {
       expect(link.getParentRoute()).toBe(parent1.foo);
     });
     it("inherited", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
@@ -121,7 +121,7 @@ describe("BuilderLink", () => {
       expect(link.getParentRoute()).toBe(parent1.foo);
     });
     it("attach-inherit", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 
@@ -137,7 +137,7 @@ describe("BuilderLink", () => {
       expect(link2.getParentRoute()).toBe(parent1.foo);
     });
     it("unattached-inherited", () => {
-      const link = BuilderLink.init({
+      const link = new BuilderLink({
         composer,
       });
 

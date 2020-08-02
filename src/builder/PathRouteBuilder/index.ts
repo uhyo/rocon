@@ -1,7 +1,7 @@
 import { BuilderLink } from "../../core/BuilderLink";
-import type { AttachableRouteBuilder } from "../../core/BuilderLink/AttachableRouteBuilder";
 import { isString } from "../../validator";
 import { PathLocationComposer } from "../composers/PathLocationComposer";
+import { AttachableRouteBuilder, RouteBuilderLink } from "../RouteBuilderLink";
 import {
   PathRouteRecord,
   RouteRecordType,
@@ -43,10 +43,11 @@ export class PathRouteBuilder<
     "none",
     Match
   > {
-    const link = BuilderLink.init<ActionResult, string>({
-      composer: new PathLocationComposer(),
-    });
-    return new PathRouteBuilder(link);
+    return new PathRouteBuilder(
+      new BuilderLink({
+        composer: new PathLocationComposer(),
+      })
+    );
   }
 
   /**
@@ -58,20 +59,20 @@ export class PathRouteBuilder<
     return route.attach(PathRouteBuilder.init());
   }
 
-  readonly #link: BuilderLink<ActionResult, string>;
+  readonly #link: RouteBuilderLink<ActionResult, string>;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
     | MatchingRouteRecordObject<ActionResult, string, Match, boolean>
     | undefined = undefined;
 
-  private constructor(link: BuilderLink<ActionResult, string>) {
+  private constructor(link: RouteBuilderLink<ActionResult, string>) {
     this.#link = link;
     link.register(this, (value) => {
       const route = this.#routes[value];
       if (route !== undefined) {
         return {
           type: "normal",
-          route,
+          value: route,
           link: route.getAttachedBuilderLink(),
         };
       }
@@ -79,7 +80,7 @@ export class PathRouteBuilder<
       if (wildcardRoute !== undefined) {
         return {
           type: "matching",
-          route: wildcardRoute.route,
+          value: wildcardRoute.route,
           link: wildcardRoute.route.getAttachedBuilderLink(),
           matchKey: wildcardRoute.matchKey,
           matchValue: value,
@@ -181,7 +182,7 @@ export class PathRouteBuilder<
     }
   }
 
-  getBuilderLink(): BuilderLink<ActionResult, string> {
+  getBuilderLink(): RouteBuilderLink<ActionResult, string> {
     return this.#link;
   }
 }

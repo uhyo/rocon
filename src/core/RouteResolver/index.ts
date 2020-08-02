@@ -1,42 +1,41 @@
-import type { RouteRecordType } from "../../builder/RouteRecord";
-import { MatchingRouteRecord } from "../../builder/RouteRecord/MatchingRouteRecord";
 import { BuilderLink } from "../BuilderLink";
 import { HasBuilderLink } from "../BuilderLink/AttachableRouteBuilder";
 import type { BaseState, Location } from "../Location";
 import { resolveChain } from "./resolveChain";
 import { ResolvedRoute } from "./ResolvedRoute";
 
-export type ResolvedSegmentType<ActionResult, Segment> =
+export type ResolvedSegmentType<ActionResult, Segment, Value> =
   | {
       type: "normal";
-      route: RouteRecordType<ActionResult, never, boolean>;
+      // value: RouteRecordType<ActionResult, never, boolean>;
+      value: Value;
       // TODO: this `| undefined` could be removed?
-      link: BuilderLink<ActionResult, Segment> | undefined;
+      link: BuilderLink<ActionResult, Segment, Value> | undefined;
     }
   | {
       type: "matching";
-      route: MatchingRouteRecord<ActionResult, Segment, never, boolean>;
-      link: BuilderLink<ActionResult, Segment> | undefined;
+      value: Value;
+      link: BuilderLink<ActionResult, Segment, Value> | undefined;
       matchKey: string;
       matchValue: Segment;
     };
 
-export type SegmentResolver<ActionResult, Segment> = (
+export type SegmentResolver<ActionResult, Segment, Value> = (
   segment: Segment
-) => ResolvedSegmentType<ActionResult, Segment> | undefined;
+) => ResolvedSegmentType<ActionResult, Segment, Value> | undefined;
 
 /**
  * Object that resolves given URL to a Route.
  */
-export class RouteResolver<ActionResult, Segment> {
-  static getFromBuilder<ActionResult, Segment>(
-    builder: HasBuilderLink<ActionResult, Segment>
-  ): RouteResolver<ActionResult, Segment> {
+export class RouteResolver<ActionResult, Segment, Value> {
+  static getFromBuilder<ActionResult, Segment, Value>(
+    builder: HasBuilderLink<ActionResult, Segment, Value>
+  ): RouteResolver<ActionResult, Segment, Value> {
     return builder.getBuilderLink().resolver;
   }
 
-  readonly link: BuilderLink<ActionResult, Segment>;
-  constructor(link: BuilderLink<ActionResult, Segment>) {
+  readonly link: BuilderLink<ActionResult, Segment, Value>;
+  constructor(link: BuilderLink<ActionResult, Segment, Value>) {
     this.link = link;
   }
 

@@ -1,7 +1,11 @@
 import { BuilderLink } from "../../core/BuilderLink";
-import { AttachableRouteBuilder } from "../../core/BuilderLink/AttachableRouteBuilder";
 import { Location } from "../../core/Location";
 import { identityLocationComposer } from "../composers/IdentityLocationComposer";
+import {
+  AttachableRouteBuilder,
+  RouteBuilderLink,
+  RouteBuilderLinkValue,
+} from "../RouteBuilderLink";
 import { RouteRecordType } from "../RouteRecord";
 import { ConstRouteRecord } from "../RouteRecord/ConstRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
@@ -25,7 +29,11 @@ export class RootRouteBuilder<
   static init<ActionResult>(
     options: Partial<RootRouteBuilderOptions> = {}
   ): RootRouteBuilder<ActionResult, "noaction", {}> {
-    const link = BuilderLink.init<ActionResult, unknown>({
+    const link = new BuilderLink<
+      ActionResult,
+      unknown,
+      RouteBuilderLinkValue<ActionResult>
+    >({
       composer: identityLocationComposer,
     });
     fillOptions(options);
@@ -37,10 +45,10 @@ export class RootRouteBuilder<
 
   #root: Location;
   #route: ConstRouteRecord<ActionResult, Match, boolean>;
-  #link: BuilderLink<ActionResult, unknown>;
+  #link: RouteBuilderLink<ActionResult, unknown>;
 
   private constructor(
-    link: BuilderLink<ActionResult, unknown>,
+    link: RouteBuilderLink<ActionResult, unknown>,
     root: Location
   ) {
     super();
@@ -55,7 +63,7 @@ export class RootRouteBuilder<
       >;
       return {
         type: "normal",
-        route,
+        value: route,
         link: route.getAttachedBuilderLink(),
       };
     });
@@ -81,7 +89,7 @@ export class RootRouteBuilder<
     return this.#route;
   }
 
-  getBuilderLink(): BuilderLink<ActionResult, unknown> {
+  getBuilderLink(): RouteBuilderLink<ActionResult, unknown> {
     return this.#link;
   }
 }
