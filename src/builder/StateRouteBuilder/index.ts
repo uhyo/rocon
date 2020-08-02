@@ -15,6 +15,10 @@ import {
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
 
+type StateRouteBuilerOptions = {
+  stateKey?: string;
+};
+
 export class StateRouteBuilder<
   ActionResult,
   StateValue,
@@ -30,15 +34,17 @@ export class StateRouteBuilder<
       [K in Key]: StateValue;
     }
   >(
-    key: Key,
-    validator: Validator<StateValue>
+    matchKey: Key,
+    validator: Validator<StateValue>,
+    options: StateRouteBuilerOptions = {}
   ): StateRouteBuilder<ActionResult, StateValue, "noaction", Match> {
+    const stateKey = options.stateKey ?? matchKey;
     const link = new BuilderLink<
       ActionResult,
       StateValue,
       RouteBuilderLinkValue<ActionResult>
     >({
-      composer: new StateLocationComposer(key, validator),
+      composer: new StateLocationComposer(stateKey, validator),
     });
     const result = new StateRouteBuilder<
       ActionResult,
@@ -46,7 +52,7 @@ export class StateRouteBuilder<
       "noaction",
       Match
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    >(link, key as any, validator);
+    >(link, matchKey as any, validator);
 
     return result;
   }
@@ -90,7 +96,7 @@ export class StateRouteBuilder<
     return r.attach(b);
   }
 
-  readonly key: Extract<keyof Match, string>;
+  readonly matchKey: Extract<keyof Match, string>;
 
   #link: RouteBuilderLink<ActionResult, StateValue>;
   #validator: Validator<StateValue>;
@@ -98,21 +104,21 @@ export class StateRouteBuilder<
 
   private constructor(
     link: RouteBuilderLink<ActionResult, StateValue>,
-    key: Extract<keyof Match, string>,
+    matchKey: Extract<keyof Match, string>,
     validator: Validator<StateValue>
   ) {
     super();
     this.#link = link;
-    this.key = key;
+    this.matchKey = matchKey;
     this.#validator = validator;
-    this.#route = new MatchingRouteRecord(this, key, validator, undefined);
+    this.#route = new MatchingRouteRecord(this, matchKey, validator, undefined);
     link.register(this, (value) => {
       const route = this.#route;
       return {
         type: "matching",
         value: route,
         link: route.getAttachedBuilderLink(),
-        matchKey: key,
+        matchKey: matchKey,
         matchValue: value,
       };
     });
@@ -131,11 +137,11 @@ export class StateRouteBuilder<
       StateValue,
       "hasaction",
       Match
-    >(this.#link.inherit(), this.key, validator);
+    >(this.#link.inherit(), this.matchKey, validator);
 
     result.#route = new MatchingRouteRecord(
       result,
-      this.key,
+      this.matchKey,
       validator,
       action
     );

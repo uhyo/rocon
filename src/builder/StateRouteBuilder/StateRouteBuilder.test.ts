@@ -61,31 +61,62 @@ describe("StateRouteBuilder", () => {
       });
     });
   });
-  it("resolve", () => {
-    const toplevel = StateRouteBuilder.init("foo", isString).action(
-      ({ foo }) => `foo is ${foo.slice(0)}`
-    );
-    const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
-      pathname: "/foo",
-      state: {
-        foo: "I am foo",
-        bar: 1234,
-      },
-    });
-    expect(res).toEqual([
-      {
-        location: {
-          pathname: "/foo",
-          state: {
-            bar: 1234,
-          },
-        },
-        match: {
+  describe("resolve", () => {
+    it("matchKey = stateKey", () => {
+      const toplevel = StateRouteBuilder.init("foo", isString).action(
+        ({ foo }) => `foo is ${foo.slice(0)}`
+      );
+      const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
+        pathname: "/foo",
+        state: {
           foo: "I am foo",
+          bar: 1234,
         },
-        route: expect.any(MatchingRouteRecord),
-      },
-    ]);
-    expect(res[0].route.action(res[0].match as never)).toBe("foo is I am foo");
+      });
+      expect(res).toEqual([
+        {
+          location: {
+            pathname: "/foo",
+            state: {
+              bar: 1234,
+            },
+          },
+          match: {
+            foo: "I am foo",
+          },
+          route: expect.any(MatchingRouteRecord),
+        },
+      ]);
+      expect(res[0].route.action(res[0].match as never)).toBe(
+        "foo is I am foo"
+      );
+    });
+    it("matchKey != stateKey", () => {
+      const toplevel = StateRouteBuilder.init("foo", isNumber, {
+        stateKey: "wow",
+      }).action(({ foo }) => `foo is ${foo.toFixed(2)}`);
+      const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
+        pathname: "/foo",
+        state: {
+          foo: "I am foo",
+          wow: 1234,
+        },
+      });
+      expect(res).toEqual([
+        {
+          location: {
+            pathname: "/foo",
+            state: {
+              foo: "I am foo",
+            },
+          },
+          match: {
+            foo: 1234,
+          },
+          route: expect.any(MatchingRouteRecord),
+        },
+      ]);
+      expect(res[0].route.action(res[0].match as never)).toBe("foo is 1234.00");
+    });
   });
 });
