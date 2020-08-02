@@ -15,7 +15,6 @@ export function resolveChain<ActionResult, Value>(
     const resolved = link.followInheritanceChain((link) =>
       link.resolveSegment?.(seg)
     ).result;
-    console.log({ resolved });
     if (resolved === undefined) {
       return [];
     }

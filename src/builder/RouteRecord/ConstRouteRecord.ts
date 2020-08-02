@@ -16,12 +16,7 @@ export class ConstRouteRecord<ActionResult, Match, HasAction extends boolean>
     location: Location,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
-    super(parent.getBuilderLink(), action);
+    super(parent.getBuilderLink(), action, () => this.location);
     this.location = location;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getLocation(_match: unknown): Location {
-    return this.location;
   }
 }

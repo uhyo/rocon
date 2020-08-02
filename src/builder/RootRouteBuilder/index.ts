@@ -1,6 +1,6 @@
 import { BuilderLink } from "../../core/BuilderLink";
 import { Location } from "../../core/Location";
-import { identityLocationComposer } from "../composers/IdentityLocationComposer";
+import { ConstLocationComposer } from "../composers/ConstLocationComposer";
 import {
   AttachableRouteBuilder,
   RouteBuilderLink,
@@ -29,14 +29,14 @@ export class RootRouteBuilder<
   static init<ActionResult>(
     options: Partial<RootRouteBuilderOptions> = {}
   ): RootRouteBuilder<ActionResult, "noaction", {}> {
+    fillOptions(options);
     const link = new BuilderLink<
       ActionResult,
       unknown,
       RouteBuilderLinkValue<ActionResult>
     >({
-      composer: identityLocationComposer,
+      composer: new ConstLocationComposer(options.root),
     });
-    fillOptions(options);
     return new RootRouteBuilder<ActionResult, "noaction", {}>(
       link,
       options.root
