@@ -13,6 +13,7 @@ import {
   MatchingRouteRecordObject,
 } from "../RouteRecord/MatchingRouteRecord";
 import type {
+  ActionType,
   RouteDefinition,
   RoutesDefinition,
 } from "../RoutesDefinitionObject";
@@ -21,6 +22,7 @@ import type {
   ActionTypeToWildcardFlag,
   WildcardFlagType,
 } from "../WildcardFlagType";
+import type { PathSingleRouteInterface } from "./PathSingleRouteInterface";
 
 type RouteRecordsBase<ActionResult> = Record<
   string,
@@ -90,6 +92,9 @@ export class PathRouteBuilder<
     });
   }
 
+  /**
+   * Add multiple routes at once and return a new Path route builder.
+   */
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
   ): PathRouteBuilder<
@@ -114,6 +119,70 @@ export class PathRouteBuilder<
     return result;
   }
 
+  /**
+   * Add a route and return a new Path route builder.
+   */
+  route<Key extends string>(
+    key: Key,
+    callback?: (route: PathSingleRouteInterface<ActionResult, Match>) => void
+  ): PathRouteBuilder<
+    ActionResult,
+    Omit<Defs, Key> &
+      {
+        [K in Key]: RouteDefinition<ActionResult, Match>;
+      },
+    WildcardFlag,
+    Match
+  > {
+    const result = new PathRouteBuilder<
+      ActionResult,
+      Omit<Defs, Key> &
+        {
+          [K in Key]: RouteDefinition<ActionResult, Match>;
+        },
+      WildcardFlag,
+      Match
+    >(this.#link.inherit());
+    const routes = result.#routes;
+    Object.assign(routes, this.#routes);
+
+    // collect information of route by calling callback.
+    let action: ActionType<ActionResult, Match> | undefined;
+    let attachedBuilder:
+      | AttachableRouteBuilder<ActionResult, Match>
+      | undefined;
+
+    if (callback) {
+      const intr: PathSingleRouteInterface<ActionResult, Match> = {
+        action(a) {
+          action = a;
+          return this;
+        },
+        attach(builder: AttachableRouteBuilder<ActionResult, Match>) {
+          attachedBuilder = builder;
+          return builder;
+        },
+      };
+      callback(intr);
+    }
+
+    const record = new PathRouteRecord<ActionResult, Match, boolean>(
+      result,
+      key,
+      action
+    );
+    if (attachedBuilder !== undefined) {
+      record.attach(attachedBuilder);
+    }
+    routes[key] = record;
+
+    result.#wildcardRoute = this.#wildcardRoute;
+    return result;
+  }
+
+  /**
+   * Add a wildcard route and return a new Path route builder.
+   */
   any<
     Key extends string,
     RD extends RouteDefinition<

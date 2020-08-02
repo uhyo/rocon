@@ -21,9 +21,15 @@ export type RoutesDefinitionToRouteRecords<
   [P in Extract<keyof Defs, string>]: RouteRecordType<
     ActionResult,
     Match,
-    undefined extends Defs[P]["action"] ? false : true
+    ActionToHasAction<Defs[P]["action"]>
   >;
 };
+
+type ActionToHasAction<A> = A extends unknown
+  ? undefined extends A
+    ? false
+    : true
+  : never;
 
 export type WildcardInRouteRecords<
   ActionResult,

@@ -74,6 +74,45 @@ describe("PathRouteBuilder", () => {
       expect(Object.keys(routes2)).toEqual(["foo", "bar"]);
     });
   });
+  describe("route", () => {
+    it("just add one route", () => {
+      const b = PathRouteBuilder.init();
+      const res = b.route("foo");
+
+      const routes = res.getRoutes();
+      expect(Object.keys(routes)).toEqual(["foo"]);
+      expect(routes.foo.action).toBeUndefined();
+    });
+    it("add route and set action", () => {
+      const b = PathRouteBuilder.init();
+      const res = b.route("foo", (foo) => foo.action(() => "I am foo"));
+
+      const routes = res.getRoutes();
+      expect(routes.foo.action?.({})).toBe("I am foo");
+    });
+    it("add multipe routes one by one", () => {
+      const b = PathRouteBuilder.init();
+      const res = b
+        .route("foo", (foo) => foo.action(() => "I am foo"))
+        .route("bar", (bar) => bar.action(() => "Hello, bar"));
+
+      const routes = res.getRoutes();
+      expect(routes.foo.action?.({})).toBe("I am foo");
+      expect(routes.bar.action?.({})).toBe("Hello, bar");
+    });
+    it("attach in route", () => {
+      const sub = PathRouteBuilder.init().route("abc", (abc) =>
+        abc.action(() => "abcdefg")
+      );
+      const toplevel = PathRouteBuilder.init();
+      toplevel.route("foo", (foo) => foo.attach(sub));
+
+      expect(sub.getRoutes().abc.getLocation({})).toEqual({
+        pathname: "/foo/abc",
+        state: null,
+      });
+    });
+  });
 
   describe("attach", () => {
     it("composed location action", () => {
