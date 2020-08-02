@@ -18,7 +18,7 @@ export type ResolvedSegmentType<ActionResult, Segment> =
       route: MatchingRouteRecord<ActionResult, Segment, never, boolean>;
       link: BuilderLink<ActionResult, Segment> | undefined;
       matchKey: string;
-      value: Segment;
+      matchValue: Segment;
     };
 
 export type SegmentResolver<ActionResult, Segment> = (

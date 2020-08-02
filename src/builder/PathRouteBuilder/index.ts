@@ -82,7 +82,7 @@ export class PathRouteBuilder<
           route: wildcardRoute.route,
           link: wildcardRoute.route.getAttachedBuilderLink(),
           matchKey: wildcardRoute.matchKey,
-          value,
+          matchValue: value,
         };
       }
       return undefined;

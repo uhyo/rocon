@@ -105,7 +105,7 @@ export class StateRouteBuilder<
         route,
         link: route.getAttachedBuilderLink(),
         matchKey: key,
-        value,
+        matchValue: value,
       };
     });
   }

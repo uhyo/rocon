@@ -5,11 +5,10 @@ import type { Location } from "../Location";
 /**
  * Object that represents one resolved route.
  */
-export type ResolvedRoute<ActionType, Match> = {
-  // TODO: reconsider result type
-  readonly route: // TODO: test: resolved should always have action
-  | RouteRecordType<ActionType, Match, true>
-    | MatchingRouteRecord<ActionType, unknown, Match, true>;
-  readonly match: Match;
+export type ResolvedRoute<ActionType> = {
+  readonly route:
+    | RouteRecordType<ActionType, never, true>
+    | MatchingRouteRecord<ActionType, unknown, never, true>;
+  readonly match: unknown;
   readonly location: Location;
 };

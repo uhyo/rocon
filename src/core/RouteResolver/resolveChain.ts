@@ -41,7 +41,7 @@ export function resolveChain<ActionResult>(
       }
       case "matching": {
         const key = nextRoute.matchKey;
-        const matchedValue = nextRoute.value;
+        const matchedValue = nextRoute.matchValue;
         return result.map((res) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (res.match as any)[key] = matchedValue;
