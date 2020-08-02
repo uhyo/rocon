@@ -39,7 +39,8 @@ export class RouteResolver<ActionResult, Segment, Value> {
     this.link = link;
   }
 
-  resolve(location: Location<BaseState>): Array<ResolvedRoute<ActionResult>> {
-    return resolveChain(this.link, location).filter((res) => res.route.action);
+  resolve(location: Location<BaseState>): Array<ResolvedRoute<Value>> {
+    // return resolveChain(this.link, location).filter((res) => res.route.action);
+    return resolveChain(this.link, location);
   }
 }

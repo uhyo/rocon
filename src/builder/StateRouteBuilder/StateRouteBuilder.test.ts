@@ -1,5 +1,5 @@
 import { StateRouteBuilder } from ".";
-import { RouteResolver } from "../../core/RouteResolver";
+import { RoutePathResolver } from "../RoutePathResolver";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 
 const isString = (value: unknown): value is string => typeof value === "string";
@@ -65,7 +65,7 @@ describe("StateRouteBuilder", () => {
     const toplevel = StateRouteBuilder.init("foo", isString).action(
       ({ foo }) => `foo is ${foo.slice(0)}`
     );
-    const res = RouteResolver.getFromBuilder(toplevel).resolve({
+    const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
       pathname: "/foo",
       state: {
         foo: "I am foo",
@@ -86,6 +86,6 @@ describe("StateRouteBuilder", () => {
         route: expect.any(MatchingRouteRecord),
       },
     ]);
-    expect(res[0].route.action(res[0].match)).toBe("foo is I am foo");
+    expect(res[0].route.action(res[0].match as never)).toBe("foo is I am foo");
   });
 });

@@ -9,7 +9,7 @@ import type { ResolvedRoute } from "./ResolvedRoute";
 export function resolveChain<ActionResult, Value>(
   link: BuilderLink<ActionResult, unknown, Value>,
   location: Location
-): Array<ResolvedRoute<ActionResult>> {
+): Array<ResolvedRoute<Value>> {
   const decomposed = link.composer.decompose(location);
   return decomposed.flatMap(([seg, next]) => {
     const nextRoute = link.resolveSegment?.(seg);
