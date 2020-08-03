@@ -186,5 +186,37 @@ describe("Composed Location resolving", () => {
         },
       ]);
     });
+    it("4", () => {
+      const route = Rocon.Path().route("user", (user) =>
+        user
+          .attach(Rocon.Search("tab"))
+          .attach(Rocon.State("username", isString))
+          .action(({ tab, username }) => `hello, ${username}! tab=${tab}`)
+      );
+
+      const resolver = Resolver(route);
+      const res = resolver.resolve({
+        pathname: "/user",
+        search: "tab=123",
+        state: {
+          username: "uhyo",
+        },
+      });
+      expect(res.length).toBe(1);
+      expect(res).toEqual([
+        {
+          location: {
+            pathname: "/",
+            search: "",
+            state: {},
+          },
+          match: {
+            tab: "123",
+            username: "uhyo",
+          },
+          route: expect.any(MatchingRouteRecord),
+        },
+      ]);
+    });
   });
 });

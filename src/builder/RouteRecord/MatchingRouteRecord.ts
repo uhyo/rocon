@@ -28,7 +28,6 @@ export class MatchingRouteRecord<
   implements RouteRecordType<ActionResult, Match, HasAction> {
   readonly key: Extract<keyof Match, string>;
 
-  #parent: AttachableRouteBuilder<ActionResult, Value>;
   #validator: Validator<Value>;
 
   constructor(
@@ -46,7 +45,6 @@ export class MatchingRouteRecord<
       }
       return matchedValue;
     });
-    this.#parent = parent;
     this.#validator = validator;
     this.key = matchKey;
   }

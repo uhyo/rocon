@@ -1,5 +1,4 @@
 import { BuilderLink } from "../BuilderLink";
-import { HasBuilderLink } from "../BuilderLink/HasBuilderLink";
 import type { BaseState, Location } from "../Location";
 import { resolveChain } from "./resolveChain";
 import { ResolvedRoute } from "./ResolvedRoute";
@@ -28,12 +27,6 @@ export type SegmentResolver<ActionResult, Segment, Value> = (
  * Object that resolves given URL to a Route.
  */
 export class RouteResolver<ActionResult, Segment, Value> {
-  static getFromBuilder<ActionResult, Segment, Value>(
-    builder: HasBuilderLink<ActionResult, Segment, Value>
-  ): RouteResolver<ActionResult, Segment, Value> {
-    return builder.getBuilderLink().resolver;
-  }
-
   readonly link: BuilderLink<ActionResult, Segment, Value>;
   constructor(link: BuilderLink<ActionResult, Segment, Value>) {
     this.link = link;
