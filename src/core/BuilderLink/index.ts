@@ -1,3 +1,4 @@
+import { noop } from "../../util/noop";
 import { Location } from "../Location";
 import type { LocationComposer } from "../LocationComposer";
 import { RouteResolver, SegmentResolver } from "../RouteResolver";
@@ -28,22 +29,35 @@ export class BuilderLink<ActionResult, Segment, Value>
   }
 
   /**
+   * Change the state of this link to attaching.
+   */
+  attaching() {
+    this.#state = {
+      state: "attaching",
+    };
+  }
+
+  /**
    * Attach this link to a parent.
    */
   attachToParent(
     parentLink: BuilderLink<ActionResult, unknown, Value>,
     segmentGetter: (match: unknown) => Segment
   ) {
-    if (this.#state.state !== "unattached") {
+    const thisLink = this.followInheritanceChain(noop).last;
+    if (
+      thisLink.#state.state !== "unattached" &&
+      thisLink.#state.state !== "attaching"
+    ) {
       throw new Error("A builder cannot be attached more than once.");
     }
-    this.#state = {
+    thisLink.#state = {
       state: "attached",
       parentLink,
       segmentGetter,
     };
 
-    this.resolver = parentLink.resolver;
+    thisLink.resolver = parentLink.resolver;
   }
 
   /**
@@ -131,15 +145,6 @@ export class BuilderLink<ActionResult, Segment, Value>
     return this;
   }
 
-  // getCurrentBuilder():
-  //   | AttachableRouteBuilder<ActionResult, Segment>
-  //   | undefined {
-  //   return this.currentBuilder;
-  // }
-
-  /**
-   * TODO: rethink
-   */
   register(
     builder: HasBuilderLink<ActionResult, Segment, Value>,
     resolveSegment: SegmentResolver<ActionResult, Segment, Value>
@@ -158,6 +163,17 @@ export class BuilderLink<ActionResult, Segment, Value>
           composer: this.composer,
         });
         result.#state = this.#state;
+        return result;
+      }
+      case "attaching": {
+        const result = new BuilderLink<ActionResult, Segment, Value>({
+          composer: this.composer,
+        });
+        result.#state = this.#state;
+        this.#state = {
+          state: "inherited",
+          inheritor: result,
+        };
         return result;
       }
       case "attached": {

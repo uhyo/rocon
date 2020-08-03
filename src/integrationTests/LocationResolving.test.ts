@@ -9,25 +9,16 @@ import { isString } from "../validator";
 describe("Composed Location resolving", () => {
   describe("path-path", () => {
     it("1", () => {
-      const builder = Path<string>().routes({
-        foo: {
-          action: () => "foo!",
-        },
-        bar: {},
-      });
-      const toplevel = builder.getRoutes();
-
-      toplevel.foo.attach(Path()).routes({
-        hoge: {
-          action: () => "hoge.",
-        },
-      });
-
-      toplevel.bar.attach(Path()).routes({
-        fuga: {
-          action: () => "fuga!",
-        },
-      });
+      const builder = Path<string>()
+        .route("foo", (foo) =>
+          foo
+            .action(() => "foo!")
+            .attach(Path())
+            .route("hoge", (hoge) => hoge.action(() => "hoge."))
+        )
+        .route("bar", (bar) =>
+          bar.attach(Path()).route("fuga", (fuga) => fuga.action(() => "fuga!"))
+        );
 
       const resolver = Resolver(builder);
       const hogeResults = resolver.resolve({

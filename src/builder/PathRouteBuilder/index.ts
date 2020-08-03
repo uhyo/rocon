@@ -160,7 +160,9 @@ export class PathRouteBuilder<
         },
         attach(builder: AttachableRouteBuilder<ActionResult, Match>) {
           attachedBuilder = builder;
-          return builder;
+          builder.getBuilderLink().attaching();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return builder as any;
         },
       };
       callback(intr);
