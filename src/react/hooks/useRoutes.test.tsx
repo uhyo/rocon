@@ -10,11 +10,11 @@ describe("useRoutes", () => {
         pathname: "/foo",
         state: null,
       };
-      const route = Path()
+      const routes = Path()
         .route("foo", (foo) => foo.action(() => <p>I am foo</p>))
         .route("bar", (bar) => bar.action(() => <div>I AM BAR</div>));
       const Component: React.FC = () => {
-        return useRoutes(route);
+        return useRoutes(routes);
       };
 
       renderInLocation(location, <Component />);
@@ -25,16 +25,36 @@ describe("useRoutes", () => {
         pathname: "/bar",
         state: null,
       };
-      const route = Path()
+      const routes = Path()
         .route("foo", (foo) => foo.action(() => <p>I am foo</p>))
         .route("bar", (bar) => bar.action(() => <div>I AM BAR</div>));
       const Component: React.FC = () => {
-        return useRoutes(route);
+        return useRoutes(routes);
       };
 
       renderInLocation(location, <Component />);
       expect(screen.queryByText("I am foo")).toBeNull();
       expect(screen.queryByText("I AM BAR")).toBeInTheDocument();
     });
+  });
+  it("renders nothing for non-matching root", () => {
+    const location = {
+      pathname: "/baz",
+      state: null,
+    };
+    const routes = Path()
+      .route("foo", (foo) => foo.action(() => <p>I am foo</p>))
+      .route("bar", (bar) => bar.action(() => <div>I AM BAR</div>));
+    const Component: React.FC = () => {
+      return useRoutes(routes);
+    };
+
+    renderInLocation(
+      location,
+      <div data-testid="root">
+        <Component />
+      </div>
+    );
+    expect(screen.queryByTestId("root")?.innerHTML).toBe("");
   });
 });
