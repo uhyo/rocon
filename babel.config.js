@@ -18,6 +18,7 @@ module.exports = (api) => {
           allowDeclareFields: true,
         },
       ],
+      ["@babel/preset-react"],
     ],
   };
 };
