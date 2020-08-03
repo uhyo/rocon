@@ -15,7 +15,7 @@ import {
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
 
-type StateRouteBuilerOptions = {
+export type StateRouteBuilerOptions = {
   stateKey?: string;
 };
 

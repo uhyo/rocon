@@ -15,7 +15,7 @@ import type {
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
 
-type SearchOptions = {
+export type SearchRouteBuilderOptions = {
   searchKey?: string;
 };
 
@@ -33,7 +33,7 @@ export class SearchRouteBuilder<
     }
   >(
     matchKey: Key,
-    options: SearchOptions = {}
+    options: SearchRouteBuilderOptions = {}
   ): SearchRouteBuilder<ActionResult, "noaction", Match> {
     const searchKey = options.searchKey ?? matchKey;
     const link = new BuilderLink<

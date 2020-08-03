@@ -8,5 +8,10 @@
     "tsBuildInfoFile": "../lib/tsconfig.main.tsbuildinfo"
   },
   "include": ["../src/**/*.ts", "../src/**/*.tsx"],
-  "exclude": ["../**/*.test.ts", "../**/*.test.tsx", "../src/__mocks__"]
+  "exclude": [
+    "../**/*.test.ts",
+    "../**/*.test.tsx",
+    "../src/__mocks__",
+    "../src/jest.setup.ts"
+  ]
 }
