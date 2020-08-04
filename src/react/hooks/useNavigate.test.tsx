@@ -23,10 +23,7 @@ describe("useNavigate", () => {
       const navigate = useNavigate();
       return (
         <div>
-          <button
-            data-testid="button"
-            onClick={() => navigate(routes.getRoutes().bar)}
-          >
+          <button data-testid="button" onClick={() => navigate(routes._.bar)}>
             button
           </button>
           {contents}
