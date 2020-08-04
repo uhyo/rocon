@@ -13,5 +13,5 @@ export const useHistory = (): History => {
       "No history found in the context. Please make sure you have placed RoconRoot above."
     );
   }
-  return history;
+  return history.history;
 };
