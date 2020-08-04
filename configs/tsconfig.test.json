@@ -6,5 +6,10 @@
     "tsBuildInfoFile": "../lib/tsconfig.test.tsbuildinfo",
     "types": ["jest"]
   },
-  "include": ["../src/**/*.test.ts", "../src/__mocks__/**/*.ts"]
+  "include": [
+    "../src/**/*.test.ts",
+    "../src/**/*.test.tsx",
+    "../src/jest.setup.ts",
+    "../src/__mocks__/**/*.ts"
+  ]
 }

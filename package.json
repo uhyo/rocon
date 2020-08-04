@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build:ts_babel": "babel src --out-dir lib --extensions '.ts'",
+    "build:ts_babel": "babel src --out-dir lib --extensions '.ts,.tsx'",
     "build:ts": "tsc --build",
     "build:typecheck": "tsc --build",
     "build:declaration": "tsc --declaration",
@@ -26,20 +26,27 @@
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
     "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^9.1.1",
+    "@testing-library/jest-dom": "^5.11.2",
+    "@testing-library/react": "^10.4.7",
     "@types/jest": "^26.0.8",
+    "@types/react": "^16.9.44",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
     "babel-jest": "^26.2.2",
     "cz-conventional-changelog": "^3.2.0",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.11.0",
+    "history": "^5.0.0",
     "husky": "^4.2.5",
     "jest": "^26.2.2",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "typescript": "^4.0.0-dev.20200730"
   },
   "husky": {
@@ -59,7 +66,5 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "dependencies": {
-    "history": "^5.0.0"
-  }
+  "dependencies": {}
 }

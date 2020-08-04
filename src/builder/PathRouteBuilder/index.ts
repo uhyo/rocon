@@ -253,6 +253,16 @@ export class PathRouteBuilder<
     }
   }
 
+  /**
+   * Shorthand for 'getRoutes()'
+   */
+  get _(): Readonly<
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Match> &
+      WildcardInRouteRecords<ActionResult, string, WildcardFlag, Match>
+  > {
+    return this.getRoutes();
+  }
+
   getBuilderLink(): RouteBuilderLink<ActionResult, string> {
     return this.#link;
   }

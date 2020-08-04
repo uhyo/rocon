@@ -7,6 +7,11 @@
     "declaration": true,
     "tsBuildInfoFile": "../lib/tsconfig.main.tsbuildinfo"
   },
-  "include": ["../src/**/*.ts"],
-  "exclude": ["../**/*.test.ts", "../src/__mocks__"]
+  "include": ["../src/**/*.ts", "../src/**/*.tsx"],
+  "exclude": [
+    "../**/*.test.ts",
+    "../**/*.test.tsx",
+    "../src/__mocks__",
+    "../src/jest.setup.ts"
+  ]
 }

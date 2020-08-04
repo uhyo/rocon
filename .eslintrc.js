@@ -28,5 +28,7 @@ module.exports = {
     ],
     // waiting for https://github.com/typescript-eslint/typescript-eslint/issues/2309 to fix
     "@typescript-eslint/explicit-module-boundary-types": ["off"],
+    // does not work well with JSX syntax
+    "@typescript-eslint/no-unused-vars": ["off"],
   },
 };
