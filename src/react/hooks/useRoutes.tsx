@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { RoutePathResolver } from "../../builder/RoutePathResolver";
+import { RouteContext } from "../contexts/RouteContext";
 import { ReactElement } from "../types/ReactElement";
 import type { ReactRouteBuilder } from "../types/ReactRouteBuilder";
 import { useLocation } from "./useLocation";
@@ -16,5 +17,9 @@ export const useRoutes = (builder: ReactRouteBuilder): ReactElement | null => {
     resolver,
     location,
   ]);
-  return resolved || null;
+  return resolved ? (
+    <RouteContext.Provider value={resolved.route}>
+      {resolved.result}
+    </RouteContext.Provider>
+  ) : null;
 };
