@@ -49,11 +49,13 @@ export class PathRouteBuilder<
   ActionResult,
   Defs extends RoutesDefinition<ActionResult>,
   AnyFlag extends WildcardFlagType,
+  ExactFlag extends WildcardFlagType,
   Match
 > implements AttachableRouteBuilder<ActionResult, string> {
   static init<ActionResult, Match = {}>(): PathRouteBuilder<
     ActionResult,
     {},
+    "none",
     "none",
     Match
   > {
@@ -69,7 +71,7 @@ export class PathRouteBuilder<
    */
   static attachTo<ActionResult, Match, HasAction extends boolean>(
     route: RouteRecordType<ActionResult, Match, HasAction>
-  ): PathRouteBuilder<ActionResult, {}, "none", Match> {
+  ): PathRouteBuilder<ActionResult, {}, "none", "none", Match> {
     return route.attach(PathRouteBuilder.init());
   }
 
@@ -109,11 +111,18 @@ export class PathRouteBuilder<
    */
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
-  ): PathRouteBuilder<ActionResult, Omit<Defs, keyof D> & D, AnyFlag, Match> {
+  ): PathRouteBuilder<
+    ActionResult,
+    Omit<Defs, keyof D> & D,
+    AnyFlag,
+    ExactFlag,
+    Match
+  > {
     const result = new PathRouteBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
       AnyFlag,
+      ExactFlag,
       Match
     >(this.#link.inherit());
     const routes = result.#routes;
@@ -139,6 +148,7 @@ export class PathRouteBuilder<
         [K in Key]: RouteDefinition<ActionResult, Match>;
       },
     AnyFlag,
+    ExactFlag,
     Match
   > {
     const result = new PathRouteBuilder<
@@ -148,6 +158,7 @@ export class PathRouteBuilder<
           [K in Key]: RouteDefinition<ActionResult, Match>;
         },
       AnyFlag,
+      ExactFlag,
       Match
     >(this.#link.inherit());
     const routes = result.#routes;
@@ -208,6 +219,7 @@ export class PathRouteBuilder<
     ActionResult,
     Defs,
     ActionTypeToWildcardFlag<RD["action"]>,
+    ExactFlag,
     Match &
       {
         [K in Key]: string;
@@ -218,7 +230,8 @@ export class PathRouteBuilder<
     const result = new PathRouteBuilder<
       ActionResult,
       Defs,
-      undefined extends RD["action"] ? "noaction" : "hasaction",
+      ActionTypeToWildcardFlag<RD["action"]>,
+      ExactFlag,
       Match &
         {
           [K in Key]: string;
