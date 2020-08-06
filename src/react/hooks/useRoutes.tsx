@@ -25,7 +25,7 @@ export const useRoutes = (builder: ReactRouteBuilder): ReactElement | null => {
     const routeContextValue = {
       route: resolved.route,
       routeLocation: resolved.currentLocation,
-      nextLocation: resolved.location,
+      nextLocation: resolved.remainingLocation,
     };
     return {
       result,

@@ -7,5 +7,5 @@ export type ResolvedRoute<Value> = {
   readonly route: Value;
   readonly match: unknown;
   readonly currentLocation: Location;
-  readonly location: Location;
+  readonly remainingLocation: Location;
 };

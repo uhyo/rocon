@@ -164,7 +164,6 @@ describe("useRoutes", () => {
       expect(screen.queryByText("I am foo")).toBeInTheDocument();
       expect(screen.queryByText("hogehoge")).toBeInTheDocument();
       screen.queryByTestId("fugaButton")?.click();
-      console.log(document.documentElement.innerHTML);
       expect(screen.queryByText("I am foo")).toBeInTheDocument();
       expect(screen.queryByText("fugafuga")).toBeInTheDocument();
     });

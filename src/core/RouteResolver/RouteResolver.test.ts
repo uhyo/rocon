@@ -60,7 +60,7 @@ describe("RouteResolver", () => {
         },
       });
       expect(resolved.length).toBe(1);
-      const { route: routeRecord, location: next } = resolved[0];
+      const { route: routeRecord, remainingLocation: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(PathRouteRecord));
       expect(routeRecord.action(emptyMatch)).toBe("foo!");
       expect(next).toEqual({
@@ -76,7 +76,7 @@ describe("RouteResolver", () => {
         state: null,
       });
       expect(resolved.length).toBe(1);
-      const { route: routeRecord, location: next } = resolved[0];
+      const { route: routeRecord, remainingLocation: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(PathRouteRecord));
       expect(routeRecord.action(emptyMatch)).toBe("bar");
       expect(next).toEqual({
@@ -90,7 +90,7 @@ describe("RouteResolver", () => {
         state: null,
       });
       expect(resolved.length).toBe(1);
-      const { route: routeRecord, location: next } = resolved[0];
+      const { route: routeRecord, remainingLocation: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(PathRouteRecord));
       expect(routeRecord.action(emptyMatch)).toBe("baz.");
       expect(next).toEqual({
@@ -106,7 +106,7 @@ describe("RouteResolver", () => {
         },
       });
       expect(resolved.length).toBe(1);
-      const { route: routeRecord, location: next } = resolved[0];
+      const { route: routeRecord, remainingLocation: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(PathRouteRecord));
       expect(routeRecord.action(emptyMatch)).toBe("foo!");
       expect(next).toEqual({
@@ -126,7 +126,7 @@ describe("RouteResolver", () => {
         },
       });
       expect(resolved.length).toBe(1);
-      const { route: routeRecord, location: next } = resolved[0];
+      const { route: routeRecord, remainingLocation: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(PathRouteRecord));
       expect(routeRecord.action(emptyMatch)).toBe("hoge");
       expect(next).toEqual({
@@ -142,7 +142,7 @@ describe("RouteResolver", () => {
         state: null,
       });
       expect(resolved.length).toBe(1);
-      const { route: routeRecord, location: next } = resolved[0];
+      const { route: routeRecord, remainingLocation: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(PathRouteRecord));
       expect(routeRecord.action(emptyMatch)).toBe("fuga");
       expect(next).toEqual({
@@ -156,7 +156,7 @@ describe("RouteResolver", () => {
         state: null,
       });
       expect(resolved.length).toBe(1);
-      const { route: routeRecord, location: next } = resolved[0];
+      const { route: routeRecord, remainingLocation: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(PathRouteRecord));
       expect(routeRecord.action(emptyMatch)).toBe("fuga");
       expect(next).toEqual({
@@ -170,7 +170,7 @@ describe("RouteResolver", () => {
         state: null,
       });
       expect(resolved.length).toBe(1);
-      const { route: routeRecord, location: next } = resolved[0];
+      const { route: routeRecord, remainingLocation: next } = resolved[0];
       expect(routeRecord).toEqual(expect.any(PathRouteRecord));
       expect(routeRecord.action(emptyMatch)).toBe("wow");
       expect(next).toEqual({
@@ -211,7 +211,7 @@ describe("RouteResolver", () => {
       });
       expect(resolved).toEqual([
         {
-          location: {
+          remainingLocation: {
             pathname: "/",
             state: null,
           },

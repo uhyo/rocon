@@ -34,7 +34,7 @@ export function resolveChain<ActionResult, Value>(
           route: resolved.value,
           link: childLink,
           match,
-          location: next,
+          remainingLocation: next,
           currentLocation: nextCurrentLocation,
         },
       ];

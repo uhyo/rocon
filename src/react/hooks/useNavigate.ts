@@ -28,10 +28,6 @@ export const useNavigate = (): Navigate => {
       route: RouteRecordType<ReactElement | null, Match, boolean>,
       match: Match
     ) => {
-      console.log(
-        routeLocation,
-        getRouteRecordLocation(route, match as Match, routeLocation)
-      );
       history.push(
         getRouteRecordLocation(route, match as Match, routeLocation)
       );

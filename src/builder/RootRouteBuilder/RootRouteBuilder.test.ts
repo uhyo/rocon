@@ -91,7 +91,7 @@ describe("RootRouteBuilder", () => {
         });
         expect(res).toEqual([
           {
-            location: {
+            remainingLocation: {
               pathname: "/",
               state: null,
             },
@@ -115,7 +115,7 @@ describe("RootRouteBuilder", () => {
         });
         expect(res).toEqual([
           {
-            location: {
+            remainingLocation: {
               pathname: "/foo/bar",
               search: "key=value",
               state: null,
@@ -146,7 +146,7 @@ describe("RootRouteBuilder", () => {
         });
         expect(res).toEqual([
           {
-            location: {
+            remainingLocation: {
               pathname: "/",
               state: null,
             },

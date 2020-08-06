@@ -174,7 +174,7 @@ describe("Composed Location resolving", () => {
       expect(res.length).toBe(1);
       expect(res).toEqual([
         {
-          location: {
+          remainingLocation: {
             pathname: "/",
             search: "",
             state: {},
@@ -213,7 +213,7 @@ describe("Composed Location resolving", () => {
       expect(res.length).toBe(1);
       expect(res).toEqual([
         {
-          location: {
+          remainingLocation: {
             pathname: "/",
             search: "",
             state: {},

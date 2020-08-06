@@ -76,7 +76,7 @@ describe("StateRouteBuilder", () => {
       });
       expect(res).toEqual([
         {
-          location: {
+          remainingLocation: {
             pathname: "/foo",
             state: {
               bar: 1234,
@@ -111,7 +111,7 @@ describe("StateRouteBuilder", () => {
       });
       expect(res).toEqual([
         {
-          location: {
+          remainingLocation: {
             pathname: "/foo",
             state: {
               foo: "I am foo",
