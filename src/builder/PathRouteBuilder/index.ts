@@ -48,7 +48,7 @@ type AnyRouteType<
 export class PathRouteBuilder<
   ActionResult,
   Defs extends RoutesDefinition<ActionResult>,
-  WildcardFlag extends WildcardFlagType,
+  AnyFlag extends WildcardFlagType,
   Match
 > implements AttachableRouteBuilder<ActionResult, string> {
   static init<ActionResult, Match = {}>(): PathRouteBuilder<
@@ -109,16 +109,11 @@ export class PathRouteBuilder<
    */
   routes<D extends RoutesDefinition<ActionResult>>(
     defs: D
-  ): PathRouteBuilder<
-    ActionResult,
-    Omit<Defs, keyof D> & D,
-    WildcardFlag,
-    Match
-  > {
+  ): PathRouteBuilder<ActionResult, Omit<Defs, keyof D> & D, AnyFlag, Match> {
     const result = new PathRouteBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
-      WildcardFlag,
+      AnyFlag,
       Match
     >(this.#link.inherit());
     const routes = result.#routes;
@@ -143,7 +138,7 @@ export class PathRouteBuilder<
       {
         [K in Key]: RouteDefinition<ActionResult, Match>;
       },
-    WildcardFlag,
+    AnyFlag,
     Match
   > {
     const result = new PathRouteBuilder<
@@ -152,7 +147,7 @@ export class PathRouteBuilder<
         {
           [K in Key]: RouteDefinition<ActionResult, Match>;
         },
-      WildcardFlag,
+      AnyFlag,
       Match
     >(this.#link.inherit());
     const routes = result.#routes;
@@ -265,10 +260,10 @@ export class PathRouteBuilder<
   /**
    * Route record of the any route.
    */
-  get anyRoute(): AnyRouteType<ActionResult, WildcardFlag, Match> {
+  get anyRoute(): AnyRouteType<ActionResult, AnyFlag, Match> {
     return this.#wildcardRoute?.route as AnyRouteType<
       ActionResult,
-      WildcardFlag,
+      AnyFlag,
       Match
     >;
   }
