@@ -99,7 +99,7 @@ describe("useRoutes", () => {
       expect(screen.queryByText("I am foo")).toBeInTheDocument();
       expect(screen.queryByText("hogehoge")).toBeInTheDocument();
     });
-    it("nested", () => {
+    it.only("nested", () => {
       const location = {
         pathname: "/foo/hoge",
         state: null,

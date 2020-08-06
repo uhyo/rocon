@@ -215,6 +215,10 @@ describe("RouteResolver", () => {
             pathname: "/",
             state: null,
           },
+          currentLocation: {
+            pathname: "/nonexistent",
+            state: null,
+          },
           match: {
             id: "nonexistent",
           },

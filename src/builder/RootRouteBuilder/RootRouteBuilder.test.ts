@@ -95,6 +95,10 @@ describe("RootRouteBuilder", () => {
               pathname: "/",
               state: null,
             },
+            currentLocation: {
+              pathname: "/",
+              state: null,
+            },
             match: {},
             route: expect.any(ConstRouteRecord),
           },
@@ -114,6 +118,10 @@ describe("RootRouteBuilder", () => {
             location: {
               pathname: "/foo/bar",
               search: "key=value",
+              state: null,
+            },
+            currentLocation: {
+              pathname: "/",
               state: null,
             },
             match: {},
@@ -139,6 +147,10 @@ describe("RootRouteBuilder", () => {
         expect(res).toEqual([
           {
             location: {
+              pathname: "/",
+              state: null,
+            },
+            currentLocation: {
               pathname: "/",
               state: null,
             },

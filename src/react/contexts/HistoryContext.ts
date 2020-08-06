@@ -1,10 +1,8 @@
 import type { History } from "history";
 import { createContext } from "react";
-import { Navigate } from "../types/NavigateFunction";
 
 type HistoryContextValue = {
   history: History;
-  navigate: Navigate;
 };
 
 /**

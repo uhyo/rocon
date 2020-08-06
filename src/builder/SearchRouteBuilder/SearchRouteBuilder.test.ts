@@ -42,6 +42,11 @@ describe("SearchRouteBuilder", () => {
             search: "",
             state: null,
           },
+          currentLocation: {
+            pathname: "/",
+            search: "foo=aiueo",
+            state: null,
+          },
           match: {
             foo: "aiueo",
           },
@@ -65,6 +70,11 @@ describe("SearchRouteBuilder", () => {
         location: {
           pathname: "/",
           search: "foo=123",
+          state: null,
+        },
+        currentLocation: {
+          pathname: "/",
+          search: "boom=wow",
           state: null,
         },
         match: {

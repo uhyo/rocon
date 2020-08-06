@@ -82,6 +82,12 @@ describe("StateRouteBuilder", () => {
               bar: 1234,
             },
           },
+          currentLocation: {
+            pathname: "/",
+            state: {
+              foo: "I am foo",
+            },
+          },
           match: {
             foo: "I am foo",
           },
@@ -109,6 +115,12 @@ describe("StateRouteBuilder", () => {
             pathname: "/foo",
             state: {
               foo: "I am foo",
+            },
+          },
+          currentLocation: {
+            pathname: "/",
+            state: {
+              wow: 1234,
             },
           },
           match: {

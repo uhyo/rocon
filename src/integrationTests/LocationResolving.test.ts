@@ -179,6 +179,13 @@ describe("Composed Location resolving", () => {
             search: "",
             state: {},
           },
+          currentLocation: {
+            pathname: "/user",
+            search: "tab=123",
+            state: {
+              username: "uhyo",
+            },
+          },
           match: {
             tab: "123",
             username: "uhyo",
@@ -210,6 +217,13 @@ describe("Composed Location resolving", () => {
             pathname: "/",
             search: "",
             state: {},
+          },
+          currentLocation: {
+            pathname: "/user",
+            search: "tab=123",
+            state: {
+              username: "uhyo",
+            },
           },
           match: {
             tab: "123",

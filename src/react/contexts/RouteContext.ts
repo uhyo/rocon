@@ -4,6 +4,7 @@ import { ReactRouteRecord } from "../types/ReactElement";
 
 type RouteContextValue = {
   route: ReactRouteRecord<never>;
+  routeLocation: Location;
   nextLocation: Location;
 };
 

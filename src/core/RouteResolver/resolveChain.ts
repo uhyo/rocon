@@ -8,7 +8,8 @@ import type { ResolvedRoute } from "./ResolvedRoute";
  */
 export function resolveChain<ActionResult, Value>(
   link: BuilderLink<ActionResult, unknown, Value>,
-  location: Location
+  location: Location,
+  currentLocation: Location
 ): Array<ResolvedRoute<Value>> {
   const decomposed = link.composer.decompose(location);
   return decomposed.flatMap(([seg, next]) => {
@@ -18,6 +19,7 @@ export function resolveChain<ActionResult, Value>(
     if (resolved === undefined) {
       return [];
     }
+    const nextCurrentLocation = link.composer.compose(currentLocation, seg);
     const match = (resolved.type === "normal"
       ? {}
       : {
@@ -33,10 +35,15 @@ export function resolveChain<ActionResult, Value>(
           link: childLink,
           match,
           location: next,
+          currentLocation: nextCurrentLocation,
         },
       ];
     }
-    const result = resolveChain<ActionResult, Value>(childLink, next);
+    const result = resolveChain<ActionResult, Value>(
+      childLink,
+      next,
+      nextCurrentLocation
+    );
     switch (resolved.type) {
       case "normal": {
         return result;
