@@ -2,7 +2,7 @@ import type { HasBuilderLink } from "../../core/BuilderLink/HasBuilderLink";
 import { Location } from "../../core/Location";
 import { RouteBuilderLink, RouteBuilderLinkValue } from "../RouteBuilderLink";
 import type { ActionType } from "../RoutesDefinitionObject";
-import { routeRecordParentKey } from "../symbols";
+import { routeRecordParentKey, routeRecordSegmentGetterKey } from "../symbols";
 import { AttachFunction, RouteRecordType } from "./RouteRecordType";
 
 export type ActionTypeOfRouteRecord<
@@ -32,7 +32,7 @@ export abstract class RouteRecordBase<
   readonly [routeRecordParentKey]: RouteBuilderLink<ActionResult, unknown>;
 
   #builder?: RouteBuilderLink<ActionResult, unknown> = undefined;
-  #segmentGetter: (match: Match) => unknown;
+  [routeRecordSegmentGetterKey]: (match: Match) => unknown;
 
   constructor(
     parentLink: RouteBuilderLink<ActionResult, unknown>,
@@ -40,7 +40,7 @@ export abstract class RouteRecordBase<
     segmentGetter: (match: Match) => unknown
   ) {
     this.action = action;
-    this.#segmentGetter = segmentGetter;
+    this[routeRecordSegmentGetterKey] = segmentGetter;
     Object.defineProperty(this, routeRecordParentKey, {
       value: parentLink,
     });
@@ -65,17 +65,6 @@ export abstract class RouteRecordBase<
         return builder;
       },
     });
-  }
-
-  getLocation(match: Match): Location {
-    const parentLocation = this[routeRecordParentKey].composeFromTop(
-      defaultRoot,
-      match
-    );
-    return this[routeRecordParentKey].composer.compose(
-      parentLocation,
-      this.#segmentGetter(match)
-    );
   }
 
   /**

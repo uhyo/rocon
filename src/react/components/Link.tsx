@@ -1,4 +1,5 @@
 import React from "react";
+import { getRouteRecordLocation } from "../../builder/RouteRecord/getRouteRecordLocation";
 import { locationToURL } from "../../util/locationToURL";
 import { useNavigate } from "../hooks/useNavigate";
 import { ReactElement, ReactRouteRecord } from "../types/ReactElement";
@@ -18,7 +19,7 @@ export const Link = <Match,>({
   match,
   ...props
 }: LinkProps<Match>): ReactElement | null => {
-  const location = route.getLocation(match as Match);
+  const location = getRouteRecordLocation(route, match as Match);
   const navigate = useNavigate();
   return (
     <a

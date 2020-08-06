@@ -1,4 +1,5 @@
 import { Path, Rocon, Search, State } from "..";
+import { getRouteRecordLocation } from "../builder/RouteRecord/getRouteRecordLocation";
 import { MatchingRouteRecord } from "../builder/RouteRecord/MatchingRouteRecord";
 import { wildcardRouteKey } from "../builder/symbols";
 import { Resolver } from "../shorthand";
@@ -117,7 +118,7 @@ describe("Composed Location resolving", () => {
         .user.attach(tab);
 
       expect(
-        ss.getRoute().getLocation({
+        getRouteRecordLocation(ss.getRoute(), {
           tab: "123",
           username: "uhyo",
         })
@@ -173,10 +174,17 @@ describe("Composed Location resolving", () => {
       expect(res.length).toBe(1);
       expect(res).toEqual([
         {
-          location: {
+          remainingLocation: {
             pathname: "/",
             search: "",
             state: {},
+          },
+          currentLocation: {
+            pathname: "/user",
+            search: "tab=123",
+            state: {
+              username: "uhyo",
+            },
           },
           match: {
             tab: "123",
@@ -205,10 +213,17 @@ describe("Composed Location resolving", () => {
       expect(res.length).toBe(1);
       expect(res).toEqual([
         {
-          location: {
+          remainingLocation: {
             pathname: "/",
             search: "",
             state: {},
+          },
+          currentLocation: {
+            pathname: "/user",
+            search: "tab=123",
+            state: {
+              username: "uhyo",
+            },
           },
           match: {
             tab: "123",

@@ -2,6 +2,7 @@ import { RootRouteBuilder } from ".";
 import { PathRouteBuilder } from "../PathRouteBuilder";
 import { RoutePathResolver } from "../RoutePathResolver";
 import { ConstRouteRecord } from "../RouteRecord/ConstRouteRecord";
+import { getRouteRecordLocation } from "../RouteRecord/getRouteRecordLocation";
 
 const emptyMatch = {} as never;
 
@@ -19,7 +20,7 @@ describe("RootRouteBuilder", () => {
   describe("location", () => {
     it("default root is root", () => {
       const b = RootRouteBuilder.init();
-      expect(b.getRoute().getLocation({})).toEqual({
+      expect(getRouteRecordLocation(b.getRoute(), {})).toEqual({
         pathname: "/",
         state: null,
       });
@@ -31,7 +32,7 @@ describe("RootRouteBuilder", () => {
           state: null,
         },
       });
-      expect(b.getRoute().getLocation({})).toEqual({
+      expect(getRouteRecordLocation(b.getRoute(), {})).toEqual({
         pathname: "/root",
         state: null,
       });
@@ -41,7 +42,7 @@ describe("RootRouteBuilder", () => {
       const sub = toplevel.getRoute().attach(PathRouteBuilder.init()).routes({
         foo: {},
       });
-      expect(sub.getRoutes().foo.getLocation({})).toEqual({
+      expect(getRouteRecordLocation(sub.getRoutes().foo, {})).toEqual({
         pathname: "/foo",
         state: null,
       });
@@ -58,7 +59,7 @@ describe("RootRouteBuilder", () => {
       const sub = toplevel.getRoute().attach(PathRouteBuilder.init()).routes({
         foo: {},
       });
-      expect(sub.getRoutes().foo.getLocation({})).toEqual({
+      expect(getRouteRecordLocation(sub.getRoutes().foo, {})).toEqual({
         pathname: "/root/foo",
         state: {
           sta: "te",
@@ -73,7 +74,7 @@ describe("RootRouteBuilder", () => {
         .getRoutes()
         .foo.attach(RootRouteBuilder.init())
         .getRoute();
-      expect(sub.getLocation({})).toEqual({
+      expect(getRouteRecordLocation(sub, {})).toEqual({
         pathname: "/",
         state: null,
       });
@@ -90,7 +91,11 @@ describe("RootRouteBuilder", () => {
         });
         expect(res).toEqual([
           {
-            location: {
+            remainingLocation: {
+              pathname: "/",
+              state: null,
+            },
+            currentLocation: {
               pathname: "/",
               state: null,
             },
@@ -110,9 +115,13 @@ describe("RootRouteBuilder", () => {
         });
         expect(res).toEqual([
           {
-            location: {
+            remainingLocation: {
               pathname: "/foo/bar",
               search: "key=value",
+              state: null,
+            },
+            currentLocation: {
+              pathname: "/",
               state: null,
             },
             match: {},
@@ -137,7 +146,11 @@ describe("RootRouteBuilder", () => {
         });
         expect(res).toEqual([
           {
-            location: {
+            remainingLocation: {
+              pathname: "/",
+              state: null,
+            },
+            currentLocation: {
               pathname: "/",
               state: null,
             },

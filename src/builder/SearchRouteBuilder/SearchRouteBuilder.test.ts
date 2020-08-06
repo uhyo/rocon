@@ -37,9 +37,14 @@ describe("SearchRouteBuilder", () => {
       });
       expect(res).toEqual([
         {
-          location: {
+          remainingLocation: {
             pathname: "/",
             search: "",
+            state: null,
+          },
+          currentLocation: {
+            pathname: "/",
+            search: "foo=aiueo",
             state: null,
           },
           match: {
@@ -62,9 +67,14 @@ describe("SearchRouteBuilder", () => {
     });
     expect(res).toEqual([
       {
-        location: {
+        remainingLocation: {
           pathname: "/",
           search: "foo=123",
+          state: null,
+        },
+        currentLocation: {
+          pathname: "/",
+          search: "boom=wow",
           state: null,
         },
         match: {

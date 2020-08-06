@@ -1,5 +1,6 @@
 import { StateRouteBuilder } from ".";
 import { RoutePathResolver } from "../RoutePathResolver";
+import { getRouteRecordLocation } from "../RouteRecord/getRouteRecordLocation";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 
 const isString = (value: unknown): value is string => typeof value === "string";
@@ -26,7 +27,7 @@ describe("StateRouteBuilder", () => {
         ({ foostate }) => `foo is ${foostate.slice(0)}`
       );
       const r = b.getRoute();
-      expect(r.getLocation({ foostate: "aaa" })).toEqual({
+      expect(getRouteRecordLocation(r, { foostate: "aaa" })).toEqual({
         pathname: "/",
         state: {
           foostate: "aaa",
@@ -52,7 +53,7 @@ describe("StateRouteBuilder", () => {
         isNumber
       ).getRoute();
 
-      expect(sub.getLocation({ foo: "あいう", bar: 555 })).toEqual({
+      expect(getRouteRecordLocation(sub, { foo: "あいう", bar: 555 })).toEqual({
         pathname: "/",
         state: {
           foo: "あいう",
@@ -75,10 +76,16 @@ describe("StateRouteBuilder", () => {
       });
       expect(res).toEqual([
         {
-          location: {
+          remainingLocation: {
             pathname: "/foo",
             state: {
               bar: 1234,
+            },
+          },
+          currentLocation: {
+            pathname: "/",
+            state: {
+              foo: "I am foo",
             },
           },
           match: {
@@ -104,10 +111,16 @@ describe("StateRouteBuilder", () => {
       });
       expect(res).toEqual([
         {
-          location: {
+          remainingLocation: {
             pathname: "/foo",
             state: {
               foo: "I am foo",
+            },
+          },
+          currentLocation: {
+            pathname: "/",
+            state: {
+              wow: 1234,
             },
           },
           match: {
