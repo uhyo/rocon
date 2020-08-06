@@ -6,7 +6,6 @@ import {
   PathRouteRecord,
   RouteRecordType,
   RoutesDefinitionToRouteRecords,
-  WildcardInRouteRecords,
 } from "../RouteRecord";
 import {
   MatchingRouteRecord,
@@ -17,9 +16,9 @@ import type {
   RouteDefinition,
   RoutesDefinition,
 } from "../RoutesDefinitionObject";
-import { wildcardRouteKey } from "../symbols";
 import type {
   ActionTypeToWildcardFlag,
+  ExistingWildcardFlagType,
   WildcardFlagType,
 } from "../WildcardFlagType";
 import type { PathSingleRouteInterface } from "./PathSingleRouteInterface";
@@ -29,6 +28,19 @@ type RouteRecordsBase<ActionResult> = Record<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   RouteRecordType<ActionResult, any, any>
 >;
+
+type AnyRouteType<
+  ActionResult,
+  WildcardFlag extends WildcardFlagType,
+  Match
+> = WildcardFlag extends ExistingWildcardFlagType
+  ? MatchingRouteRecord<
+      ActionResult,
+      string,
+      Match,
+      WildcardFlag extends "hasaction" ? true : false
+    >
+  : undefined;
 
 /**
  * Builder to define routes using pathname.
@@ -232,8 +244,7 @@ export class PathRouteBuilder<
   }
 
   getRoutes(): Readonly<
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Match> &
-      WildcardInRouteRecords<ActionResult, string, WildcardFlag, Match>
+    RoutesDefinitionToRouteRecords<ActionResult, Defs, Match>
   > {
     this.#link.checkInvalidation();
     const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
@@ -241,26 +252,25 @@ export class PathRouteBuilder<
       Defs,
       Match
     >;
-    if (this.#wildcardRoute) {
-      return {
-        ...routes,
-        [wildcardRouteKey]: this.#wildcardRoute,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any;
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return routes as any;
-    }
+    return routes;
   }
 
   /**
    * Shorthand for 'getRoutes()'
    */
-  get _(): Readonly<
-    RoutesDefinitionToRouteRecords<ActionResult, Defs, Match> &
-      WildcardInRouteRecords<ActionResult, string, WildcardFlag, Match>
-  > {
+  get _(): Readonly<RoutesDefinitionToRouteRecords<ActionResult, Defs, Match>> {
     return this.getRoutes();
+  }
+
+  /**
+   * Route record of the any route.
+   */
+  get anyRoute(): AnyRouteType<ActionResult, WildcardFlag, Match> {
+    return this.#wildcardRoute?.route as AnyRouteType<
+      ActionResult,
+      WildcardFlag,
+      Match
+    >;
   }
 
   getBuilderLink(): RouteBuilderLink<ActionResult, string> {

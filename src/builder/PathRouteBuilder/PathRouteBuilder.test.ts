@@ -1,6 +1,5 @@
 import { PathRouteBuilder } from ".";
 import { getRouteRecordLocation } from "../RouteRecord/getRouteRecordLocation";
-import { wildcardRouteKey } from "../symbols";
 
 describe("PathRouteBuilder", () => {
   describe("routes", () => {
@@ -189,19 +188,13 @@ describe("PathRouteBuilder", () => {
       const res = PathRouteBuilder.init<string>().any("id", {
         action: ({ id }) => `id is ${id.slice(0, 8)}`,
       });
-      const routes = res.getRoutes();
-      expect(routes[wildcardRouteKey].route.action({ id: "wow" })).toEqual(
-        "id is wow"
-      );
+      expect(res.anyRoute.action({ id: "wow" })).toEqual("id is wow");
     });
     it("sub route of any", () => {
       const res = PathRouteBuilder.init<string>().any("id", {
         action: ({ id }) => `id is ${id.slice(0, 8)}`,
       });
-      const routes = res.getRoutes();
-      const subRoutes = PathRouteBuilder.attachTo(
-        routes[wildcardRouteKey].route
-      )
+      const subRoutes = PathRouteBuilder.attachTo(res.anyRoute)
         .routes({
           hoge: {
             action: () => "sub",
