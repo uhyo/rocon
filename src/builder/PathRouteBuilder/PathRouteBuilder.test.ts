@@ -1,4 +1,5 @@
 import { PathRouteBuilder } from ".";
+import { getRouteRecordLocation } from "../RouteRecord/getRouteRecordLocation";
 import { wildcardRouteKey } from "../symbols";
 
 describe("PathRouteBuilder", () => {
@@ -20,12 +21,12 @@ describe("PathRouteBuilder", () => {
       const routes = res.getRoutes();
       expect(Object.keys(routes)).toEqual(["foo", "bar"]);
       expect(routes.foo.action({})).toEqual("foo!");
-      expect(routes.foo.getLocation({})).toEqual({
+      expect(getRouteRecordLocation(routes.foo, {})).toEqual({
         pathname: "/foo",
         state: null,
       });
       expect(routes.bar.action({})).toEqual("bar?");
-      expect(routes.bar.getLocation({})).toEqual({
+      expect(getRouteRecordLocation(routes.bar, {})).toEqual({
         pathname: "/bar",
         state: null,
       });
@@ -46,12 +47,12 @@ describe("PathRouteBuilder", () => {
       const routes = res.getRoutes();
       expect(Object.keys(routes)).toEqual(["foo", "bar"]);
       expect(routes.foo.action({})).toEqual("foo!");
-      expect(routes.foo.getLocation({})).toEqual({
+      expect(getRouteRecordLocation(routes.foo, {})).toEqual({
         pathname: "/foo",
         state: null,
       });
       expect(routes.bar.action({})).toEqual("bar?");
-      expect(routes.bar.getLocation({})).toEqual({
+      expect(getRouteRecordLocation(routes.bar, {})).toEqual({
         pathname: "/bar",
         state: null,
       });
@@ -107,7 +108,7 @@ describe("PathRouteBuilder", () => {
       const toplevel = PathRouteBuilder.init();
       toplevel.route("foo", (foo) => foo.attach(sub));
 
-      expect(sub.getRoutes().abc.getLocation({})).toEqual({
+      expect(getRouteRecordLocation(sub.getRoutes().abc, {})).toEqual({
         pathname: "/foo/abc",
         state: null,
       });
@@ -151,7 +152,7 @@ describe("PathRouteBuilder", () => {
         })
         .getRoutes();
 
-      expect(sub.bar.getLocation({})).toEqual({
+      expect(getRouteRecordLocation(sub.bar, {})).toEqual({
         pathname: "/foo/bar",
         state: null,
       });
@@ -163,7 +164,7 @@ describe("PathRouteBuilder", () => {
         },
       });
       const subRoutes = sub.getRoutes();
-      expect(subRoutes.bom.getLocation({})).toEqual({
+      expect(getRouteRecordLocation(subRoutes.bom, {})).toEqual({
         pathname: "/bom",
         state: null,
       });
@@ -176,7 +177,7 @@ describe("PathRouteBuilder", () => {
         })
         .getRoutes();
       toplevel.foo.attach(sub);
-      expect(subRoutes.bom.getLocation({})).toEqual({
+      expect(getRouteRecordLocation(subRoutes.bom, {})).toEqual({
         pathname: "/foo/bom",
         state: null,
       });
@@ -208,7 +209,7 @@ describe("PathRouteBuilder", () => {
         })
         .getRoutes();
 
-      expect(subRoutes.hoge.getLocation({ id: "wow" })).toEqual({
+      expect(getRouteRecordLocation(subRoutes.hoge, { id: "wow" })).toEqual({
         pathname: "/wow/hoge",
         state: null,
       });

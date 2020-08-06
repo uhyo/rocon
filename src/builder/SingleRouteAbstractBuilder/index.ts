@@ -1,5 +1,6 @@
 import type { Location } from "../../core/Location";
 import type { RouteRecordType } from "../RouteRecord";
+import { getRouteRecordLocation } from "../RouteRecord/getRouteRecordLocation";
 import type { AttachFunction } from "../RouteRecord/RouteRecordType";
 
 export abstract class SingleRouteAbstractBuilder<
@@ -32,6 +33,6 @@ export abstract class SingleRouteAbstractBuilder<
    * Get the location of this route.
    */
   getLocation(match: Match): Location {
-    return this.getRoute().getLocation(match);
+    return getRouteRecordLocation(this.getRoute(), match);
   }
 }

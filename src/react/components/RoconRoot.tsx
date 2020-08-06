@@ -1,6 +1,7 @@
 import { createBrowserHistory, History, Location } from "history";
 import React, { memo, useEffect, useMemo, useState } from "react";
 import { RouteRecordType } from "../../builder/RouteRecord";
+import { getRouteRecordLocation } from "../../builder/RouteRecord/getRouteRecordLocation";
 import { HistoryContext } from "../contexts/HistoryContext";
 import { LocationContext } from "../contexts/LocationContext";
 import { NavigateFunction } from "../types/NavigateFunction";
@@ -21,13 +22,13 @@ export const RoconRoot: React.FC<RoconRootProps> = memo((props) => {
       route: RouteRecordType<ReactElement | null, Match, boolean>,
       match: Match
     ) => {
-      history.push(route.getLocation(match as Match));
+      history.push(getRouteRecordLocation(route, match as Match));
     }) as NavigateFunction;
     const replace = (<Match,>(
       route: RouteRecordType<ReactElement | null, Match, boolean>,
       match: Match
     ) => {
-      history.replace(route.getLocation(match as Match));
+      history.replace(getRouteRecordLocation(route, match as Match));
     }) as NavigateFunction;
     const navigate = Object.assign(push, { push, replace });
     return {

@@ -3,7 +3,6 @@ import { Location } from "../../core/Location";
 import { RouteBuilderLink, RouteBuilderLinkValue } from "../RouteBuilderLink";
 import type { ActionType } from "../RoutesDefinitionObject";
 import { routeRecordParentKey, routeRecordSegmentGetterKey } from "../symbols";
-import { getRouteRecordLocation } from "./getRouteRecordLocation";
 import { AttachFunction, RouteRecordType } from "./RouteRecordType";
 
 export type ActionTypeOfRouteRecord<
@@ -66,10 +65,6 @@ export abstract class RouteRecordBase<
         return builder;
       },
     });
-  }
-
-  getLocation(match: Match): Location {
-    return getRouteRecordLocation(this, match);
   }
 
   /**
