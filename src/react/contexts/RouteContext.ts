@@ -1,6 +1,11 @@
 import { createContext } from "react";
+import { Location } from "../../core/Location";
+import { ReactRouteRecord } from "../types/ReactElement";
 
-type RouteContextValue = {};
+type RouteContextValue = {
+  route: ReactRouteRecord<never>;
+  nextLocation: Location;
+};
 
 /**
  * Context in which current route is provided.
