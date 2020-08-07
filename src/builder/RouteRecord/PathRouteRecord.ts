@@ -11,16 +11,14 @@ export class PathRouteRecord<ActionResult, Match, HasAction extends boolean>
   /**
    * Key of this route.
    */
-  readonly key: string;
-  #parent: AttachableRouteBuilder<ActionResult, string>;
+  readonly key: string | undefined;
 
   constructor(
     parent: AttachableRouteBuilder<ActionResult, string>,
-    key: string,
+    key: string | undefined,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
     super(parent.getBuilderLink(), action, () => key);
-    this.#parent = parent;
     this.key = key;
   }
 }

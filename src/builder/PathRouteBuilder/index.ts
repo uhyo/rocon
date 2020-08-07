@@ -80,6 +80,9 @@ export class PathRouteBuilder<
   #wildcardRoute:
     | MatchingRouteRecordObject<ActionResult, string, Match, boolean>
     | undefined = undefined;
+  #exactRoute:
+    | PathRouteRecord<ActionResult, Match, boolean>
+    | undefined = undefined;
 
   private constructor(link: RouteBuilderLink<ActionResult, string>) {
     this.#link = link;
@@ -132,6 +135,7 @@ export class PathRouteBuilder<
       routes[key] = new PathRouteRecord(result, key, defs[key].action);
     }
     result.#wildcardRoute = this.#wildcardRoute;
+    result.#exactRoute = this.#exactRoute;
     return result;
   }
 
@@ -197,11 +201,12 @@ export class PathRouteBuilder<
     routes[key] = record;
 
     result.#wildcardRoute = this.#wildcardRoute;
+    result.#exactRoute = this.#exactRoute;
     return result;
   }
 
   /**
-   * Add a wildcard route and return a new Path route builder.
+   * Add a catch-all route and return a new Path route builder.
    */
   any<
     Key extends string,
@@ -248,6 +253,37 @@ export class PathRouteBuilder<
         routeDefinition.action
       ),
     };
+    return result;
+  }
+
+  /**
+   * Add an exact route and return a new Path route builder.
+   */
+  exact<RD extends RouteDefinition<ActionResult, Match>>(
+    routeDefinition: RD
+  ): PathRouteBuilder<
+    ActionResult,
+    Defs,
+    AnyFlag,
+    ActionTypeToWildcardFlag<RD["action"]>,
+    Match
+  > {
+    this.#link.checkInvalidation();
+
+    const result = new PathRouteBuilder<
+      ActionResult,
+      Defs,
+      AnyFlag,
+      ActionTypeToWildcardFlag<RD["action"]>,
+      Match
+    >(this.#link.inherit());
+    result.#routes = this.#routes;
+    result.#wildcardRoute = this.#wildcardRoute;
+    result.#exactRoute = new PathRouteRecord(
+      result,
+      undefined,
+      routeDefinition.action
+    );
     return result;
   }
 
