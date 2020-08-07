@@ -125,6 +125,7 @@ describe("PathLocationComposer", () => {
           })
         ).toEqual([
           {
+            leaf: false,
             segment: "foo",
             nextLocation: {
               pathname: "/bar",
@@ -141,6 +142,7 @@ describe("PathLocationComposer", () => {
           })
         ).toEqual([
           {
+            leaf: false,
             segment: "foo",
             nextLocation: {
               pathname: "/",
@@ -161,6 +163,7 @@ describe("PathLocationComposer", () => {
           })
         ).toEqual([
           {
+            leaf: false,
             segment: "foo",
             nextLocation: {
               pathname: "/bar/baz",

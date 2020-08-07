@@ -45,13 +45,15 @@ export class StateLocationComposer<Key extends string, StateValue>
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [this.key]: _, ...rest } = state;
+    const nextLocation = {
+      ...location,
+      state: rest,
+    };
     return [
       {
+        leaf: false,
         segment: value,
-        nextLocation: {
-          ...location,
-          state: rest,
-        },
+        nextLocation,
       },
     ];
   }

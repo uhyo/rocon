@@ -32,8 +32,13 @@ export class PathLocationComposer
       return [];
     }
     const [segment, next] = s;
+    const nextLocation = {
+      ...location,
+      pathname: next || "/",
+    };
     return [
       {
+        leaf: false,
         segment,
         nextLocation: {
           ...location,

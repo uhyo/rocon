@@ -180,6 +180,7 @@ describe("StateLocationComposer", () => {
         })
       ).toEqual([
         {
+          leaf: false,
           segment: 1234,
           nextLocation: {
             pathname: "/",

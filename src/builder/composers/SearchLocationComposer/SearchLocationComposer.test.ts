@@ -171,6 +171,7 @@ describe("SearchLocationComposer", () => {
         })
       ).toEqual([
         {
+          leaf: false,
           segment: "1234",
           nextLocation: {
             pathname: "/",
@@ -191,6 +192,7 @@ describe("SearchLocationComposer", () => {
         })
       ).toEqual([
         {
+          leaf: false,
           segment: "123",
           nextLocation: {
             pathname: "/",
@@ -211,6 +213,7 @@ describe("SearchLocationComposer", () => {
         })
       ).toEqual([
         {
+          leaf: false,
           segment: "value",
           nextLocation: {
             pathname: "/",
@@ -231,6 +234,7 @@ describe("SearchLocationComposer", () => {
         })
       ).toEqual([
         {
+          leaf: false,
           segment: "あいう",
           nextLocation: {
             pathname: "/",
@@ -251,6 +255,7 @@ describe("SearchLocationComposer", () => {
         })
       ).toEqual([
         {
+          leaf: false,
           segment: "",
           nextLocation: {
             pathname: "/",
@@ -271,6 +276,7 @@ describe("SearchLocationComposer", () => {
         })
       ).toEqual([
         {
+          leaf: false,
           segment: "",
           nextLocation: {
             pathname: "/",

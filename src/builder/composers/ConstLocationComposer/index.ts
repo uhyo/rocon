@@ -26,6 +26,7 @@ export class ConstLocationComposer implements LocationComposer<unknown> {
   ): Array<DecomposeResult<unknown, S>> {
     return [
       {
+        leaf: false,
         segment: undefined,
         nextLocation: base,
       },

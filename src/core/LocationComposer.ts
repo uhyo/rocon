@@ -22,6 +22,7 @@ export interface LocationComposer</* invariant */ Segment> {
 }
 
 export type DecomposeResult<Segment, State extends BaseState = BaseState> = {
+  leaf: boolean;
   segment: Segment;
   nextLocation: Location<State>;
 };

@@ -36,13 +36,15 @@ export class SearchLocationComposer implements LocationComposer<string> {
     }
 
     params.delete(this.key);
+    const nextLocation = {
+      ...location,
+      search: params.toString(),
+    };
     return [
       {
+        leaf: false,
         segment: value,
-        nextLocation: {
-          ...location,
-          search: params.toString(),
-        },
+        nextLocation,
       },
     ];
   }
