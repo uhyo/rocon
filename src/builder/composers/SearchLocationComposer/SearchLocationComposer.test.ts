@@ -170,14 +170,14 @@ describe("SearchLocationComposer", () => {
           state: null,
         })
       ).toEqual([
-        [
-          "1234",
-          {
+        {
+          segment: "1234",
+          nextLocation: {
             pathname: "/",
             search: "wow=hi",
             state: null,
           },
-        ],
+        },
       ]);
     });
     it("extracts first key", () => {
@@ -190,14 +190,14 @@ describe("SearchLocationComposer", () => {
           state: null,
         })
       ).toEqual([
-        [
-          "123",
-          {
+        {
+          segment: "123",
+          nextLocation: {
             pathname: "/",
             search: "wow=hi",
             state: null,
           },
-        ],
+        },
       ]);
     });
     it("empty string if exhausted", () => {
@@ -210,14 +210,14 @@ describe("SearchLocationComposer", () => {
           state: null,
         })
       ).toEqual([
-        [
-          "value",
-          {
+        {
+          segment: "value",
+          nextLocation: {
             pathname: "/",
             search: "",
             state: null,
           },
-        ],
+        },
       ]);
     });
     it("decodes percent-encoded string", () => {
@@ -230,14 +230,14 @@ describe("SearchLocationComposer", () => {
           state: null,
         })
       ).toEqual([
-        [
-          "あいう",
-          {
+        {
+          segment: "あいう",
+          nextLocation: {
             pathname: "/",
             search: "wow=hi",
             state: null,
           },
-        ],
+        },
       ]);
     });
     it("decodes empty value", () => {
@@ -250,14 +250,14 @@ describe("SearchLocationComposer", () => {
           state: null,
         })
       ).toEqual([
-        [
-          "",
-          {
+        {
+          segment: "",
+          nextLocation: {
             pathname: "/",
             search: "",
             state: null,
           },
-        ],
+        },
       ]);
     });
     it("decodes name-only value", () => {
@@ -270,14 +270,14 @@ describe("SearchLocationComposer", () => {
           state: null,
         })
       ).toEqual([
-        [
-          "",
-          {
+        {
+          segment: "",
+          nextLocation: {
             pathname: "/",
             search: "foo=bar",
             state: null,
           },
-        ],
+        },
       ]);
     });
     it("returns empty if no key", () => {

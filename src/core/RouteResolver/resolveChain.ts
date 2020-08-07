@@ -12,36 +12,36 @@ export function resolveChain<ActionResult, Value>(
   currentLocation: Location
 ): Array<ResolvedRoute<Value>> {
   const decomposed = link.composer.decompose(location);
-  return decomposed.flatMap(([seg, next]) => {
+  return decomposed.flatMap(({ segment, nextLocation }) => {
     const resolved = link.followInheritanceChain((link) =>
-      link.resolveSegment?.(seg)
+      link.resolveSegment?.(segment)
     ).result;
     if (resolved === undefined) {
       return [];
     }
-    const nextCurrentLocation = link.composer.compose(currentLocation, seg);
+    const nextCurrentLocation = link.composer.compose(currentLocation, segment);
     const match = (resolved.type === "normal"
       ? {}
       : {
-          [resolved.matchKey]: seg,
+          [resolved.matchKey]: segment,
         }) as never;
 
     const childLink = resolved.link;
 
-    if (childLink === undefined || childLink.composer.isLeaf(next)) {
+    if (childLink === undefined || childLink.composer.isLeaf(nextLocation)) {
       return [
         {
           route: resolved.value,
           link: childLink,
           match,
-          remainingLocation: next,
+          remainingLocation: nextLocation,
           currentLocation: nextCurrentLocation,
         },
       ];
     }
     const result = resolveChain<ActionResult, Value>(
       childLink,
-      next,
+      nextLocation,
       nextCurrentLocation
     );
     switch (resolved.type) {

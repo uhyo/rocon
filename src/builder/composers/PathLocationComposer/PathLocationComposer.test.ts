@@ -124,13 +124,13 @@ describe("PathLocationComposer", () => {
             state: null,
           })
         ).toEqual([
-          [
-            "foo",
-            {
+          {
+            segment: "foo",
+            nextLocation: {
               pathname: "/bar",
               state: null,
             },
-          ],
+          },
         ]);
       });
       it("returns / for empty path", () => {
@@ -140,13 +140,13 @@ describe("PathLocationComposer", () => {
             state: null,
           })
         ).toEqual([
-          [
-            "foo",
-            {
+          {
+            segment: "foo",
+            nextLocation: {
               pathname: "/",
               state: null,
             },
-          ],
+          },
         ]);
       });
       it("inherit search, hash and state", () => {
@@ -160,9 +160,9 @@ describe("PathLocationComposer", () => {
             },
           })
         ).toEqual([
-          [
-            "foo",
-            {
+          {
+            segment: "foo",
+            nextLocation: {
               pathname: "/bar/baz",
               search: "q=abc",
               hash: "id1",
@@ -170,7 +170,7 @@ describe("PathLocationComposer", () => {
                 st: "ate",
               },
             },
-          ],
+          },
         ]);
       });
     });

@@ -1,5 +1,8 @@
 import type { BaseState, Location } from "../../../core/Location";
-import type { LocationComposer } from "../../../core/LocationComposer";
+import type {
+  DecomposeResult,
+  LocationComposer,
+} from "../../../core/LocationComposer";
 
 /**
  * LocationComposer that composes to a constant location.
@@ -20,7 +23,12 @@ export class ConstLocationComposer implements LocationComposer<unknown> {
 
   decompose<S extends BaseState>(
     base: Location<S>
-  ): Array<[unknown, Location<S>]> {
-    return [[undefined, base]];
+  ): Array<DecomposeResult<unknown, S>> {
+    return [
+      {
+        segment: undefined,
+        nextLocation: base,
+      },
+    ];
   }
 }

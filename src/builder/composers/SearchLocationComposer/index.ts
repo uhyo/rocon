@@ -1,5 +1,8 @@
 import type { BaseState, Location } from "../../../core/Location";
-import type { LocationComposer } from "../../../core/LocationComposer";
+import type {
+  DecomposeResult,
+  LocationComposer,
+} from "../../../core/LocationComposer";
 
 export class SearchLocationComposer implements LocationComposer<string> {
   readonly key: string;
@@ -24,7 +27,7 @@ export class SearchLocationComposer implements LocationComposer<string> {
   }
   decompose<S extends BaseState>(
     location: Readonly<Location<S>>
-  ): Array<[string, Location<S>]> {
+  ): Array<DecomposeResult<string, S>> {
     const { search } = location;
     const params = new URLSearchParams(search);
     const value = params.get(this.key);
@@ -34,13 +37,13 @@ export class SearchLocationComposer implements LocationComposer<string> {
 
     params.delete(this.key);
     return [
-      [
-        value,
-        {
+      {
+        segment: value,
+        nextLocation: {
           ...location,
           search: params.toString(),
         },
-      ],
+      },
     ];
   }
 }
