@@ -28,8 +28,13 @@ export class PathLocationComposer
   ): Array<DecomposeResult<string | undefined, S>> {
     const { pathname } = location;
     const s = decomposePath(pathname);
+    const current = {
+      leaf: true,
+      segment: undefined,
+      nextLocation: location,
+    };
     if (s === undefined) {
-      return [];
+      return [current];
     }
     const [segment, next] = s;
     const nextLocation = {
@@ -37,13 +42,11 @@ export class PathLocationComposer
       pathname: next || "/",
     };
     return [
+      current,
       {
         leaf: false,
         segment,
-        nextLocation: {
-          ...location,
-          pathname: next || "/",
-        },
+        nextLocation,
       },
     ];
   }

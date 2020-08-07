@@ -125,6 +125,14 @@ describe("PathLocationComposer", () => {
           })
         ).toEqual([
           {
+            leaf: true,
+            segment: undefined,
+            nextLocation: {
+              pathname: "/foo/bar",
+              state: null,
+            },
+          },
+          {
             leaf: false,
             segment: "foo",
             nextLocation: {
@@ -141,6 +149,14 @@ describe("PathLocationComposer", () => {
             state: null,
           })
         ).toEqual([
+          {
+            leaf: true,
+            segment: undefined,
+            nextLocation: {
+              pathname: "/foo",
+              state: null,
+            },
+          },
           {
             leaf: false,
             segment: "foo",
@@ -163,6 +179,18 @@ describe("PathLocationComposer", () => {
           })
         ).toEqual([
           {
+            leaf: true,
+            segment: undefined,
+            nextLocation: {
+              pathname: "/foo/bar/baz",
+              search: "q=abc",
+              hash: "id1",
+              state: {
+                st: "ate",
+              },
+            },
+          },
+          {
             leaf: false,
             segment: "foo",
             nextLocation: {
@@ -177,7 +205,7 @@ describe("PathLocationComposer", () => {
         ]);
       });
     });
-    describe("return empty for invalid path", () => {
+    describe("return only current for invalid path", () => {
       it("1", () => {
         expect(
           composer.decompose({
@@ -188,7 +216,20 @@ describe("PathLocationComposer", () => {
               st: "ate",
             },
           })
-        ).toEqual([]);
+        ).toEqual([
+          {
+            leaf: true,
+            segment: undefined,
+            nextLocation: {
+              pathname: "/",
+              search: "q=abc",
+              hash: "id1",
+              state: {
+                st: "ate",
+              },
+            },
+          },
+        ]);
       });
       it("2", () => {
         expect(
@@ -198,7 +239,18 @@ describe("PathLocationComposer", () => {
               st: "ate",
             },
           })
-        ).toEqual([]);
+        ).toEqual([
+          {
+            leaf: true,
+            segment: undefined,
+            nextLocation: {
+              pathname: "",
+              state: {
+                st: "ate",
+              },
+            },
+          },
+        ]);
       });
       it("3", () => {
         expect(
@@ -208,7 +260,18 @@ describe("PathLocationComposer", () => {
             hash: "id1",
             state: null,
           })
-        ).toEqual([]);
+        ).toEqual([
+          {
+            leaf: true,
+            segment: undefined,
+            nextLocation: {
+              pathname: "foo/bar",
+              search: "q=abc",
+              hash: "id1",
+              state: null,
+            },
+          },
+        ]);
       });
     });
   });

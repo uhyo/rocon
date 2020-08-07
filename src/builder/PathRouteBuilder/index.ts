@@ -84,9 +84,21 @@ export class PathRouteBuilder<
     | PathRouteRecord<ActionResult, Match, boolean>
     | undefined = undefined;
 
-  private constructor(link: RouteBuilderLink<ActionResult, string>) {
+  private constructor(
+    link: RouteBuilderLink<ActionResult, string | undefined>
+  ) {
     this.#link = link;
     link.register(this, (value) => {
+      if (value === undefined) {
+        const exactRoute = this.#exactRoute;
+        return (
+          exactRoute && {
+            type: "normal",
+            value: exactRoute,
+            link: exactRoute.getAttachedBuilderLink(),
+          }
+        );
+      }
       const route = this.#routes[value];
       if (route !== undefined) {
         return {
