@@ -25,9 +25,15 @@ export const Path: <Match = {}>() => PathRouteBuilder<
   Match
 > = RawPath;
 
-export const Search: <Key extends string, Match extends { [K in Key]: string }>(
+export const Search: <
+  Key extends string,
+  Match extends {
+    [K in Key]: IsOptional extends false ? string : string | undefined;
+  },
+  IsOptional extends boolean = false
+>(
   matchKey: Key,
-  options?: SearchRouteBuilderOptions
+  options?: SearchRouteBuilderOptions<IsOptional>
 ) => SearchRouteBuilder<ActionResult, "noaction", Match> = RawSearch;
 
 export const State: <

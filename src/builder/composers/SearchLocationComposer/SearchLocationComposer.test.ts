@@ -3,7 +3,7 @@ import { SearchLocationComposer } from ".";
 describe("SearchLocationComposer", () => {
   describe("isLeaf", () => {
     it("passing nothing returns true", () => {
-      const composer = new SearchLocationComposer("k");
+      const composer = new SearchLocationComposer("k", false);
 
       expect(
         composer.isLeaf({
@@ -13,7 +13,7 @@ describe("SearchLocationComposer", () => {
       ).toBe(true);
     });
     it("passing empty returns true", () => {
-      const composer = new SearchLocationComposer("k");
+      const composer = new SearchLocationComposer("k", false);
 
       expect(
         composer.isLeaf({
@@ -24,7 +24,7 @@ describe("SearchLocationComposer", () => {
       ).toBe(true);
     });
     it("passing some pair returns false", () => {
-      const composer = new SearchLocationComposer("k");
+      const composer = new SearchLocationComposer("k", false);
 
       expect(
         composer.isLeaf({
@@ -35,7 +35,7 @@ describe("SearchLocationComposer", () => {
       ).toBe(false);
     });
     it("passing empty valued key returns false", () => {
-      const composer = new SearchLocationComposer("k");
+      const composer = new SearchLocationComposer("k", false);
 
       expect(
         composer.isLeaf({
@@ -48,7 +48,7 @@ describe("SearchLocationComposer", () => {
   });
   describe("compose", () => {
     it("composes from nothing", () => {
-      const composer = new SearchLocationComposer("k");
+      const composer = new SearchLocationComposer("k", false);
 
       expect(
         composer.compose(
@@ -69,7 +69,7 @@ describe("SearchLocationComposer", () => {
       });
     });
     it("composes from empty", () => {
-      const composer = new SearchLocationComposer("wow");
+      const composer = new SearchLocationComposer("wow", false);
 
       expect(
         composer.compose(
@@ -87,7 +87,7 @@ describe("SearchLocationComposer", () => {
       });
     });
     it("add new key", () => {
-      const composer = new SearchLocationComposer("key");
+      const composer = new SearchLocationComposer("key", false);
 
       expect(
         composer.compose(
@@ -105,7 +105,7 @@ describe("SearchLocationComposer", () => {
       });
     });
     it("override existing key", () => {
-      const composer = new SearchLocationComposer("key");
+      const composer = new SearchLocationComposer("key", false);
 
       expect(
         composer.compose(
@@ -123,7 +123,7 @@ describe("SearchLocationComposer", () => {
       });
     });
     it("percent-encoding", () => {
-      const composer = new SearchLocationComposer("key");
+      const composer = new SearchLocationComposer("key", false);
 
       expect(
         composer.compose(
@@ -140,7 +140,7 @@ describe("SearchLocationComposer", () => {
       });
     });
     it("empty value", () => {
-      const composer = new SearchLocationComposer("key");
+      const composer = new SearchLocationComposer("key", false);
 
       expect(
         composer.compose(
@@ -157,11 +157,29 @@ describe("SearchLocationComposer", () => {
         state: null,
       });
     });
+    it("optional accepts nothing and does no change", () => {
+      const composer = new SearchLocationComposer("key", true);
+
+      expect(
+        composer.compose(
+          {
+            pathname: "/",
+            search: "foo=bar",
+            state: null,
+          },
+          undefined
+        )
+      ).toEqual({
+        pathname: "/",
+        search: "foo=bar",
+        state: null,
+      });
+    });
   });
 
   describe("decompose", () => {
     it("extracts existing key", () => {
-      const composer = new SearchLocationComposer("key");
+      const composer = new SearchLocationComposer("key", false);
 
       expect(
         composer.decompose({
@@ -182,7 +200,7 @@ describe("SearchLocationComposer", () => {
       ]);
     });
     it("extracts first key", () => {
-      const composer = new SearchLocationComposer("key");
+      const composer = new SearchLocationComposer("key", false);
 
       expect(
         composer.decompose({
@@ -203,7 +221,7 @@ describe("SearchLocationComposer", () => {
       ]);
     });
     it("empty string if exhausted", () => {
-      const composer = new SearchLocationComposer("key");
+      const composer = new SearchLocationComposer("key", false);
 
       expect(
         composer.decompose({
@@ -224,7 +242,7 @@ describe("SearchLocationComposer", () => {
       ]);
     });
     it("decodes percent-encoded string", () => {
-      const composer = new SearchLocationComposer("key");
+      const composer = new SearchLocationComposer("key", false);
 
       expect(
         composer.decompose({
@@ -245,7 +263,7 @@ describe("SearchLocationComposer", () => {
       ]);
     });
     it("decodes empty value", () => {
-      const composer = new SearchLocationComposer("key");
+      const composer = new SearchLocationComposer("key", false);
 
       expect(
         composer.decompose({
@@ -266,7 +284,7 @@ describe("SearchLocationComposer", () => {
       ]);
     });
     it("decodes name-only value", () => {
-      const composer = new SearchLocationComposer("key");
+      const composer = new SearchLocationComposer("key", false);
 
       expect(
         composer.decompose({
@@ -287,7 +305,7 @@ describe("SearchLocationComposer", () => {
       ]);
     });
     it("returns empty if no key", () => {
-      const composer = new SearchLocationComposer("key");
+      const composer = new SearchLocationComposer("key", false);
 
       expect(
         composer.decompose({
@@ -296,6 +314,27 @@ describe("SearchLocationComposer", () => {
           state: null,
         })
       ).toEqual([]);
+    });
+    it("optional: returns undefined if no key", () => {
+      const composer = new SearchLocationComposer("key", true);
+
+      expect(
+        composer.decompose({
+          pathname: "/",
+          search: "wow=hi",
+          state: null,
+        })
+      ).toEqual([
+        {
+          leaf: false,
+          segment: undefined,
+          nextLocation: {
+            pathname: "/",
+            search: "wow=hi",
+            state: null,
+          },
+        },
+      ]);
     });
   });
 });

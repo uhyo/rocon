@@ -1,4 +1,5 @@
 import { BuilderLink } from "../../core/BuilderLink";
+import { OptionalIf } from "../../util/OptionalIf";
 import { isString } from "../../validator";
 import { SearchLocationComposer } from "../composers/SearchLocationComposer";
 import {
@@ -15,8 +16,9 @@ import type {
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
 
-export type SearchRouteBuilderOptions = {
+export type SearchRouteBuilderOptions<IsOptional extends boolean> = {
   searchKey?: string;
+  optional?: IsOptional;
 };
 
 export class SearchRouteBuilder<
@@ -29,26 +31,30 @@ export class SearchRouteBuilder<
     ActionResult,
     Key extends string,
     Match extends {
-      [K in Key]: string;
-    }
+      [K in Key]: IsOptional extends false ? string : string | undefined;
+    },
+    IsOptional extends boolean = false
   >(
     matchKey: Key,
-    options: SearchRouteBuilderOptions = {}
+    options: SearchRouteBuilderOptions<IsOptional> = {}
   ): SearchRouteBuilder<ActionResult, "noaction", Match> {
     const searchKey = options.searchKey ?? matchKey;
     const link = new BuilderLink<
       ActionResult,
-      string,
+      OptionalIf<IsOptional, string>,
       RouteBuilderLinkValue<ActionResult>
     >({
-      composer: new SearchLocationComposer(searchKey),
+      composer: new SearchLocationComposer(
+        searchKey,
+        options.optional || (false as IsOptional)
+      ),
     });
     const result = new SearchRouteBuilder<
       ActionResult,
       "noaction",
       Match &
         {
-          [K in Key]: string;
+          [K in Key]: IsOptional extends false ? string : string | undefined;
         }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     >(link, matchKey as any);
@@ -80,7 +86,8 @@ export class SearchRouteBuilder<
       Match &
         {
           [K in Key]: string;
-        }
+        },
+      false
     >(key);
     const r: RouteRecordType<
       ActionResult,

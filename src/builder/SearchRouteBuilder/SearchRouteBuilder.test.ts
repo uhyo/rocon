@@ -96,4 +96,32 @@ describe("SearchRouteBuilder", () => {
     });
     expect(res).toEqual([]);
   });
+  it("optional flag allows nonexistent query param", () => {
+    const toplevel = SearchRouteBuilder.init("foo", { optional: true }).action(
+      ({ foo }) => `foo is ${foo?.slice(0)}`
+    );
+    const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
+      pathname: "/",
+      search: "boom=wow",
+      state: null,
+    });
+    expect(res).toEqual([
+      {
+        remainingLocation: {
+          pathname: "/",
+          search: "boom=wow",
+          state: null,
+        },
+        currentLocation: {
+          pathname: "/",
+          search: "",
+          state: null,
+        },
+        match: {
+          foo: undefined,
+        },
+        route: expect.any(MatchingRouteRecord),
+      },
+    ]);
+  });
 });
