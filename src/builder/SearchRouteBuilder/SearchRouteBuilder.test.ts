@@ -85,4 +85,15 @@ describe("SearchRouteBuilder", () => {
     ]);
     expect(res[0].route.action(res[0].match as never)).toBe("foo is wow");
   });
+  it("does not resolve for no matching query param", () => {
+    const toplevel = SearchRouteBuilder.init("foo").action(
+      ({ foo }) => `foo is ${foo.slice(0)}`
+    );
+    const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
+      pathname: "/",
+      search: "boom=wow",
+      state: null,
+    });
+    expect(res).toEqual([]);
+  });
 });
