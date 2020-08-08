@@ -20,7 +20,8 @@ export type ResolvedSegmentType<ActionResult, Segment, Value> =
     };
 
 export type SegmentResolver<ActionResult, Segment, Value> = (
-  segment: Segment
+  segment: Segment,
+  remainingLocation: Location
 ) => ResolvedSegmentType<ActionResult, Segment, Value> | undefined;
 
 /**

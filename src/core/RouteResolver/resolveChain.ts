@@ -14,7 +14,7 @@ export function resolveChain<ActionResult, Value>(
   const decomposed = link.composer.decompose(location);
   return decomposed.flatMap(({ leaf, segment, nextLocation }) => {
     const resolved = link.followInheritanceChain((link) =>
-      link.resolveSegment?.(segment)
+      link.resolveSegment?.(segment, nextLocation)
     ).result;
     if (resolved === undefined) {
       return [];
@@ -28,26 +28,34 @@ export function resolveChain<ActionResult, Value>(
 
     const childLink = resolved.link;
 
-    if (
-      childLink === undefined ||
-      leaf ||
-      childLink.composer.isLeaf(nextLocation)
-    ) {
+    if (childLink === undefined) {
       return [
         {
           route: resolved.value,
-          link: childLink,
           match,
           remainingLocation: nextLocation,
           currentLocation: nextCurrentLocation,
         },
       ];
     }
+
+    const validFlag = leaf || childLink.composer.isLeaf(nextLocation);
     const result = resolveChain<ActionResult, Value>(
       childLink,
       nextLocation,
       nextCurrentLocation
     );
+
+    if (result.length === 0 && validFlag) {
+      return [
+        {
+          route: resolved.value,
+          match,
+          remainingLocation: nextLocation,
+          currentLocation: nextCurrentLocation,
+        },
+      ];
+    }
     switch (resolved.type) {
       case "normal": {
         return result;

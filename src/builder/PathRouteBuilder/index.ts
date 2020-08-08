@@ -21,6 +21,7 @@ import type {
   ExistingWildcardFlagType,
   WildcardFlagType,
 } from "../WildcardFlagType";
+import { isRootPath } from "./isRootPath";
 import type { PathSingleRouteInterface } from "./PathSingleRouteInterface";
 
 type RouteRecordsBase<ActionResult> = Record<
@@ -37,6 +38,18 @@ type AnyRouteType<
   ? MatchingRouteRecord<
       ActionResult,
       string,
+      Match,
+      WildcardFlag extends "hasaction" ? true : false
+    >
+  : undefined;
+
+type ExactRouteType<
+  ActionResult,
+  WildcardFlag extends WildcardFlagType,
+  Match
+> = WildcardFlag extends ExistingWildcardFlagType
+  ? PathRouteRecord<
+      ActionResult,
       Match,
       WildcardFlag extends "hasaction" ? true : false
     >
@@ -88,8 +101,12 @@ export class PathRouteBuilder<
     link: RouteBuilderLink<ActionResult, string | undefined>
   ) {
     this.#link = link;
-    link.register(this, (value) => {
+    link.register(this, (value, remainingLocation) => {
       if (value === undefined) {
+        // this is for exact route, so we check whether the route is exact
+        if (!isRootPath(remainingLocation)) {
+          return undefined;
+        }
         const exactRoute = this.#exactRoute;
         return (
           exactRoute && {
@@ -327,6 +344,13 @@ export class PathRouteBuilder<
       AnyFlag,
       Match
     >;
+  }
+
+  /**
+   * Route record of the exact route.
+   */
+  get exactRoute(): ExactRouteType<ActionResult, ExactFlag, Match> {
+    return this.#exactRoute as ExactRouteType<ActionResult, ExactFlag, Match>;
   }
 
   getBuilderLink(): RouteBuilderLink<ActionResult, string> {
