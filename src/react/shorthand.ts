@@ -12,6 +12,7 @@ import {
   Search as RawSearch,
   State as RawState,
 } from "../shorthand";
+import { OptionalIf } from "../util/OptionalIf";
 import { Validator } from "../validator";
 import { ReactElement } from "./types/ReactElement";
 
@@ -39,9 +40,10 @@ export const Search: <
 export const State: <
   StateValue,
   Key extends string,
-  Match extends { [K in Key]: StateValue }
+  Match extends { [K in Key]: OptionalIf<IsOptional, StateValue> },
+  IsOptional extends boolean = false
 >(
   matchKey: Key,
   validator: Validator<StateValue>,
-  options?: StateRouteBuilerOptions
+  options?: StateRouteBuilerOptions<IsOptional>
 ) => StateRouteBuilder<ActionResult, StateValue, "noaction", Match> = RawState;
