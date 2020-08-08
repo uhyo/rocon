@@ -3,14 +3,24 @@ import type {
   DecomposeResult,
   LocationComposer,
 } from "../../../core/LocationComposer";
+import { OptionalIf } from "../../../util/OptionalIf";
 import type { Validator } from "../../../validator";
 
-export class StateLocationComposer<Key extends string, StateValue>
-  implements LocationComposer<StateValue> {
+export class StateLocationComposer<
+  Key extends string,
+  StateValue,
+  IsOptional extends boolean
+> implements LocationComposer<OptionalIf<IsOptional, StateValue>> {
   readonly key: Key;
+  readonly optional: IsOptional;
   readonly validator: Validator<StateValue>;
-  constructor(key: Key, validator: Validator<StateValue>) {
+  constructor(
+    key: Key,
+    validator: Validator<StateValue>,
+    optional: IsOptional
+  ) {
     this.key = key;
+    this.optional = optional;
     this.validator = validator;
   }
 
@@ -20,7 +30,7 @@ export class StateLocationComposer<Key extends string, StateValue>
   }
   compose<S extends BaseState>(
     base: Readonly<Location<S>>,
-    segment: StateValue
+    segment: OptionalIf<IsOptional, StateValue>
   ): Location<S> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newState = {
@@ -35,11 +45,24 @@ export class StateLocationComposer<Key extends string, StateValue>
   }
   decompose<S extends BaseState>(
     location: Readonly<Location<S>>
-  ): Array<DecomposeResult<StateValue, Omit<S, Key>>> {
+  ): Array<DecomposeResult<OptionalIf<IsOptional, StateValue>, Omit<S, Key>>> {
     const { state } = location;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const value = (state as any)?.[this.key];
-    if (value === undefined || !this.validator(value)) {
+    if (value === undefined) {
+      if (this.optional) {
+        return [
+          {
+            leaf: false,
+            segment: undefined as OptionalIf<IsOptional, StateValue>,
+            nextLocation: location,
+          },
+        ];
+      } else {
+        return [];
+      }
+    }
+    if (!this.validator(value)) {
       return [];
     }
 
@@ -52,7 +75,7 @@ export class StateLocationComposer<Key extends string, StateValue>
     return [
       {
         leaf: false,
-        segment: value,
+        segment: value as OptionalIf<IsOptional, StateValue>,
         nextLocation: nextLocation,
       },
     ];

@@ -44,7 +44,7 @@ export class StateRouteBuilder<
       StateValue,
       RouteBuilderLinkValue<ActionResult>
     >({
-      composer: new StateLocationComposer(stateKey, validator),
+      composer: new StateLocationComposer(stateKey, validator, false),
     });
     const result = new StateRouteBuilder<
       ActionResult,

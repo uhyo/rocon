@@ -5,7 +5,7 @@ const isString = (value: unknown): value is string => typeof value === "string";
 describe("StateLocationComposer", () => {
   describe("isLeaf", () => {
     it("null is leaf", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
 
       expect(
         composer.isLeaf({
@@ -15,7 +15,7 @@ describe("StateLocationComposer", () => {
       ).toBe(true);
     });
     it("nonexisting value is leaf", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
 
       expect(
         composer.isLeaf({
@@ -25,7 +25,7 @@ describe("StateLocationComposer", () => {
       ).toBe(true);
     });
     it("undefined value is leaf", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
 
       expect(
         composer.isLeaf({
@@ -37,7 +37,7 @@ describe("StateLocationComposer", () => {
       ).toBe(true);
     });
     it("null value is not leaf", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
 
       expect(
         composer.isLeaf({
@@ -49,7 +49,7 @@ describe("StateLocationComposer", () => {
       ).toBe(false);
     });
     it("other value is not leaf", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
 
       expect(
         composer.isLeaf({
@@ -64,7 +64,7 @@ describe("StateLocationComposer", () => {
 
   describe("compose", () => {
     it("compose from empty", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
       expect(
         composer.compose(
           {
@@ -83,7 +83,7 @@ describe("StateLocationComposer", () => {
       });
     });
     it("add key", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
       expect(
         composer.compose(
           {
@@ -103,7 +103,7 @@ describe("StateLocationComposer", () => {
       });
     });
     it("override key", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
       expect(
         composer.compose(
           {
@@ -125,7 +125,7 @@ describe("StateLocationComposer", () => {
 
   describe("decompose", () => {
     it("empty returns empty", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
       expect(
         composer.decompose({
           pathname: "/",
@@ -134,7 +134,7 @@ describe("StateLocationComposer", () => {
       ).toEqual([]);
     });
     it("undefined returns empty", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
       expect(
         composer.decompose({
           pathname: "/",
@@ -146,7 +146,7 @@ describe("StateLocationComposer", () => {
       ).toEqual([]);
     });
     it("nonexisting key returns empty", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
       expect(
         composer.decompose({
           pathname: "/",
@@ -157,7 +157,7 @@ describe("StateLocationComposer", () => {
       ).toEqual([]);
     });
     it("invalid value returns empty", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
       expect(
         composer.decompose({
           pathname: "/",
@@ -168,7 +168,7 @@ describe("StateLocationComposer", () => {
       ).toEqual([]);
     });
     it("removes key from state", () => {
-      const composer = new StateLocationComposer("key", isNumber);
+      const composer = new StateLocationComposer("key", isNumber, false);
       expect(
         composer.decompose({
           pathname: "/",
@@ -191,6 +191,58 @@ describe("StateLocationComposer", () => {
           },
         },
       ]);
+    });
+    it("optional: segment is undefined for null state", () => {
+      const composer = new StateLocationComposer("key", isNumber, true);
+      expect(
+        composer.decompose({
+          pathname: "/",
+          search: "foo=bar",
+          state: null,
+        })
+      ).toEqual([
+        {
+          leaf: false,
+          segment: undefined,
+          nextLocation: {
+            pathname: "/",
+            search: "foo=bar",
+            state: null,
+          },
+        },
+      ]);
+    });
+    it("optional: segment is undefined for nonexisting state", () => {
+      const composer = new StateLocationComposer("key", isNumber, true);
+      expect(
+        composer.decompose({
+          pathname: "/",
+          search: "foo=bar",
+          state: {},
+        })
+      ).toEqual([
+        {
+          leaf: false,
+          segment: undefined,
+          nextLocation: {
+            pathname: "/",
+            search: "foo=bar",
+            state: {},
+          },
+        },
+      ]);
+    });
+    it("optional: still no result for invalid state value", () => {
+      const composer = new StateLocationComposer("key", isNumber, true);
+      expect(
+        composer.decompose({
+          pathname: "/",
+          search: "foo=bar",
+          state: {
+            key: "foobar",
+          },
+        })
+      ).toEqual([]);
     });
   });
 });
