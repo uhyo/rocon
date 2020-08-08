@@ -20,11 +20,24 @@ import type { ActionTypeOfRouteRecord } from "./RouteRecordBase";
 export interface AttachFunction<ActionResult, Match> {
   <
     Defs extends RoutesDefinition<ActionResult>,
-    WildcardFlag extends WildcardFlagType,
+    AnyFlag extends WildcardFlagType,
+    ExactFlag extends WildcardFlagType,
     IntrinsicMatch
   >(
-    builder: PathRouteBuilder<ActionResult, Defs, WildcardFlag, IntrinsicMatch>
-  ): PathRouteBuilder<ActionResult, Defs, WildcardFlag, IntrinsicMatch & Match>;
+    builder: PathRouteBuilder<
+      ActionResult,
+      Defs,
+      AnyFlag,
+      ExactFlag,
+      IntrinsicMatch
+    >
+  ): PathRouteBuilder<
+    ActionResult,
+    Defs,
+    AnyFlag,
+    ExactFlag,
+    IntrinsicMatch & Match
+  >;
   <WildcardFlag extends ExistingWildcardFlagType, IntrinsicMatch>(
     builder: SearchRouteBuilder<ActionResult, WildcardFlag, IntrinsicMatch>
   ): SearchRouteBuilder<ActionResult, WildcardFlag, IntrinsicMatch & Match>;

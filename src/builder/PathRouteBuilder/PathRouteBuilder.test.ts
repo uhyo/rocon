@@ -1,6 +1,7 @@
 import { PathRouteBuilder } from ".";
+import { RoutePathResolver } from "../RoutePathResolver";
+import { PathRouteRecord } from "../RouteRecord";
 import { getRouteRecordLocation } from "../RouteRecord/getRouteRecordLocation";
-import { wildcardRouteKey } from "../symbols";
 
 describe("PathRouteBuilder", () => {
   describe("routes", () => {
@@ -189,19 +190,13 @@ describe("PathRouteBuilder", () => {
       const res = PathRouteBuilder.init<string>().any("id", {
         action: ({ id }) => `id is ${id.slice(0, 8)}`,
       });
-      const routes = res.getRoutes();
-      expect(routes[wildcardRouteKey].route.action({ id: "wow" })).toEqual(
-        "id is wow"
-      );
+      expect(res.anyRoute.action({ id: "wow" })).toEqual("id is wow");
     });
     it("sub route of any", () => {
       const res = PathRouteBuilder.init<string>().any("id", {
         action: ({ id }) => `id is ${id.slice(0, 8)}`,
       });
-      const routes = res.getRoutes();
-      const subRoutes = PathRouteBuilder.attachTo(
-        routes[wildcardRouteKey].route
-      )
+      const subRoutes = PathRouteBuilder.attachTo(res.anyRoute)
         .routes({
           hoge: {
             action: () => "sub",
@@ -213,6 +208,83 @@ describe("PathRouteBuilder", () => {
         pathname: "/wow/hoge",
         state: null,
       });
+    });
+  });
+
+  describe("exact route", () => {
+    it("root route location", () => {
+      const res = PathRouteBuilder.init().exact({
+        action: () => "I am root",
+      });
+      expect(getRouteRecordLocation(res.exactRoute, {})).toEqual({
+        pathname: "/",
+        state: null,
+      });
+    });
+    it("root route action", () => {
+      const res = PathRouteBuilder.init().exact({
+        action: () => "I am root",
+      });
+      expect(res.exactRoute.action({})).toBe("I am root");
+    });
+    describe("resolve", () => {
+      it("resolve root", () => {
+        const toplevel = PathRouteBuilder.init()
+          .exact({
+            action: () => "I am root",
+          })
+          .route("foo", (foo) => foo.action(() => "I am foo"));
+        const resolver = RoutePathResolver.getFromBuilder(toplevel);
+        const res = resolver.resolve({
+          pathname: "/",
+          state: null,
+        });
+        expect(res).toEqual([
+          {
+            remainingLocation: {
+              pathname: "/",
+              state: null,
+            },
+            currentLocation: {
+              pathname: "/",
+              state: null,
+            },
+            match: {},
+            route: expect.any(PathRouteRecord),
+          },
+        ]);
+        expect(res[0].route.action(res[0].match as never)).toBe("I am root");
+      });
+    });
+    it("attached sub root", () => {
+      const toplevel = PathRouteBuilder.init()
+        .exact({
+          action: () => "I am root",
+        })
+        .route("foo", (foo) => foo.action(() => "I am foo"));
+      toplevel._.foo.attach(PathRouteBuilder.init()).exact({
+        action: () => "I am foo exact",
+      });
+      const resolver = RoutePathResolver.getFromBuilder(toplevel);
+      const res = resolver.resolve({
+        pathname: "/foo",
+        state: null,
+      });
+      expect(res).toEqual([
+        {
+          remainingLocation: {
+            pathname: "/",
+            state: null,
+          },
+          currentLocation: {
+            pathname: "/foo",
+            state: null,
+          },
+          match: {},
+          route: expect.any(PathRouteRecord),
+        },
+      ]);
+      expect(res[0].route.action(res[0].match as never)).toBe("I am foo exact");
     });
   });
 });

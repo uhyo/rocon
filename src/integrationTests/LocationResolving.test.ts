@@ -1,7 +1,6 @@
 import { Path, Rocon, Search, State } from "..";
 import { getRouteRecordLocation } from "../builder/RouteRecord/getRouteRecordLocation";
 import { MatchingRouteRecord } from "../builder/RouteRecord/MatchingRouteRecord";
-import { wildcardRouteKey } from "../builder/symbols";
 import { Resolver } from "../shorthand";
 import { isString } from "../validator";
 
@@ -60,14 +59,11 @@ describe("Composed Location resolving", () => {
     });
     it("3", () => {
       const builder = Path<string>().any("user", {});
-      builder
-        .getRoutes()
-        [wildcardRouteKey].route.attach(Path<string>())
-        .routes({
-          profile: {
-            action: ({ user }) => `Hello, user ${user}`,
-          },
-        });
+      builder.anyRoute.attach(Path<string>()).routes({
+        profile: {
+          action: ({ user }) => `Hello, user ${user}`,
+        },
+      });
 
       const resolver = Resolver(builder);
       const results = resolver.resolve({

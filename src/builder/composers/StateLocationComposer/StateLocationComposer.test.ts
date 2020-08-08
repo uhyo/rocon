@@ -179,16 +179,17 @@ describe("StateLocationComposer", () => {
           },
         })
       ).toEqual([
-        [
-          1234,
-          {
+        {
+          leaf: false,
+          segment: 1234,
+          nextLocation: {
             pathname: "/",
             search: "foo=bar",
             state: {
               hoge: "あいう",
             },
           },
-        ],
+        },
       ]);
     });
   });

@@ -12,51 +12,70 @@ export function resolveChain<ActionResult, Value>(
   currentLocation: Location
 ): Array<ResolvedRoute<Value>> {
   const decomposed = link.composer.decompose(location);
-  return decomposed.flatMap(([seg, next]) => {
-    const resolved = link.followInheritanceChain((link) =>
-      link.resolveSegment?.(seg)
-    ).result;
-    if (resolved === undefined) {
-      return [];
-    }
-    const nextCurrentLocation = link.composer.compose(currentLocation, seg);
-    const match = (resolved.type === "normal"
-      ? {}
-      : {
-          [resolved.matchKey]: seg,
-        }) as never;
-
-    const childLink = resolved.link;
-
-    if (childLink === undefined || childLink.composer.isLeaf(next)) {
-      return [
-        {
-          route: resolved.value,
-          link: childLink,
-          match,
-          remainingLocation: next,
-          currentLocation: nextCurrentLocation,
-        },
-      ];
-    }
-    const result = resolveChain<ActionResult, Value>(
-      childLink,
-      next,
-      nextCurrentLocation
-    );
-    switch (resolved.type) {
-      case "normal": {
-        return result;
+  return decomposed.flatMap(
+    ({ segment, nextLocation: nextRemainingLocation }) => {
+      const resolved = link.followInheritanceChain((link) =>
+        link.resolveSegment?.(segment, nextRemainingLocation)
+      ).result;
+      if (resolved === undefined) {
+        return [];
       }
-      case "matching": {
-        const key = resolved.matchKey;
-        const matchedValue = resolved.matchValue;
-        return result.map((res) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (res.match as any)[key] = matchedValue;
-          return res;
-        });
+      const nextCurrentLocation = link.composer.compose(
+        currentLocation,
+        segment
+      );
+      const match = (resolved.type === "normal"
+        ? {}
+        : {
+            [resolved.matchKey]: segment,
+          }) as never;
+
+      const childLink = resolved.link;
+
+      if (childLink === undefined) {
+        return [
+          {
+            route: resolved.value,
+            match,
+            remainingLocation: nextRemainingLocation,
+            currentLocation: nextCurrentLocation,
+          },
+        ];
+      }
+
+      const result = resolveChain<ActionResult, Value>(
+        childLink,
+        nextRemainingLocation,
+        nextCurrentLocation
+      );
+
+      if (
+        result.length === 0 &&
+        childLink.composer.isLeaf(nextRemainingLocation)
+      ) {
+        return [
+          {
+            route: resolved.value,
+            match,
+            remainingLocation: nextRemainingLocation,
+            currentLocation: nextCurrentLocation,
+          },
+        ];
+      }
+      switch (resolved.type) {
+        case "normal": {
+          return result;
+        }
+        case "matching": {
+          const key = resolved.matchKey;
+          const matchedValue = resolved.matchValue;
+          return result.map((res) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (res.match as any)[key] = matchedValue;
+            return res;
+          });
+        }
       }
     }
-  });
+  );
 }

@@ -1,5 +1,8 @@
 import type { BaseState, Location } from "../../../core/Location";
-import type { LocationComposer } from "../../../core/LocationComposer";
+import type {
+  DecomposeResult,
+  LocationComposer,
+} from "../../../core/LocationComposer";
 import type { Validator } from "../../../validator";
 
 export class StateLocationComposer<Key extends string, StateValue>
@@ -32,7 +35,7 @@ export class StateLocationComposer<Key extends string, StateValue>
   }
   decompose<S extends BaseState>(
     location: Readonly<Location<S>>
-  ): Array<[StateValue, Location<Omit<S, Key>>]> {
+  ): Array<DecomposeResult<StateValue, Omit<S, Key>>> {
     const { state } = location;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const value = (state as any)?.[this.key];
@@ -42,14 +45,16 @@ export class StateLocationComposer<Key extends string, StateValue>
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [this.key]: _, ...rest } = state;
+    const nextLocation = {
+      ...location,
+      state: rest,
+    };
     return [
-      [
-        value,
-        {
-          ...location,
-          state: rest,
-        },
-      ],
+      {
+        leaf: false,
+        segment: value,
+        nextLocation: nextLocation,
+      },
     ];
   }
 }

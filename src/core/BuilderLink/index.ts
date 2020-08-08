@@ -1,10 +1,11 @@
 import { noop } from "../../util/noop";
 import { Location } from "../Location";
 import type { LocationComposer } from "../LocationComposer";
-import { RouteResolver, SegmentResolver } from "../RouteResolver";
+import { RouteResolver } from "../RouteResolver";
 import type { BuilderLinkOptions } from "./BuilderLinkOptions";
 import { BuilderLinkState } from "./BuilderLinkState";
 import { HasBuilderLink } from "./HasBuilderLink";
+import { SegmentResolver } from "./SegmentResolver";
 
 /**
  * Link between parent and child builders.

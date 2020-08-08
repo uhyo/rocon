@@ -21,6 +21,7 @@ export const Path: <Match = {}>() => PathRouteBuilder<
   ActionResult,
   {},
   "none",
+  "none",
   Match
 > = RawPath;
 

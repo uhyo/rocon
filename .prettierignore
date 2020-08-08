@@ -1,4 +1,2 @@
 # Waiting for TS 4.0 support
-src/HistoryRoutes/RouteObject.ts
-src/core/LocationComposer.ts
 src/react/types/NavigateFunction.ts

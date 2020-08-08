@@ -1,8 +1,5 @@
 import type { Location } from "../../core/Location";
 import type { RoutesDefinition } from "../RoutesDefinitionObject";
-import { wildcardRouteKey } from "../symbols";
-import type { WildcardFlagType } from "../WildcardFlagType";
-import type { MatchingRouteRecordObject } from "./MatchingRouteRecord";
 import { PathRouteRecord } from "./PathRouteRecord";
 import type { RouteRecordType } from "./RouteRecordType";
 
@@ -30,28 +27,3 @@ type ActionToHasAction<A> = A extends unknown
     ? false
     : true
   : never;
-
-export type WildcardInRouteRecords<
-  ActionResult,
-  Value,
-  WildcardFlag extends WildcardFlagType,
-  Match
-> = {
-  none: {};
-  noaction: {
-    readonly [wildcardRouteKey]: MatchingRouteRecordObject<
-      ActionResult,
-      Value,
-      Match,
-      false
-    >;
-  };
-  hasaction: {
-    readonly [wildcardRouteKey]: MatchingRouteRecordObject<
-      ActionResult,
-      Value,
-      Match,
-      true
-    >;
-  };
-}[WildcardFlag];
