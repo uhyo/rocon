@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from "react";
 import { RoutePathResolver } from "../../builder/RoutePathResolver";
 import { RouteContext } from "../contexts/RouteContext";
+import { LocationNotFoundError } from "../errors/LocationNotFoundError";
 import { ReactElement } from "../types/ReactElement";
 import type { ReactRouteBuilder } from "../types/ReactRouteBuilder";
 import { useLocation } from "./useLocation";
@@ -33,9 +34,13 @@ export const useRoutes = (builder: ReactRouteBuilder): ReactElement | null => {
     };
   }, [resolver, location]);
 
-  return obj ? (
+  if (obj === undefined) {
+    throw new LocationNotFoundError("Current location could not be resolved.");
+  }
+
+  return (
     <RouteContext.Provider value={obj.routeContextValue}>
       {obj.result}
     </RouteContext.Provider>
-  ) : null;
+  );
 };

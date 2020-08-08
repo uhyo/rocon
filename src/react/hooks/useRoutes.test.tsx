@@ -1,8 +1,41 @@
 import React, { useMemo } from "react";
+import {
+  isLocationNotFoundError,
+  LocationNotFoundError,
+} from "../errors/LocationNotFoundError";
 import { Path } from "../shorthand";
 import { renderInLocation, screen } from "../test-utils";
 import { useNavigate } from "./useNavigate";
 import { useRoutes } from "./useRoutes";
+
+class LocationNotFoundErrorBoundary extends React.Component<
+  {},
+  {
+    error?: LocationNotFoundError;
+  }
+> {
+  state: {
+    error?: LocationNotFoundError;
+  } = {};
+  componentDidCatch(error: unknown) {
+    if (isLocationNotFoundError(error)) {
+      this.setState({
+        error,
+      });
+    }
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <p data-testid="error">
+          Caught a LocationNotFoundError: {this.state.error.message}
+        </p>
+      );
+    }
+    return <React.Fragment>{this.props.children}</React.Fragment>;
+  }
+}
 
 describe("useRoutes", () => {
   describe("renders matching action", () => {
@@ -38,7 +71,7 @@ describe("useRoutes", () => {
       expect(screen.queryByText("I AM BAR")).toBeInTheDocument();
     });
   });
-  it("renders nothing for non-matching root", () => {
+  it("throws error for non-matching route", () => {
     const location = {
       pathname: "/baz",
       state: null,
@@ -53,10 +86,12 @@ describe("useRoutes", () => {
     renderInLocation(
       location,
       <div data-testid="root">
-        <Component />
+        <LocationNotFoundErrorBoundary>
+          <Component />
+        </LocationNotFoundErrorBoundary>
       </div>
     );
-    expect(screen.queryByTestId("root")?.innerHTML).toBe("");
+    expect(screen.queryByTestId("error")).toBeInTheDocument();
   });
   describe("auto-attach", () => {
     it("attaches to parent", () => {
