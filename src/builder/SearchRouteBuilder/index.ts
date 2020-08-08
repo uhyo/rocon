@@ -103,7 +103,7 @@ export class SearchRouteBuilder<
   #route: MatchingRouteRecord<ActionResult, string, Match, boolean>;
 
   private constructor(
-    link: RouteBuilderLink<ActionResult, string>,
+    link: RouteBuilderLink<ActionResult, string | undefined>,
     matchKey: Extract<keyof Match, string>
   ) {
     super();
