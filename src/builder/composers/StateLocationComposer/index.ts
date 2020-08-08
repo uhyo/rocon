@@ -76,7 +76,7 @@ export class StateLocationComposer<
       {
         leaf: false,
         segment: value as OptionalIf<IsOptional, StateValue>,
-        nextLocation: nextLocation,
+        nextLocation,
       },
     ];
   }

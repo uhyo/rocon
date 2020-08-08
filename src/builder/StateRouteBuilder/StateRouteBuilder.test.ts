@@ -131,5 +131,37 @@ describe("StateRouteBuilder", () => {
       ]);
       expect(res[0].route.action(res[0].match as never)).toBe("foo is 1234.00");
     });
+    it("optional state", () => {
+      const toplevel = StateRouteBuilder.init("foo", isNumber, {
+        optional: true,
+      }).action(({ foo }) => `foo is ${foo?.toFixed(2)}`);
+      const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
+        pathname: "/foo",
+        state: {
+          wow: 1234,
+        },
+      });
+      expect(res).toEqual([
+        {
+          remainingLocation: {
+            pathname: "/foo",
+            state: {
+              wow: 1234,
+            },
+          },
+          currentLocation: {
+            pathname: "/",
+            state: {},
+          },
+          match: {
+            foo: undefined,
+          },
+          route: expect.any(MatchingRouteRecord),
+        },
+      ]);
+      expect(res[0].route.action(res[0].match as never)).toBe(
+        "foo is undefined"
+      );
+    });
   });
 });

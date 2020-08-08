@@ -1,4 +1,5 @@
 import { BuilderLink } from "../../core/BuilderLink";
+import { OptionalIf } from "../../util/OptionalIf";
 import type { Validator } from "../../validator";
 import { StateLocationComposer } from "../composers/StateLocationComposer";
 import {
@@ -15,8 +16,9 @@ import {
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
 
-export type StateRouteBuilerOptions = {
+export type StateRouteBuilerOptions<IsOptional extends boolean> = {
   stateKey?: string;
+  optional?: IsOptional;
 };
 
 export class StateRouteBuilder<
@@ -31,20 +33,25 @@ export class StateRouteBuilder<
     StateValue,
     Key extends string,
     Match extends {
-      [K in Key]: StateValue;
-    }
+      [K in Key]: OptionalIf<IsOptional, StateValue>;
+    },
+    IsOptional extends boolean = false
   >(
     matchKey: Key,
     validator: Validator<StateValue>,
-    options: StateRouteBuilerOptions = {}
+    options: StateRouteBuilerOptions<IsOptional> = {}
   ): StateRouteBuilder<ActionResult, StateValue, "noaction", Match> {
     const stateKey = options.stateKey ?? matchKey;
     const link = new BuilderLink<
       ActionResult,
-      StateValue,
+      OptionalIf<IsOptional, StateValue>,
       RouteBuilderLinkValue<ActionResult>
     >({
-      composer: new StateLocationComposer(stateKey, validator, false),
+      composer: new StateLocationComposer(
+        stateKey,
+        validator,
+        options.optional || (false as IsOptional)
+      ),
     });
     const result = new StateRouteBuilder<
       ActionResult,
@@ -103,7 +110,7 @@ export class StateRouteBuilder<
   #route: MatchingRouteRecord<ActionResult, StateValue, Match, boolean>;
 
   private constructor(
-    link: RouteBuilderLink<ActionResult, StateValue>,
+    link: RouteBuilderLink<ActionResult, StateValue | undefined>,
     matchKey: Extract<keyof Match, string>,
     validator: Validator<StateValue>
   ) {
