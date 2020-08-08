@@ -44,7 +44,7 @@ export class SearchLocationComposer implements LocationComposer<string> {
       {
         leaf: false,
         segment: value,
-        nextLocation,
+        nextLocation: nextLocation,
       },
     ];
   }

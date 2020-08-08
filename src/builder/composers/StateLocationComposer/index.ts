@@ -53,7 +53,7 @@ export class StateLocationComposer<Key extends string, StateValue>
       {
         leaf: false,
         segment: value,
-        nextLocation,
+        nextLocation: nextLocation,
       },
     ];
   }

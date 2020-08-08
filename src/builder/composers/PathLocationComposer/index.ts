@@ -46,7 +46,7 @@ export class PathLocationComposer
       {
         leaf: false,
         segment,
-        nextLocation,
+        nextLocation: nextLocation,
       },
     ];
   }
