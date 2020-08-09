@@ -17,13 +17,25 @@ const b1 = PathRouteBuilder.init<string>().routes({
   noaction: {},
 });
 
-const b2 = b1.any("id", {
-  action: ({ id }) => `id is ${id}`,
-});
+// TODO: clone
+const b2 = PathRouteBuilder.init<string>()
+  .routes({
+    foo: {
+      action: () => "foo!",
+    },
+    bar: {
+      action: () => "bar",
+    },
+    baz: {
+      action: () => "baz.",
+    },
+    noaction: {},
+  })
+  .any("id", {
+    action: ({ id }) => `id is ${id}`,
+  });
 
-const routes = b1.getRoutes();
-
-routes.foo.attach(
+b1._.foo.attach(
   PathRouteBuilder.init<string>().routes({
     hoge: {
       action: () => "hoge",
@@ -31,13 +43,18 @@ routes.foo.attach(
   })
 );
 
-routes.bar.attach(PathRouteBuilder.init<string>()).routes({
+b1._.bar.attach(PathRouteBuilder.init<string>()).routes({
+  fuga: {
+    action: () => "fuga",
+  },
+});
+b2._.bar.attach(PathRouteBuilder.init<string>()).routes({
   fuga: {
     action: () => "fuga",
   },
 });
 
-routes.noaction.attach(
+b1._.noaction.attach(
   PathRouteBuilder.init<string>().routes({
     wow: {
       action: () => "wow",

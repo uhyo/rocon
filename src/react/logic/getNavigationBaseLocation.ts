@@ -7,12 +7,12 @@ export const getNavigationBaseLocation = (
   parentRoute: RouteContextValue | undefined,
   route: ReactRouteRecord<never>
 ): Location | undefined => {
-  const ancenstorRoutes = parentRoute?.ancestorRoutes;
+  const ancestorRoutes = parentRoute?.ancestorRoutes;
   const routeTopmostBuilderLink = route[
     routeRecordParentKey
   ].getAttachmentRoot();
-  return (
-    ancenstorRoutes?.find(({ link }) => link === routeTopmostBuilderLink)
-      ?.location || parentRoute?.routeLocation
+  const record = ancestorRoutes?.find(
+    ({ link }) => link === routeTopmostBuilderLink
   );
+  return record?.location || parentRoute?.routeLocation;
 };

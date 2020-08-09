@@ -125,9 +125,11 @@ export class BuilderLink<ActionResult, Segment, Value>
    * Returns the topmost and uninherited link.
    */
   getAttachmentRoot(): BuilderLink<ActionResult, unknown, Value> {
-    const ls = this.collectUpToTop();
-    const top = ls.length === 0 ? this : ls[ls.length - 1].link;
-    return top.followInheritanceChain(noop).last;
+    return this.followInheritanceChain((link) => {
+      const ls = link.collectUpToTop();
+      const top = ls.length === 0 ? link : ls[ls.length - 1].link;
+      return top.followInheritanceChain(noop).last;
+    }).result;
   }
 
   checkInvalidation() {
@@ -173,6 +175,10 @@ export class BuilderLink<ActionResult, Segment, Value>
           composer: this.composer,
         });
         result.#state = this.#state;
+        this.#state = {
+          state: "inherited",
+          inheritor: result,
+        };
         return result;
       }
       case "attaching": {

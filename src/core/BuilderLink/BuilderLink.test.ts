@@ -126,7 +126,7 @@ describe("BuilderLink", () => {
 
       link2.attachToParent(parent, getter);
 
-      expect(link.getParentLinkAndSegmentGetter()).toBeUndefined();
+      expect(link.getParentLinkAndSegmentGetter()).toEqual([getter, parent]);
     });
   });
 });

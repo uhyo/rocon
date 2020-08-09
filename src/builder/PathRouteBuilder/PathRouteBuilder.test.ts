@@ -58,23 +58,6 @@ describe("PathRouteBuilder", () => {
         state: null,
       });
     });
-
-    it("PathRouteBuilder is immutable", () => {
-      const b1 = PathRouteBuilder.init<string>().routes({
-        foo: {
-          action: () => "foo!",
-        },
-      });
-      const b2 = b1.routes({
-        bar: {
-          action: () => "bar?",
-        },
-      });
-      const routes1 = b1.getRoutes();
-      expect(Object.keys(routes1)).toEqual(["foo"]);
-      const routes2 = b2.getRoutes();
-      expect(Object.keys(routes2)).toEqual(["foo", "bar"]);
-    });
   });
   describe("route", () => {
     it("just add one route", () => {
