@@ -64,7 +64,7 @@ export class BuilderLink<ActionResult, Segment, Value>
   /**
    * Follow inheritance chain and run a function at the end.
    */
-  private followInheritanceChain<Result>(
+  followInheritanceChain<Result>(
     callback: (link: BuilderLink<ActionResult, Segment, Value>) => Result
   ): {
     result: Result;
@@ -90,7 +90,7 @@ export class BuilderLink<ActionResult, Segment, Value>
   /**
    * Collect pairs of link and segment between its parent.
    */
-  collectUpToTop(): Array<{
+  private collectUpToTop(): Array<{
     link: BuilderLink<ActionResult, unknown, Value>;
     segmentGetter: (match: unknown) => unknown;
   }> {
