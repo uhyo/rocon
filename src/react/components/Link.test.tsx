@@ -68,4 +68,39 @@ describe("Link", () => {
     renderInHistory(history, <Component />);
     expect(screen.queryByTestId("link")?.getAttribute("href")).toBe("/bar");
   });
+  it("correct link handling in nested routes", () => {
+    const history = createMemoryHistory({
+      initialEntries: [
+        {
+          pathname: "/foo/bar",
+          state: null,
+        },
+      ],
+    });
+    const fooRoutes = Path().route("bar", (bar) =>
+      bar.action(() => (
+        <div>
+          <p>I AM BAR</p>
+          <Link data-testid="link" route={fooRoutes._.bar}>
+            link
+          </Link>
+        </div>
+      ))
+    );
+    const routes = Path().route("foo", (foo) => foo.attach(fooRoutes));
+
+    const Component: React.FC = () => {
+      return useRoutes(routes);
+    };
+
+    renderInHistory(history, <Component />);
+    expect(screen.queryByText("I AM BAR")).toBeInTheDocument();
+    expect(screen.queryByTestId("link")?.getAttribute("href")).toBe("/foo/bar");
+    screen.queryByTestId("link")?.click();
+    expect(history.location).toMatchObject({
+      pathname: "/foo/bar",
+      state: null,
+    });
+    expect(screen.queryByText("I AM BAR")).toBeInTheDocument();
+  });
 });

@@ -17,14 +17,29 @@ export const useRoutes = (builder: ReactRouteBuilder): ReactElement | null => {
   const resolver = useMemo(() => RoutePathResolver.getFromBuilder(builder), [
     builder,
   ]);
-  const obj = useMemo(() => {
+  const { routeContextValue, result } = useMemo(() => {
     const resolved = resolver.resolve(locationToResolve)[0];
     if (resolved === undefined) {
-      return undefined;
+      throw new LocationNotFoundError(
+        "Current location could not be resolved."
+      );
     }
+
+    const ancestorRoutes = parentRoute
+      ? parentRoute.ancestorRoutes.concat()
+      : [];
+    ancestorRoutes.push({
+      link: builder.getBuilderLink().getAttachmentRoot(),
+      location: parentRoute?.routeLocation || {
+        pathname: "/",
+        state: null,
+      },
+    });
+
     const result = resolved.route.action(resolved.match as never);
     const routeContextValue = {
       route: resolved.route,
+      ancestorRoutes,
       routeLocation: resolved.currentLocation,
       nextLocation: resolved.remainingLocation,
     };
@@ -32,15 +47,11 @@ export const useRoutes = (builder: ReactRouteBuilder): ReactElement | null => {
       result,
       routeContextValue,
     };
-  }, [resolver, location]);
-
-  if (obj === undefined) {
-    throw new LocationNotFoundError("Current location could not be resolved.");
-  }
+  }, [parentRoute, resolver, locationToResolve]);
 
   return (
-    <RouteContext.Provider value={obj.routeContextValue}>
-      {obj.result}
+    <RouteContext.Provider value={routeContextValue}>
+      {result}
     </RouteContext.Provider>
   );
 };

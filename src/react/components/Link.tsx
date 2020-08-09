@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext, useMemo } from "react";
 import { getRouteRecordLocation } from "../../builder/RouteRecord/getRouteRecordLocation";
 import { locationToURL } from "../../util/locationToURL";
+import { RouteContext } from "../contexts/RouteContext";
 import { useNavigate } from "../hooks/useNavigate";
+import { getNavigationBaseLocation } from "../logic/getNavigationBaseLocation";
 import { ReactElement, ReactRouteRecord } from "../types/ReactElement";
 
 export type LinkProps<Match> = React.DetailedHTMLProps<
@@ -19,11 +21,20 @@ export const Link = <Match,>({
   match,
   ...props
 }: LinkProps<Match>): ReactElement | null => {
-  const location = getRouteRecordLocation(route, match as Match);
+  const parentRoute = useContext(RouteContext);
   const navigate = useNavigate();
+  const href = useMemo(() => {
+    const baseLocation = getNavigationBaseLocation(parentRoute, route);
+    const location = getRouteRecordLocation(
+      route,
+      match as Match,
+      baseLocation
+    );
+    return locationToURL(location);
+  }, [route, match, parentRoute]);
   return (
     <a
-      href={locationToURL(location)}
+      href={href}
       onClick={(e) => {
         e.preventDefault();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

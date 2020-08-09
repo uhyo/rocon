@@ -4,6 +4,7 @@ import { RouteRecordType } from "../../builder/RouteRecord";
 import { getRouteRecordLocation } from "../../builder/RouteRecord/getRouteRecordLocation";
 import { HistoryContext } from "../contexts/HistoryContext";
 import { RouteContext } from "../contexts/RouteContext";
+import { getNavigationBaseLocation } from "../logic/getNavigationBaseLocation";
 import { Navigate, NavigateFunction } from "../types/NavigateFunction";
 
 const cache = new WeakMap<History, Navigate>();
@@ -20,7 +21,6 @@ export const useNavigate = (): Navigate => {
     );
   }
   const { history } = historyContextObject;
-  const routeLocation = parentRoute?.routeLocation;
 
   const navigate = useMemo<Navigate>(() => {
     // create navigate function.
@@ -28,20 +28,20 @@ export const useNavigate = (): Navigate => {
       route: RouteRecordType<ReactElement | null, Match, boolean>,
       match: Match
     ) => {
-      history.push(
-        getRouteRecordLocation(route, match as Match, routeLocation)
-      );
+      const baseLocation = getNavigationBaseLocation(parentRoute, route);
+      history.push(getRouteRecordLocation(route, match as Match, baseLocation));
     }) as NavigateFunction;
     const replace = (<Match>(
       route: RouteRecordType<ReactElement | null, Match, boolean>,
       match: Match
     ) => {
+      const baseLocation = getNavigationBaseLocation(parentRoute, route);
       history.replace(
-        getRouteRecordLocation(route, match as Match, routeLocation)
+        getRouteRecordLocation(route, match as Match, baseLocation)
       );
     }) as NavigateFunction;
     return Object.assign(push, { push, replace });
-  }, [history, routeLocation]);
+  }, [history, parentRoute]);
 
   return navigate;
 };

@@ -64,7 +64,7 @@ export class BuilderLink<ActionResult, Segment, Value>
   /**
    * Follow inheritance chain and run a function at the end.
    */
-  followInheritanceChain<Result>(
+  private followInheritanceChain<Result>(
     callback: (link: BuilderLink<ActionResult, Segment, Value>) => Result
   ): {
     result: Result;
@@ -90,7 +90,7 @@ export class BuilderLink<ActionResult, Segment, Value>
   /**
    * Collect pairs of link and segment between its parent.
    */
-  private collectUpToTop(): Array<{
+  collectUpToTop(): Array<{
     link: BuilderLink<ActionResult, unknown, Value>;
     segmentGetter: (match: unknown) => unknown;
   }> {
@@ -119,6 +119,15 @@ export class BuilderLink<ActionResult, Segment, Value>
     return links.reduce((loc, { link, segmentGetter: segment }) => {
       return link.composer.compose(loc, segment(match));
     }, defaultRoot);
+  }
+
+  /**
+   * Returns the topmost and uninherited link.
+   */
+  getAttachmentRoot(): BuilderLink<ActionResult, unknown, Value> {
+    const ls = this.collectUpToTop();
+    const top = ls.length === 0 ? this : ls[ls.length - 1].link;
+    return top.followInheritanceChain(noop).last;
   }
 
   checkInvalidation() {
