@@ -26,6 +26,10 @@
   ],
   "author": "uhyo <uhyo@uhy.ooo>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uhyo/rocon.git"
+  },
   "devDependencies": {
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.0",
