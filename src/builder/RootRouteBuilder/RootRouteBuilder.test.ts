@@ -14,7 +14,7 @@ describe("RootRouteBuilder", () => {
     });
     it("can set action", () => {
       const b = RootRouteBuilder.init().action(() => "root!");
-      expect(b.getRoute().action({})).toBe("root!");
+      expect(b.route.action({})).toBe("root!");
     });
   });
   describe("location", () => {
@@ -32,7 +32,7 @@ describe("RootRouteBuilder", () => {
           state: null,
         },
       });
-      expect(getRouteRecordLocation(b.getRoute(), {})).toEqual({
+      expect(getRouteRecordLocation(b.route, {})).toEqual({
         pathname: "/root",
         state: null,
       });
@@ -56,7 +56,7 @@ describe("RootRouteBuilder", () => {
           },
         },
       });
-      const sub = toplevel.getRoute().attach(PathRouteBuilder.init()).routes({
+      const sub = toplevel.route.attach(PathRouteBuilder.init()).routes({
         foo: {},
       });
       expect(getRouteRecordLocation(sub.getRoutes().foo, {})).toEqual({
@@ -70,10 +70,8 @@ describe("RootRouteBuilder", () => {
       const toplevel = PathRouteBuilder.init().routes({
         foo: {},
       });
-      const sub = toplevel
-        .getRoutes()
-        .foo.attach(RootRouteBuilder.init())
-        .getRoute();
+      const sub = toplevel.getRoutes().foo.attach(RootRouteBuilder.init())
+        .route;
       expect(getRouteRecordLocation(sub, {})).toEqual({
         pathname: "/",
         state: null,

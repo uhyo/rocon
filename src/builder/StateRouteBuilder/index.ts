@@ -25,7 +25,12 @@ export class StateRouteBuilder<
   StateValue,
   WildcardFlag extends ExistingWildcardFlagType,
   Match
-> extends SingleRouteAbstractBuilder<ActionResult, Match, boolean>
+>
+  extends SingleRouteAbstractBuilder<
+    ActionResult,
+    Match,
+    WildcardFlagToHasAction<WildcardFlag>
+  >
   implements AttachableRouteBuilder<ActionResult, StateValue> {
   static init<
     ActionResult,
@@ -115,14 +120,12 @@ export class StateRouteBuilder<
     return result;
   }
 
-  getRoute(): WildcardFlag extends ExistingWildcardFlagType
-    ? MatchingRouteRecord<
-        ActionResult,
-        StateValue,
-        Match,
-        WildcardFlagToHasAction<WildcardFlag>
-      >
-    : undefined {
+  getRoute(): MatchingRouteRecord<
+    ActionResult,
+    StateValue,
+    Match,
+    WildcardFlagToHasAction<WildcardFlag>
+  > {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.#route as any;
   }

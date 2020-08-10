@@ -24,7 +24,12 @@ export class SearchRouteBuilder<
   ActionResult,
   WildcardFlag extends ExistingWildcardFlagType,
   Match
-> extends SingleRouteAbstractBuilder<ActionResult, Match, boolean>
+>
+  extends SingleRouteAbstractBuilder<
+    ActionResult,
+    Match,
+    WildcardFlagToHasAction<WildcardFlag>
+  >
   implements AttachableRouteBuilder<ActionResult, string> {
   static init<
     ActionResult,

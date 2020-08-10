@@ -23,6 +23,10 @@ export abstract class SingleRouteAbstractBuilder<
     });
   }
 
+  get route(): RouteRecordType<ActionResult, Match, HasAction> {
+    return this.getRoute();
+  }
+
   /**
    * Attach a given route builder to the current route.
    */

@@ -24,7 +24,12 @@ export class RootRouteBuilder<
   ActionResult,
   WildcardFlag extends ExistingWildcardFlagType,
   Match
-> extends SingleRouteAbstractBuilder<ActionResult, Match, boolean>
+>
+  extends SingleRouteAbstractBuilder<
+    ActionResult,
+    Match,
+    WildcardFlagToHasAction<WildcardFlag>
+  >
   implements AttachableRouteBuilder<ActionResult, unknown> {
   static init<ActionResult>(
     options: Partial<RootRouteBuilderOptions> = {}
