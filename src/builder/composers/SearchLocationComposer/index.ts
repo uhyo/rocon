@@ -26,9 +26,11 @@ export class SearchLocationComposer<IsOptional extends boolean>
       params.set(this.key, segment as string);
     }
 
+    const searchString = params.toString();
+
     return {
       ...base,
-      search: params.toString(),
+      search: searchString ? "?" + searchString : searchString,
     };
   }
   decompose<S extends BaseState>(
@@ -53,9 +55,10 @@ export class SearchLocationComposer<IsOptional extends boolean>
     }
 
     params.delete(this.key);
+    const searchString = params.toString();
     const nextLocation = {
       ...location,
-      search: params.toString(),
+      search: searchString ? "?" + searchString : searchString,
     };
 
     return [

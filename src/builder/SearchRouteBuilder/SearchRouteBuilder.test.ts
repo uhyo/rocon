@@ -32,7 +32,7 @@ describe("SearchRouteBuilder", () => {
       );
       const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
         pathname: "/",
-        search: "foo=aiueo",
+        search: "?foo=aiueo",
         state: null,
       });
       expect(res).toEqual([
@@ -44,7 +44,7 @@ describe("SearchRouteBuilder", () => {
           },
           currentLocation: {
             pathname: "/",
-            search: "foo=aiueo",
+            search: "?foo=aiueo",
             state: null,
           },
           match: {
@@ -62,19 +62,19 @@ describe("SearchRouteBuilder", () => {
     }).action(({ foo }) => `foo is ${foo.slice(0)}`);
     const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
       pathname: "/",
-      search: "boom=wow&foo=123",
+      search: "?boom=wow&foo=123",
       state: null,
     });
     expect(res).toEqual([
       {
         remainingLocation: {
           pathname: "/",
-          search: "foo=123",
+          search: "?foo=123",
           state: null,
         },
         currentLocation: {
           pathname: "/",
-          search: "boom=wow",
+          search: "?boom=wow",
           state: null,
         },
         match: {
@@ -91,7 +91,7 @@ describe("SearchRouteBuilder", () => {
     );
     const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
       pathname: "/",
-      search: "boom=wow",
+      search: "?boom=wow",
       state: null,
     });
     expect(res).toEqual([]);
@@ -102,14 +102,14 @@ describe("SearchRouteBuilder", () => {
     );
     const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
       pathname: "/",
-      search: "boom=wow",
+      search: "?boom=wow",
       state: null,
     });
     expect(res).toEqual([
       {
         remainingLocation: {
           pathname: "/",
-          search: "boom=wow",
+          search: "?boom=wow",
           state: null,
         },
         currentLocation: {

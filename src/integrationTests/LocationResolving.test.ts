@@ -120,7 +120,7 @@ describe("Composed Location resolving", () => {
         })
       ).toEqual({
         pathname: "/user",
-        search: "tab=123",
+        search: "?tab=123",
         state: {
           username: "uhyo",
         },
@@ -143,7 +143,7 @@ describe("Composed Location resolving", () => {
         })
       ).toEqual({
         pathname: "/user",
-        search: "tab=123",
+        search: "?tab=123",
         state: {
           username: "uhyo",
         },
@@ -162,7 +162,7 @@ describe("Composed Location resolving", () => {
       const resolver = Resolver(route);
       const res = resolver.resolve({
         pathname: "/user",
-        search: "tab=123",
+        search: "?tab=123",
         state: {
           username: "uhyo",
         },
@@ -177,7 +177,7 @@ describe("Composed Location resolving", () => {
           },
           currentLocation: {
             pathname: "/user",
-            search: "tab=123",
+            search: "?tab=123",
             state: {
               username: "uhyo",
             },
@@ -201,7 +201,7 @@ describe("Composed Location resolving", () => {
       const resolver = Resolver(route);
       const res = resolver.resolve({
         pathname: "/user",
-        search: "tab=123",
+        search: "?tab=123",
         state: {
           username: "uhyo",
         },
@@ -216,7 +216,7 @@ describe("Composed Location resolving", () => {
           },
           currentLocation: {
             pathname: "/user",
-            search: "tab=123",
+            search: "?tab=123",
             state: {
               username: "uhyo",
             },

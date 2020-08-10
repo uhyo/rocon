@@ -29,7 +29,7 @@ describe("SearchLocationComposer", () => {
       expect(
         composer.isLeaf({
           pathname: "/pathname",
-          search: "foo=bar",
+          search: "?foo=bar",
           state: null,
         })
       ).toBe(false);
@@ -40,7 +40,7 @@ describe("SearchLocationComposer", () => {
       expect(
         composer.isLeaf({
           pathname: "/pathname",
-          search: "foo=",
+          search: "?foo=",
           state: null,
         })
       ).toBe(false);
@@ -62,7 +62,7 @@ describe("SearchLocationComposer", () => {
         )
       ).toEqual({
         pathname: "/",
-        search: "k=hi",
+        search: "?k=hi",
         state: {
           sta: "te",
         },
@@ -82,7 +82,7 @@ describe("SearchLocationComposer", () => {
         )
       ).toEqual({
         pathname: "/",
-        search: "wow=hi",
+        search: "?wow=hi",
         state: null,
       });
     });
@@ -93,14 +93,14 @@ describe("SearchLocationComposer", () => {
         composer.compose(
           {
             pathname: "/",
-            search: "wow=hi&foo=%E3%81%82%E3%81%84%E3%81%86",
+            search: "?wow=hi&foo=%E3%81%82%E3%81%84%E3%81%86",
             state: null,
           },
           "value"
         )
       ).toEqual({
         pathname: "/",
-        search: "wow=hi&foo=%E3%81%82%E3%81%84%E3%81%86&key=value",
+        search: "?wow=hi&foo=%E3%81%82%E3%81%84%E3%81%86&key=value",
         state: null,
       });
     });
@@ -111,14 +111,14 @@ describe("SearchLocationComposer", () => {
         composer.compose(
           {
             pathname: "/",
-            search: "wow=hi&key=1234",
+            search: "?wow=hi&key=1234",
             state: null,
           },
           "value"
         )
       ).toEqual({
         pathname: "/",
-        search: "wow=hi&key=value",
+        search: "?wow=hi&key=value",
         state: null,
       });
     });
@@ -135,7 +135,7 @@ describe("SearchLocationComposer", () => {
         )
       ).toEqual({
         pathname: "/",
-        search: "key=%E3%81%82%E3%81%84%E3%81%86",
+        search: "?key=%E3%81%82%E3%81%84%E3%81%86",
         state: null,
       });
     });
@@ -146,14 +146,14 @@ describe("SearchLocationComposer", () => {
         composer.compose(
           {
             pathname: "/",
-            search: "foo=bar",
+            search: "?foo=bar",
             state: null,
           },
           ""
         )
       ).toEqual({
         pathname: "/",
-        search: "foo=bar&key=",
+        search: "?foo=bar&key=",
         state: null,
       });
     });
@@ -164,14 +164,14 @@ describe("SearchLocationComposer", () => {
         composer.compose(
           {
             pathname: "/",
-            search: "foo=bar",
+            search: "?foo=bar",
             state: null,
           },
           undefined
         )
       ).toEqual({
         pathname: "/",
-        search: "foo=bar",
+        search: "?foo=bar",
         state: null,
       });
     });
@@ -184,7 +184,7 @@ describe("SearchLocationComposer", () => {
       expect(
         composer.decompose({
           pathname: "/",
-          search: "wow=hi&key=1234",
+          search: "?wow=hi&key=1234",
           state: null,
         })
       ).toEqual([
@@ -193,7 +193,7 @@ describe("SearchLocationComposer", () => {
           segment: "1234",
           nextLocation: {
             pathname: "/",
-            search: "wow=hi",
+            search: "?wow=hi",
             state: null,
           },
         },
@@ -205,7 +205,7 @@ describe("SearchLocationComposer", () => {
       expect(
         composer.decompose({
           pathname: "/",
-          search: "key=123&wow=hi&key=456",
+          search: "?key=123&wow=hi&key=456",
           state: null,
         })
       ).toEqual([
@@ -214,7 +214,7 @@ describe("SearchLocationComposer", () => {
           segment: "123",
           nextLocation: {
             pathname: "/",
-            search: "wow=hi",
+            search: "?wow=hi",
             state: null,
           },
         },
@@ -226,7 +226,7 @@ describe("SearchLocationComposer", () => {
       expect(
         composer.decompose({
           pathname: "/",
-          search: "key=value",
+          search: "?key=value",
           state: null,
         })
       ).toEqual([
@@ -247,7 +247,7 @@ describe("SearchLocationComposer", () => {
       expect(
         composer.decompose({
           pathname: "/",
-          search: "wow=hi&key=%E3%81%82%E3%81%84%E3%81%86",
+          search: "?wow=hi&key=%E3%81%82%E3%81%84%E3%81%86",
           state: null,
         })
       ).toEqual([
@@ -256,7 +256,7 @@ describe("SearchLocationComposer", () => {
           segment: "あいう",
           nextLocation: {
             pathname: "/",
-            search: "wow=hi",
+            search: "?wow=hi",
             state: null,
           },
         },
@@ -268,7 +268,7 @@ describe("SearchLocationComposer", () => {
       expect(
         composer.decompose({
           pathname: "/",
-          search: "key=",
+          search: "?key=",
           state: null,
         })
       ).toEqual([
@@ -289,7 +289,7 @@ describe("SearchLocationComposer", () => {
       expect(
         composer.decompose({
           pathname: "/",
-          search: "key&foo=bar",
+          search: "?key&foo=bar",
           state: null,
         })
       ).toEqual([
@@ -298,7 +298,7 @@ describe("SearchLocationComposer", () => {
           segment: "",
           nextLocation: {
             pathname: "/",
-            search: "foo=bar",
+            search: "?foo=bar",
             state: null,
           },
         },
@@ -310,7 +310,7 @@ describe("SearchLocationComposer", () => {
       expect(
         composer.decompose({
           pathname: "/",
-          search: "wow=hi",
+          search: "?wow=hi",
           state: null,
         })
       ).toEqual([]);
@@ -321,7 +321,7 @@ describe("SearchLocationComposer", () => {
       expect(
         composer.decompose({
           pathname: "/",
-          search: "wow=hi",
+          search: "?wow=hi",
           state: null,
         })
       ).toEqual([
@@ -330,7 +330,7 @@ describe("SearchLocationComposer", () => {
           segment: undefined,
           nextLocation: {
             pathname: "/",
-            search: "wow=hi",
+            search: "?wow=hi",
             state: null,
           },
         },
