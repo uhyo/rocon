@@ -22,7 +22,8 @@
     "!*.test.js"
   ],
   "keywords": [
-    "router"
+    "router",
+    "react"
   ],
   "author": "uhyo <uhyo@uhy.ooo>",
   "license": "MIT",
