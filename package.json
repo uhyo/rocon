@@ -15,7 +15,9 @@
     "watch:typecheck": "tsc --build --watch"
   },
   "files": [
-    "lib/**/*"
+    "lib/**/*",
+    "!*.tsbuildinfo",
+    "!*.test.js"
   ],
   "keywords": [
     "router"
