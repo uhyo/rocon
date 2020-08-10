@@ -1,6 +1,6 @@
 {
   "name": "rocon",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "description": "A router library",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
