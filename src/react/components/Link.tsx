@@ -36,11 +36,17 @@ export const Link = <Match,>({
     <a
       href={href}
       onClick={(e) => {
-        e.preventDefault();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (navigate as any)(route, match);
+        if (!isModifiedEvent(e)) {
+          e.preventDefault();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (navigate as any)(route, match);
+        }
       }}
       {...props}
     />
   );
 };
+
+function isModifiedEvent(event: React.MouseEvent) {
+  return event.metaKey || event.altKey || event.ctrlKey || event.shiftKey;
+}
