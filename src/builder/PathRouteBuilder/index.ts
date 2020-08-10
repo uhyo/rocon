@@ -79,15 +79,6 @@ export class PathRouteBuilder<
     );
   }
 
-  /**
-   * Attach a newly created PathRouteBuilder to given route.
-   */
-  static attachTo<ActionResult, Match, HasAction extends boolean>(
-    route: RouteRecordType<ActionResult, Match, HasAction>
-  ): PathRouteBuilder<ActionResult, {}, "none", "none", Match> {
-    return route.attach(PathRouteBuilder.init());
-  }
-
   readonly #link: RouteBuilderLink<ActionResult, string>;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:

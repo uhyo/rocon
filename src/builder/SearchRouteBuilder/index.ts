@@ -7,7 +7,6 @@ import {
   RouteBuilderLink,
   RouteBuilderLinkValue,
 } from "../RouteBuilderLink";
-import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
 import { SingleRouteAbstractBuilder } from "../SingleRouteAbstractBuilder";
@@ -59,42 +58,6 @@ export class SearchRouteBuilder<
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     >(link, matchKey as any);
     return result;
-  }
-
-  /**
-   * Attach a newly created SearchRouteBuilder to given route.
-   */
-  static attachTo<
-    ActionResult,
-    Match,
-    HasAction extends boolean,
-    Key extends string
-  >(
-    route: RouteRecordType<ActionResult, Match, HasAction>,
-    key: Key
-  ): SearchRouteBuilder<
-    ActionResult,
-    "noaction",
-    Match &
-      {
-        [K in Key]: string;
-      }
-  > {
-    const b = SearchRouteBuilder.init<
-      ActionResult,
-      Key,
-      Match &
-        {
-          [K in Key]: string;
-        },
-      false
-    >(key);
-    const r: RouteRecordType<
-      ActionResult,
-      Match & { [K in Key]: string },
-      HasAction
-    > = route;
-    return r.attach(b);
   }
 
   readonly matchKey: Extract<keyof Match, string>;

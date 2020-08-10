@@ -7,7 +7,6 @@ import {
   RouteBuilderLink,
   RouteBuilderLinkValue,
 } from "../RouteBuilderLink";
-import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
 import { SingleRouteAbstractBuilder } from "../SingleRouteAbstractBuilder";
@@ -62,45 +61,6 @@ export class StateRouteBuilder<
     >(link, matchKey as any, validator);
 
     return result;
-  }
-
-  /**
-   * Attach a newly created StateRouteBuilder to given route.
-   */
-  static attachTo<
-    ActionResult,
-    Match,
-    HasAction extends boolean,
-    Key extends string,
-    StateValue
-  >(
-    route: RouteRecordType<ActionResult, Match, HasAction>,
-    key: Key,
-    validator: Validator<StateValue>
-  ): StateRouteBuilder<
-    ActionResult,
-    StateValue,
-    "noaction",
-    Match &
-      {
-        [K in Key]: StateValue;
-      }
-  > {
-    const b = StateRouteBuilder.init<
-      ActionResult,
-      StateValue,
-      Key,
-      Match &
-        {
-          [K in Key]: StateValue;
-        }
-    >(key, validator);
-    const r: RouteRecordType<
-      ActionResult,
-      Match & { [K in Key]: StateValue },
-      HasAction
-    > = route;
-    return r.attach(b);
   }
 
   readonly matchKey: Extract<keyof Match, string>;

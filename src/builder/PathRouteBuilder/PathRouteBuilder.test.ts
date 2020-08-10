@@ -179,7 +179,8 @@ describe("PathRouteBuilder", () => {
       const res = PathRouteBuilder.init<string>().any("id", {
         action: ({ id }) => `id is ${id.slice(0, 8)}`,
       });
-      const subRoutes = PathRouteBuilder.attachTo(res.anyRoute)
+      const subRoutes = res.anyRoute
+        .attach(PathRouteBuilder.init())
         .routes({
           hoge: {
             action: () => "sub",

@@ -39,7 +39,8 @@ describe("StateRouteBuilder", () => {
   describe("attach", () => {
     it("action", () => {
       const toplevel = StateRouteBuilder.init("foo", isString).getRoute();
-      const sub = StateRouteBuilder.attachTo(toplevel, "bar", isNumber)
+      const sub = toplevel
+        .attach(StateRouteBuilder.init("bar", isNumber))
         .action(({ foo, bar }) => `foo=${foo} bar=${bar}`)
         .getRoute();
 
@@ -47,11 +48,9 @@ describe("StateRouteBuilder", () => {
     });
     it("getLocation", () => {
       const toplevel = StateRouteBuilder.init("foo", isString).getRoute();
-      const sub = StateRouteBuilder.attachTo(
-        toplevel,
-        "bar",
-        isNumber
-      ).getRoute();
+      const sub = toplevel
+        .attach(StateRouteBuilder.init("bar", isNumber))
+        .getRoute();
 
       expect(getRouteRecordLocation(sub, { foo: "あいう", bar: 555 })).toEqual({
         pathname: "/",
