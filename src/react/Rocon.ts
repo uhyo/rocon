@@ -1,3 +1,7 @@
+export type {
+  ExistingWildcardFlagType,
+  WildcardFlagType,
+} from "../builder/WildcardFlagType";
 export * as validator from "../validator";
 export { Link } from "./components/Link";
 export { RoconRoot } from "./components/RoconRoot";
