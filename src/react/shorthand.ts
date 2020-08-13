@@ -1,4 +1,8 @@
 import type { PathRouteBuilder } from "../builder/PathRouteBuilder";
+import {
+  RootRouteBuilder,
+  RootRouteBuilderOptions,
+} from "../builder/RootRouteBuilder";
 import type {
   SearchRouteBuilder,
   SearchRouteBuilderOptions,
@@ -9,6 +13,7 @@ import {
 } from "../builder/StateRouteBuilder";
 import {
   Path as RawPath,
+  Root as RawRoot,
   Search as RawSearch,
   State as RawState,
 } from "../shorthand";
@@ -47,3 +52,7 @@ export const State: <
   validator: Validator<StateValue>,
   options?: StateRouteBuilerOptions<IsOptional>
 ) => StateRouteBuilder<ActionResult, StateValue, "noaction", Match> = RawState;
+
+export const Root: (
+  options?: Partial<RootRouteBuilderOptions>
+) => RootRouteBuilder<ActionResult, "noaction", {}> = RawRoot;
