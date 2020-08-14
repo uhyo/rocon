@@ -2,6 +2,7 @@ import { PathRouteBuilder } from "./builder/PathRouteBuilder";
 import { RootRouteBuilder } from "./builder/RootRouteBuilder";
 import { RoutePathResolver } from "./builder/RoutePathResolver";
 import { SearchRouteBuilder } from "./builder/SearchRouteBuilder";
+import { SingleHashRouteBuilder } from "./builder/SingleHashRouteBuilder";
 import { StateRouteBuilder } from "./builder/StateRouteBuilder";
 
 /**
@@ -23,6 +24,11 @@ export const State = StateRouteBuilder.init;
  * Initialize a root router.
  */
 export const Root = RootRouteBuilder.init;
+
+/**
+ * Initialize a single hash router.
+ */
+export const SingleHash = SingleHashRouteBuilder.init;
 
 /**
  * Get a resolver of given router.

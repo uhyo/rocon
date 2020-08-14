@@ -1,5 +1,5 @@
 import type { PathRouteBuilder } from "../builder/PathRouteBuilder";
-import {
+import type {
   RootRouteBuilder,
   RootRouteBuilderOptions,
 } from "../builder/RootRouteBuilder";
@@ -7,7 +7,11 @@ import type {
   SearchRouteBuilder,
   SearchRouteBuilderOptions,
 } from "../builder/SearchRouteBuilder";
-import {
+import type {
+  SingleHashRouteBuilder,
+  SingleHashRouteBuilderOptions,
+} from "../builder/SingleHashRouteBuilder";
+import type {
   StateRouteBuilder,
   StateRouteBuilerOptions,
 } from "../builder/StateRouteBuilder";
@@ -15,11 +19,12 @@ import {
   Path as RawPath,
   Root as RawRoot,
   Search as RawSearch,
+  SingleHash as RawSingleHash,
   State as RawState,
 } from "../shorthand";
-import { OptionalIf } from "../util/OptionalIf";
-import { Validator } from "../validator";
-import { ReactElement } from "./types/ReactElement";
+import type { OptionalIf } from "../util/OptionalIf";
+import type { Validator } from "../validator";
+import type { ReactElement } from "./types/ReactElement";
 
 type ActionResult = ReactElement | null;
 
@@ -56,3 +61,14 @@ export const State: <
 export const Root: (
   options?: Partial<RootRouteBuilderOptions>
 ) => RootRouteBuilder<ActionResult, "noaction", {}> = RawRoot;
+
+export const SingleHash: <
+  Key extends string,
+  Match extends {
+    [K in Key]: IsOptional extends false ? string : string | undefined;
+  },
+  IsOptional extends boolean = false
+>(
+  matchKey: Key,
+  options?: SingleHashRouteBuilderOptions<IsOptional>
+) => SingleHashRouteBuilder<ActionResult, "noaction", Match> = RawSingleHash;

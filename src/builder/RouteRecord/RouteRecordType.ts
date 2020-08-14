@@ -3,6 +3,7 @@ import type { PathRouteBuilder } from "../PathRouteBuilder";
 import { RouteBuilderLink } from "../RouteBuilderLink";
 import type { RoutesDefinition } from "../RoutesDefinitionObject";
 import type { SearchRouteBuilder } from "../SearchRouteBuilder";
+import { SingleHashRouteBuilder } from "../SingleHashRouteBuilder";
 import type { StateRouteBuilder } from "../StateRouteBuilder";
 import type {
   routeRecordParentKey,
@@ -54,6 +55,9 @@ export interface AttachFunction<ActionResult, Match> {
     WildcardFlag,
     IntrinsicMatch & Match
   >;
+  <WildcardFlag extends ExistingWildcardFlagType, IntrinsicMatch>(
+    builder: SingleHashRouteBuilder<ActionResult, WildcardFlag, IntrinsicMatch>
+  ): SingleHashRouteBuilder<ActionResult, WildcardFlag, IntrinsicMatch & Match>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   <B extends HasBuilderLink<ActionResult, any, any>>(builder: B): B;
 }
