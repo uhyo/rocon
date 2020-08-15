@@ -20,9 +20,4 @@ export type BuilderLinkState<ActionResult, Segment, Value> =
       state: "attached";
       parentLink: BuilderLink<ActionResult, Segment, Value>;
       segmentGetter: (match: unknown) => Segment;
-    }
-  | {
-      state: "inherited";
-      parentLink?: undefined;
-      inheritor: BuilderLink<ActionResult, Segment, Value>;
     };

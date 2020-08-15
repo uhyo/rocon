@@ -250,8 +250,6 @@ export class PathRouteBuilder<
         [K in Key]: string;
       }
   > {
-    this.#link.checkInvalidation();
-
     const result = new PathRouteBuilder<
       ActionResult,
       Defs,
@@ -288,8 +286,6 @@ export class PathRouteBuilder<
     ActionTypeToWildcardFlag<RD["action"]>,
     Match
   > {
-    this.#link.checkInvalidation();
-
     const result = new PathRouteBuilder<
       ActionResult,
       Defs,
@@ -310,7 +306,6 @@ export class PathRouteBuilder<
   getRoutes(): Readonly<
     RoutesDefinitionToRouteRecords<ActionResult, Defs, Match>
   > {
-    this.#link.checkInvalidation();
     const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
       ActionResult,
       Defs,

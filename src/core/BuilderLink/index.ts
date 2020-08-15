@@ -1,4 +1,3 @@
-import { noop } from "../../util/noop";
 import { Location } from "../Location";
 import type { LocationComposer } from "../LocationComposer";
 import { RouteResolver } from "../RouteResolver";
@@ -45,46 +44,19 @@ export class BuilderLink<ActionResult, Segment, Value>
     parentLink: BuilderLink<ActionResult, unknown, Value>,
     segmentGetter: (match: unknown) => Segment
   ) {
-    const thisLink = this.followInheritanceChain(noop).last;
     if (
-      thisLink.#state.state !== "unattached" &&
-      thisLink.#state.state !== "attaching"
+      this.#state.state !== "unattached" &&
+      this.#state.state !== "attaching"
     ) {
       throw new Error("A builder cannot be attached more than once.");
     }
-    thisLink.#state = {
+    this.#state = {
       state: "attached",
       parentLink,
       segmentGetter,
     };
 
-    thisLink.resolver = parentLink.resolver;
-  }
-
-  /**
-   * Follow inheritance chain and run a function at the end.
-   */
-  followInheritanceChain<Result>(
-    callback: (link: BuilderLink<ActionResult, Segment, Value>) => Result
-  ): {
-    result: Result;
-    last: BuilderLink<ActionResult, Segment, Value>;
-  } {
-    if (this.#state.state === "inherited") {
-      const res = this.#state.inheritor.followInheritanceChain(callback);
-      // short-cut optimization
-      this.#state = {
-        state: "inherited",
-        inheritor: res.last,
-      };
-      return res;
-    } else {
-      const result = callback(this);
-      return {
-        result,
-        last: this,
-      };
-    }
+    this.resolver = parentLink.resolver;
   }
 
   /**
@@ -125,32 +97,19 @@ export class BuilderLink<ActionResult, Segment, Value>
    * Returns the topmost and uninherited link.
    */
   getAttachmentRoot(): BuilderLink<ActionResult, unknown, Value> {
-    return this.followInheritanceChain((link) => {
-      const ls = link.collectUpToTop();
-      const top = ls.length === 0 ? link : ls[ls.length - 1].link;
-      return top.followInheritanceChain(noop).last;
-    }).result;
-  }
-
-  checkInvalidation() {
-    if (this.#state.state === "inherited") {
-      throw new Error("This BuilderLink is already invalidated.");
-    }
+    const ls = this.collectUpToTop();
+    const top = ls.length === 0 ? this : ls[ls.length - 1].link;
+    return top;
   }
 
   getParentLinkAndSegmentGetter():
     | [(match: unknown) => Segment, BuilderLink<ActionResult, Segment, Value>]
     | undefined {
-    return this.followInheritanceChain<
-      | [(match: unknown) => Segment, BuilderLink<ActionResult, Segment, Value>]
-      | undefined
-    >((link) => {
-      const state = link.#state;
-      if (state.state === "attached") {
-        return [state.segmentGetter, state.parentLink];
-      }
-      return undefined;
-    }).result;
+    const state = this.#state;
+    if (state.state === "attached") {
+      return [state.segmentGetter, state.parentLink];
+    }
+    return undefined;
   }
 
   getBuilderLink(): this {
@@ -169,50 +128,6 @@ export class BuilderLink<ActionResult, Segment, Value>
    * Create a new BuilderLink which inherits current link.
    */
   inherit(): BuilderLink<ActionResult, Segment, Value> {
-    switch (this.#state.state) {
-      case "unattached": {
-        const result = new BuilderLink<ActionResult, Segment, Value>({
-          composer: this.composer,
-        });
-        result.#state = this.#state;
-        this.#state = {
-          state: "inherited",
-          inheritor: result,
-        };
-        return result;
-      }
-      case "attaching": {
-        const result = new BuilderLink<ActionResult, Segment, Value>({
-          composer: this.composer,
-        });
-        result.#state = this.#state;
-        this.#state = {
-          state: "inherited",
-          inheritor: result,
-        };
-        return result;
-      }
-      case "attached": {
-        const result = new BuilderLink<ActionResult, Segment, Value>({
-          composer: this.composer,
-        });
-        result.resolver = this.resolver;
-
-        // this.#state.parentLink.attach(result);
-        result.attachToParent(
-          this.#state.parentLink,
-          this.#state.segmentGetter
-        );
-
-        this.#state = {
-          state: "inherited",
-          inheritor: result,
-        };
-        return result;
-      }
-      case "inherited": {
-        throw new Error("Cannot inherit already invalidated link");
-      }
-    }
+    return this;
   }
 }

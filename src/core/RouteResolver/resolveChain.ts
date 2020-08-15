@@ -14,9 +14,7 @@ export function resolveChain<ActionResult, Value>(
   const decomposed = link.composer.decompose(location);
   return decomposed.flatMap(
     ({ segment, nextLocation: nextRemainingLocation }) => {
-      const resolved = link.followInheritanceChain((link) =>
-        link.resolveSegment?.(segment, nextRemainingLocation)
-      ).result;
+      const resolved = link.resolveSegment?.(segment, nextRemainingLocation);
       if (resolved === undefined) {
         return [];
       }
