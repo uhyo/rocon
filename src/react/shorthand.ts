@@ -22,6 +22,7 @@ import {
   SingleHash as RawSingleHash,
   State as RawState,
 } from "../shorthand";
+import type { OptionalIf } from "../util/types/OptionalIf";
 import type { PartialIf } from "../util/types/PartialIf";
 import type { Validator } from "../validator";
 import type { ReactElement } from "./types/ReactElement";
@@ -60,7 +61,7 @@ export const State: <
   options?: StateRouteBuilerOptions<IsOptional>
 ) => StateRouteBuilder<
   ActionResult,
-  StateValue,
+  OptionalIf<IsOptional, StateValue>,
   "noaction",
   PartialIf<
     IsOptional,
