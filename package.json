@@ -3,10 +3,12 @@
   "version": "0.0.1-alpha.3",
   "description": "A router library",
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "npm-run-all build:ts build:ts_babel",
+    "build": "npm-run-all build:ts build:ts_babel build:ts_babel_esm",
     "build:ts_babel": "babel src --out-dir lib --extensions '.ts,.tsx'",
+    "build:ts_babel_esm": "babel --config-file ./babel.config.esm.js src --out-dir esm --extensions '.ts,.tsx'",
     "build:ts": "tsc --build",
     "commitizen": "git cz",
     "test": "jest",
@@ -15,6 +17,7 @@
   },
   "files": [
     "lib/**/*",
+    "esm/**/*",
     "src/**/*",
     "/react.js",
     "/react.d.ts",

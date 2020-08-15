@@ -1,3 +1,7 @@
+# depenedencies
 /node_modules
+# generated files
+/esm
 /lib
+# test related files
 /coverage
