@@ -1,5 +1,6 @@
 import { BuilderLink } from "../../core/BuilderLink";
-import { OptionalIf } from "../../util/types/OptionalIf";
+import type { OptionalIf } from "../../util/types/OptionalIf";
+import type { PartialIf } from "../../util/types/PartialIf";
 import { isString } from "../../validator";
 import { SingleHashLocationComposer } from "../composers/SingleHashLocationComposer";
 import {
@@ -40,9 +41,12 @@ export class SingleHashRouteBuilder<
   ): SingleHashRouteBuilder<
     ActionResult,
     "noaction",
-    {
-      [K in Key]: IsOptional extends false ? string : string | undefined;
-    }
+    PartialIf<
+      IsOptional,
+      {
+        [K in Key]: string;
+      }
+    >
   > {
     const link = new BuilderLink<
       ActionResult,
@@ -56,9 +60,12 @@ export class SingleHashRouteBuilder<
     const result = new SingleHashRouteBuilder<
       ActionResult,
       "noaction",
-      {
-        [K in Key]: IsOptional extends false ? string : string | undefined;
-      }
+      PartialIf<
+        IsOptional,
+        {
+          [K in Key]: string;
+        }
+      >
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     >(link, matchKey as any);
     return result;

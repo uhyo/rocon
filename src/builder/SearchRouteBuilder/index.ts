@@ -1,5 +1,6 @@
 import { BuilderLink } from "../../core/BuilderLink";
-import { OptionalIf } from "../../util/types/OptionalIf";
+import type { OptionalIf } from "../../util/types/OptionalIf";
+import type { PartialIf } from "../../util/types/PartialIf";
 import { isString } from "../../validator";
 import { SearchLocationComposer } from "../composers/SearchLocationComposer";
 import {
@@ -41,9 +42,12 @@ export class SearchRouteBuilder<
   ): SearchRouteBuilder<
     ActionResult,
     "noaction",
-    {
-      [K in Key]: IsOptional extends false ? string : string | undefined;
-    }
+    PartialIf<
+      IsOptional,
+      {
+        [K in Key]: string;
+      }
+    >
   > {
     const searchKey = options.searchKey ?? matchKey;
     const link = new BuilderLink<
@@ -59,9 +63,12 @@ export class SearchRouteBuilder<
     const result = new SearchRouteBuilder<
       ActionResult,
       "noaction",
-      {
-        [K in Key]: IsOptional extends false ? string : string | undefined;
-      }
+      PartialIf<
+        IsOptional,
+        {
+          [K in Key]: string;
+        }
+      >
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     >(link, matchKey as any);
     return result;

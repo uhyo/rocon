@@ -1,5 +1,6 @@
 import { BuilderLink } from "../../core/BuilderLink";
-import { OptionalIf } from "../../util/types/OptionalIf";
+import type { OptionalIf } from "../../util/types/OptionalIf";
+import type { PartialIf } from "../../util/types/PartialIf";
 import type { Validator } from "../../validator";
 import { StateLocationComposer } from "../composers/StateLocationComposer";
 import {
@@ -45,9 +46,12 @@ export class StateRouteBuilder<
     ActionResult,
     StateValue,
     "noaction",
-    {
-      [K in Key]: OptionalIf<IsOptional, StateValue>;
-    }
+    PartialIf<
+      IsOptional,
+      {
+        [K in Key]: StateValue;
+      }
+    >
   > {
     const stateKey = options.stateKey ?? matchKey;
     const link = new BuilderLink<
@@ -65,9 +69,12 @@ export class StateRouteBuilder<
       ActionResult,
       StateValue,
       "noaction",
-      {
-        [K in Key]: OptionalIf<IsOptional, StateValue>;
-      }
+      PartialIf<
+        IsOptional,
+        {
+          [K in Key]: StateValue;
+        }
+      >
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     >(link, matchKey as any, validator);
 

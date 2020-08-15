@@ -22,7 +22,7 @@ import {
   SingleHash as RawSingleHash,
   State as RawState,
 } from "../shorthand";
-import type { OptionalIf } from "../util/types/OptionalIf";
+import type { PartialIf } from "../util/types/PartialIf";
 import type { Validator } from "../validator";
 import type { ReactElement } from "./types/ReactElement";
 
@@ -42,9 +42,12 @@ export const Search: <Key extends string, IsOptional extends boolean = false>(
 ) => SearchRouteBuilder<
   ActionResult,
   "noaction",
-  {
-    [K in Key]: IsOptional extends false ? string : string | undefined;
-  }
+  PartialIf<
+    IsOptional,
+    {
+      [K in Key]: string;
+    }
+  >
 > = RawSearch;
 
 export const State: <
@@ -59,9 +62,12 @@ export const State: <
   ActionResult,
   StateValue,
   "noaction",
-  {
-    [K in Key]: OptionalIf<IsOptional, StateValue>;
-  }
+  PartialIf<
+    IsOptional,
+    {
+      [K in Key]: StateValue;
+    }
+  >
 > = RawState;
 
 export const Root: (
@@ -77,7 +83,10 @@ export const SingleHash: <
 ) => SingleHashRouteBuilder<
   ActionResult,
   "noaction",
-  {
-    [K in Key]: IsOptional extends false ? string : string | undefined;
-  }
+  PartialIf<
+    IsOptional,
+    {
+      [K in Key]: string;
+    }
+  >
 > = RawSingleHash;
