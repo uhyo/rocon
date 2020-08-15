@@ -7,7 +7,8 @@ exports.getBabelConfig = (isTest, esm) => {
         "@babel/preset-env",
         {
           targets: {
-            node: "current",
+            node: "12",
+            ios: "12",
           },
           modules: !useESModules ? "auto" : false,
         },
