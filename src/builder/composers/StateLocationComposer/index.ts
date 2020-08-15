@@ -3,7 +3,7 @@ import type {
   DecomposeResult,
   LocationComposer,
 } from "../../../core/LocationComposer";
-import { OptionalIf } from "../../../util/OptionalIf";
+import { OptionalIf } from "../../../util/types/OptionalIf";
 import type { Validator } from "../../../validator";
 
 export class StateLocationComposer<

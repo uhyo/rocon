@@ -1,5 +1,5 @@
 import { BuilderLink } from "../../core/BuilderLink";
-import { OptionalIf } from "../../util/OptionalIf";
+import { OptionalIf } from "../../util/types/OptionalIf";
 import type { Validator } from "../../validator";
 import { StateLocationComposer } from "../composers/StateLocationComposer";
 import {

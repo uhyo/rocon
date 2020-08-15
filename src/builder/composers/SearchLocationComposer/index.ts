@@ -3,7 +3,7 @@ import type {
   DecomposeResult,
   LocationComposer,
 } from "../../../core/LocationComposer";
-import type { OptionalIf } from "../../../util/OptionalIf";
+import type { OptionalIf } from "../../../util/types/OptionalIf";
 
 export class SearchLocationComposer<IsOptional extends boolean>
   implements LocationComposer<OptionalIf<IsOptional, string>> {

@@ -22,7 +22,7 @@ import {
   SingleHash as RawSingleHash,
   State as RawState,
 } from "../shorthand";
-import type { OptionalIf } from "../util/OptionalIf";
+import type { OptionalIf } from "../util/types/OptionalIf";
 import type { Validator } from "../validator";
 import type { ReactElement } from "./types/ReactElement";
 
