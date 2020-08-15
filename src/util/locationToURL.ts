@@ -7,5 +7,5 @@ export const locationToURL = (location: Location): string => {
         ? "?" + location.search
         : location.search
       : ""
-  }${location.hash ? "#" + location.hash : ""}`;
+  }${location.hash || ""}`;
 };
