@@ -23,6 +23,12 @@ module.exports = (api) => {
     plugins: [
       "@babel/plugin-proposal-class-properties",
       "@babel/plugin-proposal-export-namespace-from",
+      [
+        "@babel/plugin-transform-runtime",
+        {
+          useESModules: true,
+        },
+      ],
     ],
   };
 };
