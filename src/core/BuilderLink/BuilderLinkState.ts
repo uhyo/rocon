@@ -13,10 +13,6 @@ export type BuilderLinkState<ActionResult, Segment, Value> =
       parentLink?: undefined;
     }
   | {
-      state: "attaching";
-      parentLink?: undefined;
-    }
-  | {
       state: "attached";
       parentLink: BuilderLink<ActionResult, Segment, Value>;
       segmentGetter: (match: unknown) => Segment;

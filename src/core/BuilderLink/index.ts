@@ -29,25 +29,13 @@ export class BuilderLink<ActionResult, Segment, Value>
   }
 
   /**
-   * Change the state of this link to attaching.
-   */
-  attaching() {
-    this.#state = {
-      state: "attaching",
-    };
-  }
-
-  /**
    * Attach this link to a parent.
    */
   attachToParent(
     parentLink: BuilderLink<ActionResult, unknown, Value>,
     segmentGetter: (match: unknown) => Segment
   ) {
-    if (
-      this.#state.state !== "unattached" &&
-      this.#state.state !== "attaching"
-    ) {
+    if (this.#state.state !== "unattached") {
       throw new Error("A builder cannot be attached more than once.");
     }
     this.#state = {
