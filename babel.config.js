@@ -26,7 +26,7 @@ module.exports = (api) => {
       [
         "@babel/plugin-transform-runtime",
         {
-          useESModules: true,
+          useESModules: !isTest,
         },
       ],
     ],
