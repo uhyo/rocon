@@ -104,6 +104,36 @@ describe("Link", () => {
       "/bar#abcde"
     );
   });
+  it("No match object is treated as empty object", () => {
+    const history = createMemoryHistory({
+      initialEntries: [
+        {
+          pathname: "/foo",
+          state: null,
+        },
+      ],
+    });
+    const hashRoute = SingleHash("hash", {
+      optional: true,
+    }).action(({ hash }) => <p>hash is {hash}</p>);
+    const routes = Path()
+      .route("foo", (foo) => foo.action(() => <p>I am foo</p>))
+      .route("bar", (bar) => bar.attach(hashRoute));
+    const Component: React.FC = () => {
+      const contents = useRoutes(routes);
+      return (
+        <div>
+          <Link data-testid="link" route={hashRoute.route}>
+            nice link
+          </Link>
+          {contents}
+        </div>
+      );
+    };
+
+    renderInHistory(history, <Component />);
+    expect(screen.queryByTestId("link")?.getAttribute("href")).toBe("/bar");
+  });
   it("correct link handling in nested routes", () => {
     const history = createMemoryHistory({
       initialEntries: [

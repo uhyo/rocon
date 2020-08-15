@@ -27,7 +27,7 @@ export const Link = <Match,>({
     const baseLocation = getNavigationBaseLocation(parentRoute, route);
     const location = getRouteRecordLocation(
       route,
-      match as Match,
+      (match || {}) as Match,
       baseLocation
     );
     return locationToURL(location);
