@@ -1,5 +1,6 @@
 import { SingleHashRouteBuilder } from ".";
 import { RoutePathResolver } from "../RoutePathResolver";
+import { getRouteRecordLocation } from "../RouteRecord/getRouteRecordLocation";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 
 describe("SingleHashRouteBuilder", () => {
@@ -55,42 +56,99 @@ describe("SingleHashRouteBuilder", () => {
       ]);
       expect(res[0].route.action(res[0].match as never)).toBe("foo is aiueo");
     });
-  });
-  it("does not resolve for no hash string", () => {
-    const toplevel = SingleHashRouteBuilder.init("foo").action(
-      ({ foo }) => `foo is ${foo.slice(0)}`
-    );
-    const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
-      pathname: "/",
-      hash: "",
-      state: null,
+    it("does not resolve for no hash string", () => {
+      const toplevel = SingleHashRouteBuilder.init("foo").action(
+        ({ foo }) => `foo is ${foo.slice(0)}`
+      );
+      const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
+        pathname: "/",
+        hash: "",
+        state: null,
+      });
+      expect(res).toEqual([]);
     });
-    expect(res).toEqual([]);
-  });
-  it("optional flag allows nonexistent query param", () => {
-    const toplevel = SingleHashRouteBuilder.init("foo", {
-      optional: true,
-    }).action(({ foo }) => `foo is ${foo?.slice(0)}`);
-    const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
-      pathname: "/",
-      state: null,
+    it("optional flag allows nonexistent query param", () => {
+      const toplevel = SingleHashRouteBuilder.init("foo", {
+        optional: true,
+      }).action(({ foo }) => `foo is ${foo?.slice(0)}`);
+      const res = RoutePathResolver.getFromBuilder(toplevel).resolve({
+        pathname: "/",
+        state: null,
+      });
+      expect(res).toEqual([
+        {
+          remainingLocation: {
+            pathname: "/",
+            state: null,
+          },
+          currentLocation: {
+            pathname: "/",
+            hash: "",
+            state: null,
+          },
+          match: {
+            foo: undefined,
+          },
+          route: expect.any(MatchingRouteRecord),
+        },
+      ]);
     });
-    expect(res).toEqual([
-      {
-        remainingLocation: {
-          pathname: "/",
-          state: null,
-        },
-        currentLocation: {
-          pathname: "/",
-          hash: "",
-          state: null,
-        },
-        match: {
-          foo: undefined,
-        },
-        route: expect.any(MatchingRouteRecord),
-      },
-    ]);
+  });
+  describe("location", () => {
+    it("location has hash string", () => {
+      const toplevel = SingleHashRouteBuilder.init("foo").action(
+        ({ foo }) => `foo is ${foo.slice(0)}`
+      );
+      expect(
+        getRouteRecordLocation(toplevel.route, {
+          foo: "abcd",
+        })
+      ).toEqual({
+        pathname: "/",
+        hash: "#abcd",
+        state: null,
+      });
+    });
+    it("overrides current hash string", () => {
+      const toplevel = SingleHashRouteBuilder.init("foo").action(
+        ({ foo }) => `foo is ${foo.slice(0)}`
+      );
+      expect(
+        getRouteRecordLocation(
+          toplevel.route,
+          {
+            foo: "abcd",
+          },
+          {
+            pathname: "/top",
+            hash: "#foobar",
+            state: null,
+          }
+        )
+      ).toEqual({
+        pathname: "/top",
+        hash: "#abcd",
+        state: null,
+      });
+    });
+    it("optional", () => {
+      const toplevel = SingleHashRouteBuilder.init("foo", {
+        optional: true,
+      }).action(({ foo }) => `foo is ${foo?.slice(0)}`);
+      expect(
+        getRouteRecordLocation(
+          toplevel.route,
+          {},
+          {
+            pathname: "/top",
+            state: null,
+          }
+        )
+      ).toEqual({
+        pathname: "/top",
+        hash: "",
+        state: null,
+      });
+    });
   });
 });

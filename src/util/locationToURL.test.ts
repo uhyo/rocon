@@ -21,7 +21,7 @@ describe("locationToURL", () => {
     expect(
       locationToURL({
         pathname: "/foo/bar",
-        hash: "idid",
+        hash: "#idid",
         state: null,
       })
     ).toBe("/foo/bar#idid");
@@ -31,7 +31,7 @@ describe("locationToURL", () => {
       locationToURL({
         pathname: "/foo/bar",
         search: "key=value&foo=123",
-        hash: "idid",
+        hash: "#idid",
         state: null,
       })
     ).toBe("/foo/bar?key=value&foo=123#idid");
