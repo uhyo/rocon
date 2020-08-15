@@ -56,7 +56,7 @@ export abstract class RouteRecordBase<
           RouteBuilderLinkValue<ActionResult>
         >
       ) {
-        const link = builder.getBuilderLink();
+        const link = builder.getBuilderLink().getAttachmentRoot();
         this.#builder = link;
         link.attachToParent(
           parentLink,

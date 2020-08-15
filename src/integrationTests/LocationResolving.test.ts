@@ -1,7 +1,7 @@
 import { Path, Rocon, Search, State } from "..";
 import { getRouteRecordLocation } from "../builder/RouteRecord/getRouteRecordLocation";
 import { MatchingRouteRecord } from "../builder/RouteRecord/MatchingRouteRecord";
-import { Resolver } from "../shorthand";
+import { Resolver, SingleHash } from "../shorthand";
 import { isString } from "../validator";
 
 // TODO: remove `as never` by introducing better API
@@ -228,6 +228,30 @@ describe("Composed Location resolving", () => {
           route: expect.any(MatchingRouteRecord),
         },
       ]);
+    });
+  });
+  describe("path-hash-path", () => {
+    it("1", () => {
+      const secondLevel = SingleHash("hash")
+        .attach(Path())
+        .routes({
+          second: {
+            action: ({ hash }) => `hash is ${hash}`,
+          },
+        });
+
+      console.log("toplevel");
+      const topLevel = Path().route("first", (r) => r.attach(secondLevel));
+
+      expect(
+        getRouteRecordLocation(secondLevel._.second, {
+          hash: "idid",
+        })
+      ).toEqual({
+        pathname: "/first/second",
+        hash: "#idid",
+        state: null,
+      });
     });
   });
 });

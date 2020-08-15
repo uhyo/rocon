@@ -202,7 +202,7 @@ export class PathRouteBuilder<
         },
         attach(builder: AttachableRouteBuilder<ActionResult, Match>) {
           attachedBuilder = builder;
-          builder.getBuilderLink().attaching();
+          builder.getBuilderLink().getAttachmentRoot().attaching();
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           return builder as any;
         },
