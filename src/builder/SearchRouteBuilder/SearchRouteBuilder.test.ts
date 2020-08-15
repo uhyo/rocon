@@ -1,5 +1,6 @@
 import { SearchRouteBuilder } from ".";
 import { RoutePathResolver } from "../RoutePathResolver";
+import { getRouteRecordLocation } from "../RouteRecord/getRouteRecordLocation";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 
 describe("SearchRouteBuilder", () => {
@@ -123,5 +124,45 @@ describe("SearchRouteBuilder", () => {
         route: expect.any(MatchingRouteRecord),
       },
     ]);
+  });
+  describe("location", () => {
+    it("matchKey = seacrhKey", () => {
+      const toplevel = SearchRouteBuilder.init("foo").action(
+        ({ foo }) => `foo is ${foo.slice(0)}`
+      );
+      expect(
+        getRouteRecordLocation(toplevel.route, {
+          foo: "wowow",
+        })
+      ).toEqual({
+        pathname: "/",
+        search: "?foo=wowow",
+        state: null,
+      });
+    });
+    it("matchKey != seacrhKey", () => {
+      const toplevel = SearchRouteBuilder.init("foo", {
+        searchKey: "boom",
+      }).action(({ foo }) => `foo is ${foo.slice(0)}`);
+      expect(
+        getRouteRecordLocation(toplevel.route, {
+          foo: "wowow",
+        })
+      ).toEqual({
+        pathname: "/",
+        search: "?boom=wowow",
+        state: null,
+      });
+    });
+    it("optional value", () => {
+      const toplevel = SearchRouteBuilder.init("foo", {
+        optional: true,
+      }).action(({ foo }) => `foo is ${foo?.slice(0)}`);
+      expect(getRouteRecordLocation(toplevel.route, {})).toEqual({
+        pathname: "/",
+        search: "",
+        state: null,
+      });
+    });
   });
 });

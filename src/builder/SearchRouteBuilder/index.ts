@@ -1,13 +1,14 @@
 import { BuilderLink } from "../../core/BuilderLink";
 import type { OptionalIf } from "../../util/types/OptionalIf";
 import type { PartialIf } from "../../util/types/PartialIf";
-import { isString } from "../../validator";
+import { isString, isStringOrUndefined } from "../../validator";
 import { SearchLocationComposer } from "../composers/SearchLocationComposer";
 import {
   AttachableRouteBuilder,
   RouteBuilderLink,
   RouteBuilderLinkValue,
 } from "../RouteBuilderLink";
+import { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
 import { ActionType } from "../RoutesDefinitionObject";
 import { SingleRouteAbstractBuilder } from "../SingleRouteAbstractBuilder";
@@ -50,15 +51,13 @@ export class SearchRouteBuilder<
     >
   > {
     const searchKey = options.searchKey ?? matchKey;
+    const optional = options.optional || (false as IsOptional);
     const link = new BuilderLink<
       ActionResult,
       OptionalIf<IsOptional, string>,
       RouteBuilderLinkValue<ActionResult>
     >({
-      composer: new SearchLocationComposer(
-        searchKey,
-        options.optional || (false as IsOptional)
-      ),
+      composer: new SearchLocationComposer(searchKey, optional),
     });
     const result = new SearchRouteBuilder<
       ActionResult,
@@ -70,23 +69,31 @@ export class SearchRouteBuilder<
         }
       >
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    >(link, matchKey as any);
+    >(link, matchKey as any, optional);
     return result;
   }
 
   readonly matchKey: Extract<keyof Match, string>;
+  readonly optional: boolean;
 
   #link: RouteBuilderLink<ActionResult, string>;
-  #route: MatchingRouteRecord<ActionResult, string, Match, boolean>;
+  #route: RouteRecordType<ActionResult, Match, boolean>;
 
   private constructor(
     link: RouteBuilderLink<ActionResult, string | undefined>,
-    matchKey: Extract<keyof Match, string>
+    matchKey: Extract<keyof Match, string>,
+    optional: boolean
   ) {
     super();
     this.#link = link;
     this.matchKey = matchKey;
-    this.#route = new MatchingRouteRecord(this, matchKey, isString, undefined);
+    this.optional = optional;
+    this.#route = new MatchingRouteRecord(
+      this,
+      matchKey,
+      optional ? isStringOrUndefined : isString,
+      undefined
+    );
     link.register(this, (value) => {
       const route = this.#route;
       return {
@@ -107,13 +114,14 @@ export class SearchRouteBuilder<
   ): SearchRouteBuilder<ActionResult, "hasaction", Match> {
     const result = new SearchRouteBuilder<ActionResult, "hasaction", Match>(
       this.#link.inherit(),
-      this.matchKey
+      this.matchKey,
+      this.optional
     );
 
     result.#route = new MatchingRouteRecord(
       result,
       this.matchKey,
-      isString,
+      this.optional ? isStringOrUndefined : isString,
       action
     );
     return result;
@@ -122,9 +130,8 @@ export class SearchRouteBuilder<
   /**
    * Get a route object of this builder.
    */
-  getRoute(): MatchingRouteRecord<
+  getRoute(): RouteRecordType<
     ActionResult,
-    string,
     Match,
     WildcardFlagToHasAction<WildcardFlag>
   > {

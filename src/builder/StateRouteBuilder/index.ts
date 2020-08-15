@@ -1,17 +1,18 @@
 import { BuilderLink } from "../../core/BuilderLink";
 import type { OptionalIf } from "../../util/types/OptionalIf";
 import type { PartialIf } from "../../util/types/PartialIf";
-import type { Validator } from "../../validator";
+import { isUndefinedOr, Validator } from "../../validator";
 import { StateLocationComposer } from "../composers/StateLocationComposer";
-import {
+import type {
   AttachableRouteBuilder,
   RouteBuilderLink,
   RouteBuilderLinkValue,
 } from "../RouteBuilderLink";
+import type { RouteRecordType } from "../RouteRecord";
 import { MatchingRouteRecord } from "../RouteRecord/MatchingRouteRecord";
-import { ActionType } from "../RoutesDefinitionObject";
+import type { ActionType } from "../RoutesDefinitionObject";
 import { SingleRouteAbstractBuilder } from "../SingleRouteAbstractBuilder";
-import {
+import type {
   ExistingWildcardFlagType,
   WildcardFlagToHasAction,
 } from "../WildcardFlagType";
@@ -44,7 +45,7 @@ export class StateRouteBuilder<
     options: StateRouteBuilerOptions<IsOptional> = {}
   ): StateRouteBuilder<
     ActionResult,
-    StateValue,
+    OptionalIf<IsOptional, StateValue>,
     "noaction",
     PartialIf<
       IsOptional,
@@ -54,20 +55,21 @@ export class StateRouteBuilder<
     >
   > {
     const stateKey = options.stateKey ?? matchKey;
+    const optional = options.optional || (false as IsOptional);
+    const usedValidator = (optional
+      ? isUndefinedOr(validator)
+      : validator) as Validator<OptionalIf<IsOptional, StateValue>>;
+
     const link = new BuilderLink<
       ActionResult,
       OptionalIf<IsOptional, StateValue>,
       RouteBuilderLinkValue<ActionResult>
     >({
-      composer: new StateLocationComposer(
-        stateKey,
-        validator,
-        options.optional || (false as IsOptional)
-      ),
+      composer: new StateLocationComposer(stateKey, usedValidator, optional),
     });
     const result = new StateRouteBuilder<
       ActionResult,
-      StateValue,
+      OptionalIf<IsOptional, StateValue>,
       "noaction",
       PartialIf<
         IsOptional,
@@ -76,7 +78,7 @@ export class StateRouteBuilder<
         }
       >
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    >(link, matchKey as any, validator);
+    >(link, matchKey as any, usedValidator);
 
     return result;
   }
@@ -85,7 +87,7 @@ export class StateRouteBuilder<
 
   #link: RouteBuilderLink<ActionResult, StateValue>;
   #validator: Validator<StateValue>;
-  #route: MatchingRouteRecord<ActionResult, StateValue, Match, boolean>;
+  #route: RouteRecordType<ActionResult, Match, boolean>;
 
   private constructor(
     link: RouteBuilderLink<ActionResult, StateValue | undefined>,
@@ -133,14 +135,12 @@ export class StateRouteBuilder<
     return result;
   }
 
-  getRoute(): MatchingRouteRecord<
+  getRoute(): RouteRecordType<
     ActionResult,
-    StateValue,
     Match,
     WildcardFlagToHasAction<WildcardFlag>
   > {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return this.#route as any;
+    return this.#route;
   }
 
   getBuilderLink(): RouteBuilderLink<ActionResult, StateValue> {

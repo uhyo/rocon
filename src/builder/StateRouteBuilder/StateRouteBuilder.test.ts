@@ -163,4 +163,67 @@ describe("StateRouteBuilder", () => {
       );
     });
   });
+  describe("location", () => {
+    it("matchKey = stateKey", () => {
+      const toplevel = StateRouteBuilder.init("foo", isString).action(
+        ({ foo }) => `foo is ${foo.slice(0)}`
+      );
+      expect(
+        getRouteRecordLocation(
+          toplevel.route,
+          { foo: "aiu" },
+          {
+            pathname: "/top",
+            state: null,
+          }
+        )
+      ).toEqual({
+        pathname: "/top",
+        state: {
+          foo: "aiu",
+        },
+      });
+    });
+    it("matchKey != stateKey", () => {
+      const toplevel = StateRouteBuilder.init("foo", isNumber, {
+        stateKey: "boom",
+      }).action(({ foo }) => `foo is ${foo.toFixed(2)}`);
+      expect(
+        getRouteRecordLocation(
+          toplevel.route,
+          { foo: 1234 },
+          {
+            pathname: "/top",
+            state: {
+              foo: "foobar",
+            },
+          }
+        )
+      ).toEqual({
+        pathname: "/top",
+        state: {
+          foo: "foobar",
+          boom: 1234,
+        },
+      });
+    });
+    it("optional omitted value", () => {
+      const toplevel = StateRouteBuilder.init("foo", isString, {
+        optional: true,
+      }).action(({ foo }) => `foo is ${foo?.slice(0)}`);
+      expect(
+        getRouteRecordLocation(
+          toplevel.route,
+          {},
+          {
+            pathname: "/top",
+            state: null,
+          }
+        )
+      ).toEqual({
+        pathname: "/top",
+        state: {},
+      });
+    });
+  });
 });

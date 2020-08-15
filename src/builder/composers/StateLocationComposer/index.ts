@@ -13,10 +13,10 @@ export class StateLocationComposer<
 > implements LocationComposer<OptionalIf<IsOptional, StateValue>> {
   readonly key: Key;
   readonly optional: IsOptional;
-  readonly validator: Validator<StateValue>;
+  readonly validator: Validator<OptionalIf<IsOptional, StateValue>>;
   constructor(
     key: Key,
-    validator: Validator<StateValue>,
+    validator: Validator<OptionalIf<IsOptional, StateValue>>,
     optional: IsOptional
   ) {
     this.key = key;

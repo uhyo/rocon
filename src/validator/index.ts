@@ -13,3 +13,11 @@ export const isStringOrUndefined: Validator<string | undefined> = (
 
 export const isNumber: Validator<number> = (value): value is number =>
   typeof value === "number";
+
+/**
+ * Convert a given validator to another validator that also accepts undefined.
+ */
+export const isUndefinedOr = <R>(
+  validator: Validator<R>
+): Validator<R | undefined> => (value): value is R | undefined =>
+  value === undefined || validator(value);
