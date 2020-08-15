@@ -7,15 +7,14 @@
   "scripts": {
     "build:ts_babel": "babel src --out-dir lib --extensions '.ts,.tsx'",
     "build:ts": "tsc --build",
-    "build:typecheck": "tsc --build",
-    "build:declaration": "tsc --declaration",
     "commitizen": "git cz",
     "test": "jest",
     "test:watch": "jest --watch",
-    "watch:typecheck": "tsc --build --watch"
+    "watch:ts": "tsc --build --watch"
   },
   "files": [
     "lib/**/*",
+    "src/**/*",
     "/react.js",
     "/react.d.ts",
     "!*.tsbuildinfo",
