@@ -34,14 +34,17 @@ export class SearchRouteBuilder<
   static init<
     ActionResult,
     Key extends string,
-    Match extends {
-      [K in Key]: IsOptional extends false ? string : string | undefined;
-    },
     IsOptional extends boolean = false
   >(
     matchKey: Key,
     options: SearchRouteBuilderOptions<IsOptional> = {}
-  ): SearchRouteBuilder<ActionResult, "noaction", Match> {
+  ): SearchRouteBuilder<
+    ActionResult,
+    "noaction",
+    {
+      [K in Key]: IsOptional extends false ? string : string | undefined;
+    }
+  > {
     const searchKey = options.searchKey ?? matchKey;
     const link = new BuilderLink<
       ActionResult,
@@ -56,10 +59,9 @@ export class SearchRouteBuilder<
     const result = new SearchRouteBuilder<
       ActionResult,
       "noaction",
-      Match &
-        {
-          [K in Key]: IsOptional extends false ? string : string | undefined;
-        }
+      {
+        [K in Key]: IsOptional extends false ? string : string | undefined;
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     >(link, matchKey as any);
     return result;

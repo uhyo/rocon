@@ -65,12 +65,12 @@ export class PathRouteBuilder<
   ExactFlag extends WildcardFlagType,
   Match
 > implements AttachableRouteBuilder<ActionResult, string> {
-  static init<ActionResult, Match = {}>(): PathRouteBuilder<
+  static init<ActionResult>(): PathRouteBuilder<
     ActionResult,
     {},
     "none",
     "none",
-    Match
+    {}
   > {
     return new PathRouteBuilder(
       new BuilderLink({

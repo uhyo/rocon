@@ -36,15 +36,19 @@ export class StateRouteBuilder<
     ActionResult,
     StateValue,
     Key extends string,
-    Match extends {
-      [K in Key]: OptionalIf<IsOptional, StateValue>;
-    },
     IsOptional extends boolean = false
   >(
     matchKey: Key,
     validator: Validator<StateValue>,
     options: StateRouteBuilerOptions<IsOptional> = {}
-  ): StateRouteBuilder<ActionResult, StateValue, "noaction", Match> {
+  ): StateRouteBuilder<
+    ActionResult,
+    StateValue,
+    "noaction",
+    {
+      [K in Key]: OptionalIf<IsOptional, StateValue>;
+    }
+  > {
     const stateKey = options.stateKey ?? matchKey;
     const link = new BuilderLink<
       ActionResult,
@@ -61,7 +65,9 @@ export class StateRouteBuilder<
       ActionResult,
       StateValue,
       "noaction",
-      Match
+      {
+        [K in Key]: OptionalIf<IsOptional, StateValue>;
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     >(link, matchKey as any, validator);
 

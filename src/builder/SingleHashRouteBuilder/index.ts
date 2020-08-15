@@ -33,14 +33,17 @@ export class SingleHashRouteBuilder<
   static init<
     ActionResult,
     Key extends string,
-    Match extends {
-      [K in Key]: IsOptional extends false ? string : string | undefined;
-    },
     IsOptional extends boolean = false
   >(
     matchKey: Key,
     options: SingleHashRouteBuilderOptions<IsOptional> = {}
-  ): SingleHashRouteBuilder<ActionResult, "noaction", Match> {
+  ): SingleHashRouteBuilder<
+    ActionResult,
+    "noaction",
+    {
+      [K in Key]: IsOptional extends false ? string : string | undefined;
+    }
+  > {
     const link = new BuilderLink<
       ActionResult,
       OptionalIf<IsOptional, string>,
@@ -53,10 +56,9 @@ export class SingleHashRouteBuilder<
     const result = new SingleHashRouteBuilder<
       ActionResult,
       "noaction",
-      Match &
-        {
-          [K in Key]: IsOptional extends false ? string : string | undefined;
-        }
+      {
+        [K in Key]: IsOptional extends false ? string : string | undefined;
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     >(link, matchKey as any);
     return result;

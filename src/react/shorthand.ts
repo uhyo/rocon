@@ -28,35 +28,41 @@ import type { ReactElement } from "./types/ReactElement";
 
 type ActionResult = ReactElement | null;
 
-export const Path: <Match = {}>() => PathRouteBuilder<
+export const Path: () => PathRouteBuilder<
   ActionResult,
   {},
   "none",
   "none",
-  Match
+  {}
 > = RawPath;
 
-export const Search: <
-  Key extends string,
-  Match extends {
-    [K in Key]: IsOptional extends false ? string : string | undefined;
-  },
-  IsOptional extends boolean = false
->(
+export const Search: <Key extends string, IsOptional extends boolean = false>(
   matchKey: Key,
   options?: SearchRouteBuilderOptions<IsOptional>
-) => SearchRouteBuilder<ActionResult, "noaction", Match> = RawSearch;
+) => SearchRouteBuilder<
+  ActionResult,
+  "noaction",
+  {
+    [K in Key]: IsOptional extends false ? string : string | undefined;
+  }
+> = RawSearch;
 
 export const State: <
   StateValue,
   Key extends string,
-  Match extends { [K in Key]: OptionalIf<IsOptional, StateValue> },
   IsOptional extends boolean = false
 >(
   matchKey: Key,
   validator: Validator<StateValue>,
   options?: StateRouteBuilerOptions<IsOptional>
-) => StateRouteBuilder<ActionResult, StateValue, "noaction", Match> = RawState;
+) => StateRouteBuilder<
+  ActionResult,
+  StateValue,
+  "noaction",
+  {
+    [K in Key]: OptionalIf<IsOptional, StateValue>;
+  }
+> = RawState;
 
 export const Root: (
   options?: Partial<RootRouteBuilderOptions>
@@ -64,11 +70,14 @@ export const Root: (
 
 export const SingleHash: <
   Key extends string,
-  Match extends {
-    [K in Key]: IsOptional extends false ? string : string | undefined;
-  },
   IsOptional extends boolean = false
 >(
   matchKey: Key,
   options?: SingleHashRouteBuilderOptions<IsOptional>
-) => SingleHashRouteBuilder<ActionResult, "noaction", Match> = RawSingleHash;
+) => SingleHashRouteBuilder<
+  ActionResult,
+  "noaction",
+  {
+    [K in Key]: IsOptional extends false ? string : string | undefined;
+  }
+> = RawSingleHash;
