@@ -29,7 +29,9 @@ export const useNavigate = (): Navigate => {
       match: Match
     ) => {
       const baseLocation = getNavigationBaseLocation(parentRoute, route);
-      history.push(getRouteRecordLocation(route, match as Match, baseLocation));
+      history.push(
+        getRouteRecordLocation(route, (match || {}) as Match, baseLocation)
+      );
     }) as NavigateFunction;
     const replace = (<Match>(
       route: RouteRecordType<ReactElement | null, Match, boolean>,
@@ -37,7 +39,7 @@ export const useNavigate = (): Navigate => {
     ) => {
       const baseLocation = getNavigationBaseLocation(parentRoute, route);
       history.replace(
-        getRouteRecordLocation(route, match as Match, baseLocation)
+        getRouteRecordLocation(route, (match || {}) as Match, baseLocation)
       );
     }) as NavigateFunction;
     return Object.assign(push, { push, replace });
