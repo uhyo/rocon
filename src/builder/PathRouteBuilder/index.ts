@@ -167,20 +167,34 @@ export class PathRouteBuilder<
     callback?: (route: PathSingleRouteInterface<ActionResult, Match>) => void
   ): PathRouteBuilder<
     ActionResult,
-    Omit<Defs, Key> &
-      {
-        [K in Key]: RouteDefinition<ActionResult, Match>;
-      },
+    Key extends keyof Defs
+      ? {
+          [K in keyof Defs]: Key extends K
+            ? RouteDefinition<ActionResult, Match>
+            : Defs[K];
+        }
+      : {
+          [K in keyof Defs | Key]: K extends keyof Defs
+            ? Defs[K]
+            : RouteDefinition<ActionResult, Match>;
+        },
     AnyFlag,
     ExactFlag,
     Match
   > {
     const result = new PathRouteBuilder<
       ActionResult,
-      Omit<Defs, Key> &
-        {
-          [K in Key]: RouteDefinition<ActionResult, Match>;
-        },
+      Key extends keyof Defs
+        ? {
+            [K in keyof Defs]: Key extends K
+              ? RouteDefinition<ActionResult, Match>
+              : Defs[K];
+          }
+        : {
+            [K in keyof Defs | Key]: K extends keyof Defs
+              ? Defs[K]
+              : RouteDefinition<ActionResult, Match>;
+          },
       AnyFlag,
       ExactFlag,
       Match
