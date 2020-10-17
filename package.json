@@ -11,6 +11,7 @@
     "build:ts_babel_esm": "babel --config-file ./babel.config.esm.js src --out-dir esm --extensions '.ts,.tsx'",
     "build:ts": "tsc --build",
     "commitizen": "git cz",
+    "release": "standard-version",
     "test": "jest",
     "test:watch": "jest --watch",
     "watch:ts": "tsc --build --watch"
@@ -63,6 +64,7 @@
     "prettier": "^2.0.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "standard-version": "^9.0.0",
     "typescript": "^4.0.1-rc"
   },
   "husky": {
