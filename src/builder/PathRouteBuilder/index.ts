@@ -64,7 +64,7 @@ export class PathRouteBuilder<
   AnyFlag extends WildcardFlagType,
   ExactFlag extends WildcardFlagType,
   Match
-> implements AttachableRouteBuilder<ActionResult, string> {
+> implements AttachableRouteBuilder<ActionResult, string | undefined> {
   static init<ActionResult>(): PathRouteBuilder<
     ActionResult,
     {},
@@ -79,10 +79,15 @@ export class PathRouteBuilder<
     );
   }
 
-  readonly #link: RouteBuilderLink<ActionResult, string>;
+  readonly #link: RouteBuilderLink<ActionResult, string | undefined>;
   #routes: RouteRecordsBase<ActionResult> = Object.create(null);
   #wildcardRoute:
-    | MatchingRouteRecordObject<ActionResult, string, Match, boolean>
+    | MatchingRouteRecordObject<
+        ActionResult,
+        string | undefined,
+        Match,
+        boolean
+      >
     | undefined = undefined;
   #exactRoute:
     | PathRouteRecord<ActionResult, Match, boolean>
@@ -214,7 +219,7 @@ export class PathRouteBuilder<
           action = a;
           return this;
         },
-        attach(builder: AttachableRouteBuilder<ActionResult, Match>) {
+        attach(builder: AttachableRouteBuilder<ActionResult, unknown>) {
           attachedBuilder = builder;
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           return builder as any;
@@ -352,7 +357,7 @@ export class PathRouteBuilder<
     return this.#exactRoute as ExactRouteType<ActionResult, ExactFlag, Match>;
   }
 
-  getBuilderLink(): RouteBuilderLink<ActionResult, string> {
+  getBuilderLink(): RouteBuilderLink<ActionResult, string | undefined> {
     return this.#link;
   }
 }

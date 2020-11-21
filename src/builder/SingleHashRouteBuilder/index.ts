@@ -31,7 +31,7 @@ export class SingleHashRouteBuilder<
     Match,
     WildcardFlagToHasAction<WildcardFlag>
   >
-  implements AttachableRouteBuilder<ActionResult, string> {
+  implements AttachableRouteBuilder<ActionResult, string | undefined> {
   static init<
     ActionResult,
     Key extends string,
@@ -74,7 +74,7 @@ export class SingleHashRouteBuilder<
   readonly matchKey: Extract<keyof Match, string>;
   readonly optional: boolean;
 
-  #link: RouteBuilderLink<ActionResult, string>;
+  #link: RouteBuilderLink<ActionResult, string | undefined>;
   #route: RouteRecordType<ActionResult, Match, boolean>;
 
   private constructor(
@@ -136,7 +136,7 @@ export class SingleHashRouteBuilder<
     return this.#route;
   }
 
-  getBuilderLink(): RouteBuilderLink<ActionResult, string> {
+  getBuilderLink(): RouteBuilderLink<ActionResult, string | undefined> {
     return this.#link;
   }
 }

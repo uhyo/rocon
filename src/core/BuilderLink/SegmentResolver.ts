@@ -7,12 +7,12 @@ export type ResolvedSegmentType<ActionResult, Segment, Value> =
       // value: RouteRecordType<ActionResult, never, boolean>;
       value: Value;
       // TODO: this `| undefined` could be removed?
-      link: BuilderLink<ActionResult, Segment, Value> | undefined;
+      link: BuilderLink<ActionResult, unknown, Value> | undefined;
     }
   | {
       type: "matching";
       value: Value;
-      link: BuilderLink<ActionResult, Segment, Value> | undefined;
+      link: BuilderLink<ActionResult, unknown, Value> | undefined;
       matchKey: string;
       matchValue: Segment;
     };

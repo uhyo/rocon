@@ -1,6 +1,10 @@
 import { Location } from "../Location";
 import type { LocationComposer } from "../LocationComposer";
 import { RouteResolver } from "../RouteResolver";
+import {
+  createSegmentDecomposer,
+  SegmentDecomposer,
+} from "../RouteResolver/resolveChain";
 import type { BuilderLinkOptions } from "./BuilderLinkOptions";
 import { BuilderLinkState } from "./BuilderLinkState";
 import { HasBuilderLink } from "./HasBuilderLink";
@@ -21,7 +25,7 @@ export class BuilderLink<ActionResult, Segment, Value>
    * Registered current builder.
    */
   currentBuilder?: HasBuilderLink<ActionResult, Segment, Value> = undefined;
-  resolveSegment?: SegmentResolver<ActionResult, Segment, Value>;
+  segmentDecomposer?: SegmentDecomposer<ActionResult, Segment, Value>;
 
   constructor(options: BuilderLinkOptions<Segment>) {
     this.composer = options.composer;
@@ -32,7 +36,7 @@ export class BuilderLink<ActionResult, Segment, Value>
    * Attach this link to a parent.
    */
   attachToParent(
-    parentLink: BuilderLink<ActionResult, unknown, Value>,
+    parentLink: BuilderLink<ActionResult, Segment, Value>,
     segmentGetter: (match: unknown) => Segment
   ) {
     if (this.#state.state !== "unattached") {
@@ -109,7 +113,7 @@ export class BuilderLink<ActionResult, Segment, Value>
     resolveSegment: SegmentResolver<ActionResult, Segment, Value>
   ): void {
     this.currentBuilder = builder;
-    this.resolveSegment = resolveSegment;
+    this.segmentDecomposer = createSegmentDecomposer(this, resolveSegment);
   }
 
   /**

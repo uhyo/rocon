@@ -33,7 +33,7 @@ export class StateRouteBuilder<
     Match,
     WildcardFlagToHasAction<WildcardFlag>
   >
-  implements AttachableRouteBuilder<ActionResult, StateValue> {
+  implements AttachableRouteBuilder<ActionResult, StateValue | undefined> {
   static init<
     ActionResult,
     StateValue,
@@ -85,7 +85,7 @@ export class StateRouteBuilder<
 
   readonly matchKey: Extract<keyof Match, string>;
 
-  #link: RouteBuilderLink<ActionResult, StateValue>;
+  #link: RouteBuilderLink<ActionResult, StateValue | undefined>;
   #validator: Validator<StateValue>;
   #route: RouteRecordType<ActionResult, Match, boolean>;
 
@@ -143,7 +143,7 @@ export class StateRouteBuilder<
     return this.#route;
   }
 
-  getBuilderLink(): RouteBuilderLink<ActionResult, StateValue> {
+  getBuilderLink(): RouteBuilderLink<ActionResult, StateValue | undefined> {
     return this.#link;
   }
 }

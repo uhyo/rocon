@@ -14,7 +14,7 @@ export class PathRouteRecord<ActionResult, Match, HasAction extends boolean>
   readonly key: string | undefined;
 
   constructor(
-    parent: AttachableRouteBuilder<ActionResult, string>,
+    parent: AttachableRouteBuilder<ActionResult, string | undefined>,
     key: string | undefined,
     action: ActionTypeOfRouteRecord<ActionResult, Match, HasAction>
   ) {
