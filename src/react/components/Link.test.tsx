@@ -169,4 +169,32 @@ describe("Link", () => {
     });
     expect(screen.queryByText("I AM BAR")).toBeInTheDocument();
   });
+  it("forwarding ref works", () => {
+    const history = createMemoryHistory({
+      initialEntries: [
+        {
+          pathname: "/foo",
+          state: null,
+        },
+      ],
+    });
+    const routes = Path()
+      .route("foo", (foo) => foo.action(() => <p>I am foo</p>))
+      .route("bar", (bar) => bar.action(() => <div>I AM BAR</div>));
+    const ref = React.createRef<HTMLAnchorElement>();
+    const Component: React.FC = () => {
+      const contents = useRoutes(routes);
+      return (
+        <div>
+          <Link data-testid="link" route={routes._.bar} ref={ref}>
+            nice link
+          </Link>
+          {contents}
+        </div>
+      );
+    };
+
+    renderInHistory(history, <Component />);
+    expect(ref.current?.getAttribute("href")).toBe("/bar");
+  });
 });
