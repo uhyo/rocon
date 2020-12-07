@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { forwardRef, Ref, useContext, useMemo } from "react";
 import { getRouteRecordLocation } from "../../builder/RouteRecord/getRouteRecordLocation";
 import { locationToURL } from "../../util/locationToURL";
 import { RouteContext } from "../contexts/RouteContext";
@@ -13,14 +13,17 @@ export type LinkProps<Match> = React.DetailedHTMLProps<
   route: ReactRouteRecord<Match>;
 } & ({} extends Match ? { match?: Match } : { match: Match });
 
+export type LinkPropsWithRef<Match> = LinkProps<Match> & {
+  ref?: Ref<HTMLAnchorElement | null>;
+};
+
 /**
  * Renders an <a> element to given route.
  */
-export const Link = <Match,>({
-  route,
-  match,
-  ...props
-}: LinkProps<Match>): ReactElement | null => {
+const RawLink = <Match,>(
+  { route, match, ...props }: LinkProps<Match>,
+  ref: Ref<HTMLAnchorElement | null>
+): ReactElement | null => {
   const parentRoute = useContext(RouteContext);
   const navigate = useNavigate();
   const href = useMemo(() => {
@@ -34,6 +37,7 @@ export const Link = <Match,>({
   }, [route, match, parentRoute]);
   return (
     <a
+      ref={ref}
       href={href}
       onClick={(e) => {
         if (!isModifiedEvent(e)) {
@@ -46,6 +50,10 @@ export const Link = <Match,>({
     />
   );
 };
+
+export const Link = forwardRef(RawLink) as <Match>(
+  p: LinkPropsWithRef<Match>
+) => ReactElement | null;
 
 function isModifiedEvent(event: React.MouseEvent) {
   return event.metaKey || event.altKey || event.ctrlKey || event.shiftKey;
