@@ -4,6 +4,7 @@ export type {
 } from "../builder/WildcardFlagType";
 export * as validator from "../validator";
 export { Link } from "./components/Link";
+export { Redirect } from "./components/Redirect";
 export { RoconRoot } from "./components/RoconRoot";
 export {
   isLocationNotFoundError,
