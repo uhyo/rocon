@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/uhyo/rocon/compare/v1.1.1...v1.2.0) (2020-12-29)
+
+
+### Features
+
+* add forward-ref to Link Component ([dd3fe76](https://github.com/uhyo/rocon/commit/dd3fe76752519f24a03c4946c0cc5a6129eebcfe))
+
 ### [1.1.1](https://github.com/uhyo/rocon/compare/v1.1.0...v1.1.1) (2020-12-04)
 
 
