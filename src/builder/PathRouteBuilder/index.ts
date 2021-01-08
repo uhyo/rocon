@@ -257,7 +257,7 @@ export class PathRouteBuilder<
     >
   >(
     key: Key,
-    routeDefinition: RD
+    routeDefinition?: RD
   ): PathRouteBuilder<
     ActionResult,
     Defs,
@@ -286,7 +286,7 @@ export class PathRouteBuilder<
         // TypeScript requires this `as` but this should be true because Key extends string.
         key as Extract<Key, string>,
         isString,
-        routeDefinition.action
+        routeDefinition?.action
       ),
     };
     return result;

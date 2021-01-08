@@ -193,6 +193,22 @@ describe("PathRouteBuilder", () => {
         state: null,
       });
     });
+    it("any works without routeDefinition(2nd argument)", () => {
+      const res = PathRouteBuilder.init<string>().any("id");
+      const subRoutes = res.anyRoute
+        .attach(PathRouteBuilder.init())
+        .routes({
+          hoge: {
+            action: () => "sub",
+          },
+        })
+        .getRoutes();
+
+      expect(getRouteRecordLocation(subRoutes.hoge, { id: "wow" })).toEqual({
+        pathname: "/wow/hoge",
+        state: null,
+      });
+    });
   });
 
   describe("exact route", () => {
