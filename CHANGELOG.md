@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/uhyo/rocon/compare/v1.2.0...v1.2.1) (2021-01-14)
+
+
+### Bug Fixes
+
+* make 2nd argument(routeDefinition) optional ([1d9695c](https://github.com/uhyo/rocon/commit/1d9695ca9979fdc7203367d10db4fece42338a4c))
+
 ## [1.2.0](https://github.com/uhyo/rocon/compare/v1.1.1...v1.2.0) (2020-12-29)
 
 
