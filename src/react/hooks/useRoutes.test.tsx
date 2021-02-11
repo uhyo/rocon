@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   isLocationNotFoundError,
   LocationNotFoundError,
@@ -201,6 +201,27 @@ describe("useRoutes", () => {
       screen.queryByTestId("fugaButton")?.click();
       expect(screen.queryByText("I am foo")).toBeInTheDocument();
       expect(screen.queryByText("fugafuga")).toBeInTheDocument();
+    });
+  });
+  describe("React Component as action", () => {
+    it("1", () => {
+      const FooComponent = () => {
+        const loc = useState("foo");
+        return <p>I am {loc}</p>;
+      };
+      const location = {
+        pathname: "/foo",
+        state: null,
+      };
+      const routes = Path()
+        .route("foo", (foo) => foo.action(FooComponent))
+        .route("bar", (bar) => bar.action(() => <div>I AM BAR</div>));
+      const Component: React.FC = () => {
+        return useRoutes(routes);
+      };
+
+      renderInLocation(location, <Component />);
+      expect(screen.queryByText("I am foo")).toBeInTheDocument();
     });
   });
 });

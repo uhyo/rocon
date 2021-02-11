@@ -36,7 +36,11 @@ export const useRoutes = (builder: ReactRouteBuilder): ReactElement | null => {
       },
     });
 
-    const result = resolved.route.action(resolved.match as never);
+    // const result = resolved.route.action(resolved.match as never);
+    const result = React.createElement(
+      resolved.route.action,
+      resolved.match as never
+    );
     const routeContextValue = {
       route: resolved.route,
       ancestorRoutes,
