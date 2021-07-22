@@ -4,6 +4,7 @@ export {
   Link,
   LocationNotFoundError,
   Path,
+  Redirect,
   RoconRoot,
   Search,
   State,
