@@ -14,9 +14,10 @@ export const useRoutes = (builder: ReactRouteBuilder): ReactElement | null => {
 
   const location = useLocation();
   const locationToResolve = parentRoute?.nextLocation ?? location;
-  const resolver = useMemo(() => RoutePathResolver.getFromBuilder(builder), [
-    builder,
-  ]);
+  const resolver = useMemo(
+    () => RoutePathResolver.getFromBuilder(builder),
+    [builder]
+  );
   const { routeContextValue, result } = useMemo(() => {
     const resolved = resolver.resolve(locationToResolve)[0];
     if (resolved === undefined) {

@@ -8,9 +8,10 @@ export type RoconRootProps = {
 };
 
 export const RoconRoot: React.FC<RoconRootProps> = memo((props) => {
-  const history = useMemo(() => props.history || createBrowserHistory(), [
-    props.history,
-  ]);
+  const history = useMemo(
+    () => props.history || createBrowserHistory(),
+    [props.history]
+  );
 
   const historyContextValue = useMemo(() => {
     return {
@@ -21,6 +22,8 @@ export const RoconRoot: React.FC<RoconRootProps> = memo((props) => {
   const [location, setLocation] = useState<Location>(history.location);
 
   useEffect(() => {
+    // this `setLocation` handles the case where location is changed after above `history.location` is calculated
+    setLocation(history.location);
     return history.listen((state) => {
       setLocation(state.location);
     });
