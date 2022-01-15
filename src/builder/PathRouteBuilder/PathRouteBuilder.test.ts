@@ -238,6 +238,16 @@ describe("PathRouteBuilder", () => {
       });
       expect(res.exactRoute.action({})).toBe("I am root");
     });
+    it("root works with any route", () => {
+      const res = PathRouteBuilder.init()
+        .exact({
+          action: () => "I am root",
+        })
+        .any("id", {
+          action: ({ id }) => `id is ${id.slice(0, 8)}`,
+        });
+      expect(res.exactRoute.action({})).toBe("I am root");
+    })
     describe("resolve", () => {
       it("resolve root", () => {
         const toplevel = PathRouteBuilder.init()

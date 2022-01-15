@@ -298,6 +298,7 @@ export class PathRouteBuilder<
         routeDefinition?.action
       ),
     };
+    result.#exactRoute = this.#exactRoute
     return result;
   }
 
