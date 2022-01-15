@@ -23,21 +23,24 @@ export interface AttachFunction<ActionResult, Match> {
     Defs extends RoutesDefinition<ActionResult>,
     AnyFlag extends WildcardFlagType,
     ExactFlag extends WildcardFlagType,
-    IntrinsicMatch
+    IntrinsicMatch,
+    IntrinsicAnyMatch
   >(
     builder: PathRouteBuilder<
       ActionResult,
       Defs,
       AnyFlag,
       ExactFlag,
-      IntrinsicMatch
+      IntrinsicMatch,
+      IntrinsicAnyMatch
     >
   ): PathRouteBuilder<
     ActionResult,
     Defs,
     AnyFlag,
     ExactFlag,
-    IntrinsicMatch & Match
+    IntrinsicMatch & Match,
+    IntrinsicAnyMatch & Match
   >;
   <WildcardFlag extends ExistingWildcardFlagType, IntrinsicMatch>(
     builder: SearchRouteBuilder<ActionResult, WildcardFlag, IntrinsicMatch>

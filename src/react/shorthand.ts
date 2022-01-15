@@ -34,6 +34,7 @@ export const Path: () => PathRouteBuilder<
   {},
   "none",
   "none",
+  {},
   {}
 > = RawPath;
 

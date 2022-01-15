@@ -209,6 +209,17 @@ describe("PathRouteBuilder", () => {
         state: null,
       });
     });
+    it("any does not modify other route's Match type", () => {
+      const res = PathRouteBuilder.init<string>()
+        .any("id", {
+          action: ({ id }) => `id is ${id.slice(0, 8)}`,
+        })
+        .route("foo", (route) => route.action(() => "foo"));
+      expect(getRouteRecordLocation(res._.foo, {})).toEqual({
+        pathname: "/foo",
+        state: null,
+      });
+    });
   });
 
   describe("exact route", () => {

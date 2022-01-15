@@ -63,13 +63,17 @@ export class PathRouteBuilder<
   Defs extends RoutesDefinition<ActionResult>,
   AnyFlag extends WildcardFlagType,
   ExactFlag extends WildcardFlagType,
-  Match
-> implements AttachableRouteBuilder<ActionResult, string | undefined> {
+  Match,
+  // Note: `= Match` is for backwards compatibility. Will be removed in next major version.
+  AnyMatch = Match
+> implements AttachableRouteBuilder<ActionResult, string | undefined>
+{
   static init<ActionResult>(): PathRouteBuilder<
     ActionResult,
     {},
     "none",
     "none",
+    {},
     {}
   > {
     return new PathRouteBuilder(
@@ -85,13 +89,12 @@ export class PathRouteBuilder<
     | MatchingRouteRecordObject<
         ActionResult,
         string | undefined,
-        Match,
+        AnyMatch,
         boolean
       >
     | undefined = undefined;
-  #exactRoute:
-    | PathRouteRecord<ActionResult, Match, boolean>
-    | undefined = undefined;
+  #exactRoute: PathRouteRecord<ActionResult, Match, boolean> | undefined =
+    undefined;
 
   private constructor(
     link: RouteBuilderLink<ActionResult, string | undefined>
@@ -144,14 +147,16 @@ export class PathRouteBuilder<
     Omit<Defs, keyof D> & D,
     AnyFlag,
     ExactFlag,
-    Match
+    Match,
+    AnyMatch
   > {
     const result = new PathRouteBuilder<
       ActionResult,
       Omit<Defs, keyof D> & D,
       AnyFlag,
       ExactFlag,
-      Match
+      Match,
+      AnyMatch
     >(this.#link.inherit());
     const routes = result.#routes;
     Object.assign(routes, this.#routes);
@@ -185,7 +190,8 @@ export class PathRouteBuilder<
         },
     AnyFlag,
     ExactFlag,
-    Match
+    Match,
+    AnyMatch
   > {
     const result = new PathRouteBuilder<
       ActionResult,
@@ -202,7 +208,8 @@ export class PathRouteBuilder<
           },
       AnyFlag,
       ExactFlag,
-      Match
+      Match,
+      AnyMatch
     >(this.#link.inherit());
     const routes = result.#routes;
     Object.assign(routes, this.#routes);
@@ -250,7 +257,7 @@ export class PathRouteBuilder<
     Key extends string,
     RD extends RouteDefinition<
       ActionResult,
-      Match &
+      AnyMatch &
         {
           [K in Key]: string;
         }
@@ -263,7 +270,8 @@ export class PathRouteBuilder<
     Defs,
     ActionTypeToWildcardFlag<RD["action"]>,
     ExactFlag,
-    Match &
+    Match,
+    AnyMatch &
       {
         [K in Key]: string;
       }
@@ -273,7 +281,8 @@ export class PathRouteBuilder<
       Defs,
       ActionTypeToWildcardFlag<RD["action"]>,
       ExactFlag,
-      Match &
+      Match,
+      AnyMatch &
         {
           [K in Key]: string;
         }
@@ -302,14 +311,16 @@ export class PathRouteBuilder<
     Defs,
     AnyFlag,
     ActionTypeToWildcardFlag<RD["action"]>,
-    Match
+    Match,
+    AnyMatch
   > {
     const result = new PathRouteBuilder<
       ActionResult,
       Defs,
       AnyFlag,
       ActionTypeToWildcardFlag<RD["action"]>,
-      Match
+      Match,
+      AnyMatch
     >(this.#link.inherit());
     result.#routes = this.#routes;
     result.#wildcardRoute = this.#wildcardRoute;
@@ -324,7 +335,7 @@ export class PathRouteBuilder<
   getRoutes(): Readonly<
     RoutesDefinitionToRouteRecords<ActionResult, Defs, Match>
   > {
-    const routes = (this.#routes as unknown) as RoutesDefinitionToRouteRecords<
+    const routes = this.#routes as unknown as RoutesDefinitionToRouteRecords<
       ActionResult,
       Defs,
       Match
