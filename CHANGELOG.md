@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.4](https://github.com/uhyo/rocon/compare/v1.2.3...v1.2.4) (2022-01-15)
+
+
+### Bug Fixes
+
+* pathRouteBuilder should retain separate Match for any route ([#27](https://github.com/uhyo/rocon/issues/27)) ([5d582c5](https://github.com/uhyo/rocon/commit/5d582c5c46242e26c2be60aef1fc45aba0adc15c))
+* PathRouteBuilder#any discards their exactRoute ([#26](https://github.com/uhyo/rocon/issues/26)) ([00008dc](https://github.com/uhyo/rocon/commit/00008dc7af1903c72db83e7ff1a38aab027ad26c))
+* **react:** fix RoconRoot not reacting to location change in descendant useEffect ([68413bb](https://github.com/uhyo/rocon/commit/68413bb1b9050df11653a336e56f952dcf175137)), closes [#24](https://github.com/uhyo/rocon/issues/24)
+
 ### [1.2.3](https://github.com/uhyo/rocon/compare/v1.2.2...v1.2.3) (2021-07-29)
 
 
