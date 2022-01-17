@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.5](https://github.com/uhyo/rocon/compare/v1.2.4...v1.2.5) (2022-01-17)
+
+
+### Bug Fixes
+
+* correct PathRouteBuilder#anyRoute match object type ([#29](https://github.com/uhyo/rocon/issues/29)) ([04f2edb](https://github.com/uhyo/rocon/commit/04f2edb429af24cf190ceb9f1f64386e27ef6f08)), closes [#28](https://github.com/uhyo/rocon/issues/28) [#28](https://github.com/uhyo/rocon/issues/28)
+
 ### [1.2.4](https://github.com/uhyo/rocon/compare/v1.2.3...v1.2.4) (2022-01-15)
 
 
