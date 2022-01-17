@@ -298,7 +298,7 @@ export class PathRouteBuilder<
         routeDefinition?.action
       ),
     };
-    result.#exactRoute = this.#exactRoute
+    result.#exactRoute = this.#exactRoute;
     return result;
   }
 
@@ -354,11 +354,11 @@ export class PathRouteBuilder<
   /**
    * Route record of the any route.
    */
-  get anyRoute(): AnyRouteType<ActionResult, AnyFlag, Match> {
+  get anyRoute(): AnyRouteType<ActionResult, AnyFlag, AnyMatch> {
     return this.#wildcardRoute?.route as AnyRouteType<
       ActionResult,
       AnyFlag,
-      Match
+      AnyMatch
     >;
   }
 

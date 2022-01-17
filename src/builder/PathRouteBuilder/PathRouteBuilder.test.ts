@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { PathRouteBuilder } from ".";
 import { RoutePathResolver } from "../RoutePathResolver";
 import { PathRouteRecord } from "../RouteRecord";
@@ -175,6 +176,15 @@ describe("PathRouteBuilder", () => {
       });
       expect(res.anyRoute.action({ id: "wow" })).toEqual("id is wow");
     });
+    it("any route requires Match object", () => {
+      const res = PathRouteBuilder.init<string>().any("id", {
+        action: ({ id }) => `id is ${id.slice(0, 8)}`,
+      });
+      expect(() => {
+        // @ts-expect-error
+        res.anyRoute.action({});
+      }).toThrow();
+    });
     it("sub route of any", () => {
       const res = PathRouteBuilder.init<string>().any("id", {
         action: ({ id }) => `id is ${id.slice(0, 8)}`,
@@ -247,7 +257,7 @@ describe("PathRouteBuilder", () => {
           action: ({ id }) => `id is ${id.slice(0, 8)}`,
         });
       expect(res.exactRoute.action({})).toBe("I am root");
-    })
+    });
     describe("resolve", () => {
       it("resolve root", () => {
         const toplevel = PathRouteBuilder.init()
