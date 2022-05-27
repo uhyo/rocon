@@ -2,7 +2,7 @@ import { createMemoryHistory } from "history";
 import React from "react";
 import { useRoutes } from "../hooks/useRoutes";
 import { Path, SingleHash } from "../shorthand";
-import { renderInHistory, screen } from "../test-utils";
+import { fireEvent, renderInHistory, screen } from "../test-utils";
 import { Link } from "./Link";
 
 describe("Link", () => {
@@ -33,7 +33,7 @@ describe("Link", () => {
     renderInHistory(history, <Component />);
     expect(screen.queryByText("I AM BAR")).toBeNull();
     expect(history.index).toBe(0);
-    screen.queryByTestId("link")?.click();
+    fireEvent.click(screen.queryByTestId("link")!);
     expect(screen.queryByText("I AM BAR")).toBeInTheDocument();
     expect(history.index).toBe(1);
     expect(history.location).toMatchObject({
@@ -162,7 +162,7 @@ describe("Link", () => {
     renderInHistory(history, <Component />);
     expect(screen.queryByText("I AM BAR")).toBeInTheDocument();
     expect(screen.queryByTestId("link")?.getAttribute("href")).toBe("/foo/bar");
-    screen.queryByTestId("link")?.click();
+    fireEvent.click(screen.queryByTestId("link")!);
     expect(history.location).toMatchObject({
       pathname: "/foo/bar",
       state: null,
