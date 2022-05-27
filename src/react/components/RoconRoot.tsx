@@ -5,6 +5,7 @@ import { LocationContext } from "../contexts/LocationContext";
 
 export type RoconRootProps = {
   history?: History;
+  children?: React.ReactNode;
 };
 
 export const RoconRoot: React.FC<RoconRootProps> = memo((props) => {

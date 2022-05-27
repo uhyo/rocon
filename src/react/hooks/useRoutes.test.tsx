@@ -9,7 +9,7 @@ import { useNavigate } from "./useNavigate";
 import { useRoutes } from "./useRoutes";
 
 class LocationNotFoundErrorBoundary extends React.Component<
-  {},
+  {children: React.ReactNode},
   {
     error?: LocationNotFoundError;
   }
