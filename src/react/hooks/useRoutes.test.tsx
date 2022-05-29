@@ -4,12 +4,12 @@ import {
   LocationNotFoundError,
 } from "../errors/LocationNotFoundError";
 import { Path } from "../shorthand";
-import { renderInLocation, screen } from "../test-utils";
+import { fireEvent, renderInLocation, screen } from "../test-utils";
 import { useNavigate } from "./useNavigate";
 import { useRoutes } from "./useRoutes";
 
 class LocationNotFoundErrorBoundary extends React.Component<
-  {},
+  {children: React.ReactNode},
   {
     error?: LocationNotFoundError;
   }
@@ -198,7 +198,7 @@ describe("useRoutes", () => {
       );
       expect(screen.queryByText("I am foo")).toBeInTheDocument();
       expect(screen.queryByText("hogehoge")).toBeInTheDocument();
-      screen.queryByTestId("fugaButton")?.click();
+      fireEvent.click(screen.queryByTestId("fugaButton")!);
       expect(screen.queryByText("I am foo")).toBeInTheDocument();
       expect(screen.queryByText("fugafuga")).toBeInTheDocument();
     });
@@ -206,8 +206,8 @@ describe("useRoutes", () => {
   describe("React Component as action", () => {
     it("1", () => {
       const FooComponent = () => {
-        const loc = useState("foo");
-        return <p>I am {loc}</p>;
+        const [loc, _] = useState("foo");
+        return <p>{`I am ${loc}`}</p>;
       };
       const location = {
         pathname: "/foo",

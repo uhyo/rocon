@@ -1,7 +1,7 @@
 import { createMemoryHistory } from "history";
 import React from "react";
 import { Path, SingleHash } from "../shorthand";
-import { renderInHistory, screen } from "../test-utils";
+import { fireEvent, renderInHistory, screen } from "../test-utils";
 import { useNavigate } from "./useNavigate";
 import { useRoutes } from "./useRoutes";
 
@@ -34,7 +34,7 @@ describe("useNavigate", () => {
     renderInHistory(history, <Component />);
     expect(screen.queryByText("I AM BAR")).toBeNull();
     expect(history.index).toBe(0);
-    screen.queryByTestId("button")?.click();
+    fireEvent.click(screen.queryByTestId("button")!);
     expect(screen.queryByText("I AM BAR")).toBeInTheDocument();
     expect(history.index).toBe(1);
     expect(history.location).toMatchObject({
@@ -73,7 +73,7 @@ describe("useNavigate", () => {
     renderInHistory(history, <Component />);
     expect(screen.queryByText("I AM BAR")).toBeNull();
     expect(history.index).toBe(0);
-    screen.queryByTestId("button")?.click();
+    fireEvent.click(screen.queryByTestId("button")!);
     expect(screen.queryByText("I AM BAR")).toBeInTheDocument();
     expect(history.index).toBe(1);
     expect(history.location).toMatchObject({
@@ -112,7 +112,7 @@ describe("useNavigate", () => {
     renderInHistory(history, <Component />);
     expect(screen.queryByText("I AM BAR")).toBeNull();
     expect(history.index).toBe(0);
-    screen.queryByTestId("button")?.click();
+    fireEvent.click(screen.queryByTestId("button")!);
     expect(screen.queryByText("I AM BAR")).toBeInTheDocument();
     expect(history.index).toBe(0);
     expect(history.location).toMatchObject({
@@ -152,7 +152,7 @@ describe("useNavigate", () => {
     renderInHistory(history, <Component />);
     expect(screen.queryByText("I AM BAR")).toBeNull();
     expect(history.index).toBe(0);
-    screen.queryByTestId("button")?.click();
+    fireEvent.click(screen.queryByTestId("button")!);
     expect(screen.queryByText("I AM BAR")).toBeInTheDocument();
     expect(history.index).toBe(1);
     expect(history.location).toMatchObject({

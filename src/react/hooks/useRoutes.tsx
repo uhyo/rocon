@@ -41,7 +41,7 @@ export const useRoutes = (builder: ReactRouteBuilder): ReactElement | null => {
     const result = React.createElement(
       resolved.route.action,
       resolved.match as never
-    );
+    ) as unknown as React.ReactNode;
     const routeContextValue = {
       route: resolved.route,
       ancestorRoutes,
