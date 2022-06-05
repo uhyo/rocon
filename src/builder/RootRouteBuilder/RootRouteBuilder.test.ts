@@ -1,6 +1,7 @@
 import { RootRouteBuilder } from ".";
 import { PathRouteBuilder } from "../PathRouteBuilder";
 import { RoutePathResolver } from "../RoutePathResolver";
+import { PathRouteRecord } from "../RouteRecord";
 import { ConstRouteRecord } from "../RouteRecord/ConstRouteRecord";
 import { getRouteRecordLocation } from "../RouteRecord/getRouteRecordLocation";
 
@@ -70,8 +71,9 @@ describe("RootRouteBuilder", () => {
       const toplevel = PathRouteBuilder.init().routes({
         foo: {},
       });
-      const sub = toplevel.getRoutes().foo.attach(RootRouteBuilder.init())
-        .route;
+      const sub = toplevel
+        .getRoutes()
+        .foo.attach(RootRouteBuilder.init()).route;
       expect(getRouteRecordLocation(sub, {})).toEqual({
         pathname: "/",
         state: null,
@@ -115,7 +117,7 @@ describe("RootRouteBuilder", () => {
           {
             remainingLocation: {
               pathname: "/foo/bar",
-              search: "key=value",
+              search: "?key=value",
               state: null,
             },
             currentLocation: {
@@ -157,6 +159,40 @@ describe("RootRouteBuilder", () => {
           },
         ]);
         expect(res[0].route.action(emptyMatch)).toBe("I am root");
+      });
+      it("attaching to RootRouteResolver", () => {
+        const root = RootRouteBuilder.init({
+          root: {
+            pathname: "/root",
+            state: null,
+          },
+        });
+        const toplevel = PathRouteBuilder.init().routes({
+          hoge: {
+            action: () => "I am hoge",
+          },
+        });
+        root.attach(toplevel);
+        const resolver = RoutePathResolver.getFromBuilder(root);
+        const res = resolver.resolve({
+          pathname: "/root/hoge",
+          state: null,
+        });
+        expect(res).toEqual([
+          {
+            remainingLocation: {
+              pathname: "/",
+              state: null,
+            },
+            currentLocation: {
+              pathname: "/root/hoge",
+              state: null,
+            },
+            match: {},
+            route: expect.any(PathRouteRecord),
+          },
+        ]);
+        expect(res[0].route.action(emptyMatch)).toBe("I am hoge");
       });
     });
   });

@@ -39,9 +39,7 @@ export class RoutePathResolver<ActionResult, Segment> {
    * Resolve given location and return the result of running associated action.
    * If multiple locations are resolved, the first one is used.
    */
-  resolveAction(
-    location: Location
-  ):
+  resolveAction(location: Location):
     | {
         route: RouteRecordType<ActionResult, never, true>;
         result: ActionResult;

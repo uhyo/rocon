@@ -3,6 +3,7 @@ import type {
   DecomposeResult,
   LocationComposer,
 } from "../../../core/LocationComposer";
+import { locationDiff } from "../../../util/path/locationDiff";
 
 /**
  * LocationComposer that composes to a constant location.
@@ -24,11 +25,15 @@ export class ConstLocationComposer implements LocationComposer<unknown> {
   decompose<S extends BaseState>(
     base: Location<S>
   ): Array<DecomposeResult<unknown, S>> {
+    const diff = locationDiff(this.location, base);
+    if (diff === undefined) {
+      return [];
+    }
     return [
       {
         leaf: false,
         segment: undefined,
-        nextLocation: base,
+        nextLocation: diff,
       },
     ];
   }

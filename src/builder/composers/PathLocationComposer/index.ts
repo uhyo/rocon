@@ -3,11 +3,12 @@ import type {
   DecomposeResult,
   LocationComposer,
 } from "../../../core/LocationComposer";
-import { composePath } from "./composePath";
-import { decomposePath } from "./decomposePath";
+import { composePath } from "../../../util/path/composePath";
+import { decomposePath } from "../../../util/path/decomposePath";
 
 export class PathLocationComposer
-  implements LocationComposer<string | undefined> {
+  implements LocationComposer<string | undefined>
+{
   isLeaf(location: Readonly<Location>): boolean {
     return location.pathname === "/";
   }
