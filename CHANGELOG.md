@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.7](https://github.com/uhyo/rocon/compare/v1.2.6...v1.2.7) (2022-06-05)
+
+
+### Bug Fixes
+
+* fix resolving of routes attached to RootRouteBuilder ([3a82c51](https://github.com/uhyo/rocon/commit/3a82c5121ef93893b1badc6e20fe2c9db2aaf898)), closes [#36](https://github.com/uhyo/rocon/issues/36)
+
 ### [1.2.6](https://github.com/uhyo/rocon/compare/v1.2.5...v1.2.6) (2022-05-29)
 
 ### [1.2.5](https://github.com/uhyo/rocon/compare/v1.2.4...v1.2.5) (2022-01-17)
