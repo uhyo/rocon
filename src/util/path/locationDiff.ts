@@ -48,7 +48,9 @@ export function locationDiff<
 
   const diffState: Record<string, unknown> = {};
   const baseState = (base.state ?? {}) as Record<string, unknown>;
-  for (const [key, value] of Object.entries(location.state ?? {})) {
+  for (const [key, value] of Object.entries(
+    (location.state ?? {}) as Record<string, unknown>
+  )) {
     if (baseState[key] !== undefined) {
       if (baseState[key] !== value) {
         return undefined;

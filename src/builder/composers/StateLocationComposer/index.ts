@@ -10,7 +10,8 @@ export class StateLocationComposer<
   Key extends string,
   StateValue,
   IsOptional extends boolean
-> implements LocationComposer<OptionalIf<IsOptional, StateValue>> {
+> implements LocationComposer<OptionalIf<IsOptional, StateValue>>
+{
   readonly key: Key;
   readonly optional: IsOptional;
   readonly validator: Validator<OptionalIf<IsOptional, StateValue>>;
@@ -32,11 +33,10 @@ export class StateLocationComposer<
     base: Readonly<Location<S>>,
     segment: OptionalIf<IsOptional, StateValue>
   ): Location<S> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newState = {
-      ...base.state,
+      ...(base.state as {}),
       [this.key]: segment,
-    };
+    } as S;
 
     return {
       ...base,
@@ -66,11 +66,10 @@ export class StateLocationComposer<
       return [];
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { [this.key]: _, ...rest } = state;
+    const { [this.key]: _, ...rest } = state as Record<string, unknown>;
     const nextLocation = {
       ...location,
-      state: rest,
+      state: rest as Omit<S, Key>,
     };
     return [
       {
