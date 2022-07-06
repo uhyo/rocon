@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.8](https://github.com/uhyo/rocon/compare/v1.2.7...v1.2.8) (2022-07-06)
+
+
+### Bug Fixes
+
+* correctly pass state to history.push ([b36ebad](https://github.com/uhyo/rocon/commit/b36ebadf95362a67173d6793aca98af0e6508ab9))
+
 ### [1.2.7](https://github.com/uhyo/rocon/compare/v1.2.6...v1.2.7) (2022-06-05)
 
 
