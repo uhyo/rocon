@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { createMemoryHistory, History } from "history";
 import React from "react";
 import { Location } from "../../core/Location";
@@ -16,4 +16,4 @@ export const renderInLocation = (location: Location, element: ReactElement) => {
   return renderInHistory(history, element);
 };
 
-export { render, fireEvent, screen };
+export { render, fireEvent, screen, act };
