@@ -21,7 +21,7 @@ export type LinkPropsWithRef<Match> = LinkProps<Match> & {
  * Renders an <a> element to given route.
  */
 const RawLink = <Match,>(
-  { route, match, ...props }: LinkProps<Match>,
+  { route, match, onClick, ...props }: LinkProps<Match>,
   ref: Ref<HTMLAnchorElement | null>
 ): ReactElement | null => {
   const parentRoute = useContext(RouteContext);
@@ -40,6 +40,9 @@ const RawLink = <Match,>(
       ref={ref}
       href={href}
       onClick={(e) => {
+        if (onClick) {
+          onClick(e);
+        }
         if (!isModifiedEvent(e)) {
           e.preventDefault();
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
