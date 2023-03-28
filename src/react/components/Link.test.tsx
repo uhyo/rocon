@@ -1,5 +1,5 @@
 import { createMemoryHistory } from "history";
-import React from "react";
+import React, { useState } from "react";
 import { useRoutes } from "../hooks/useRoutes";
 import { Path, SingleHash } from "../shorthand";
 import { fireEvent, renderInHistory, screen } from "../test-utils";
@@ -196,5 +196,42 @@ describe("Link", () => {
 
     renderInHistory(history, <Component />);
     expect(ref.current?.getAttribute("href")).toBe("/bar");
+  });
+  it("accepts given onClick callback", () => {
+    const history = createMemoryHistory({
+      initialEntries: [
+        {
+          pathname: "/foo",
+          state: null,
+        },
+      ],
+    });
+    const routes = Path()
+      .route("foo", (foo) => foo.action(() => <p>I am foo</p>))
+      .route("bar", (bar) => bar.action(() => <div>I AM BAR</div>));
+    const ref = React.createRef<HTMLAnchorElement>();
+    const Component: React.FC = () => {
+      const contents = useRoutes(routes);
+      const [clickedCount, setClickedCount] = useState(0);
+      return (
+        <div>
+          <div data-testid="on-click-handler-result">{clickedCount}</div>
+          <Link data-testid="link" route={routes._.bar} ref={ref} onClick={() => setClickedCount((s) => s + 1)}>
+            nice link
+          </Link>
+          {contents}
+        </div>
+      );
+    };
+
+    renderInHistory(history, <Component />);
+    expect(ref.current?.getAttribute("href")).toBe("/bar");
+    fireEvent.click(screen.queryByTestId("link")!);
+
+    expect(history.location).toMatchObject({
+      pathname: "/bar",
+      state: null,
+    });
+    expect(screen.queryByTestId("on-click-handler-result")?.textContent).toBe("1");
   });
 });
